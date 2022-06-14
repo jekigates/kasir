@@ -49,7 +49,7 @@
         <div>
           <a href="kasir.html" class="btn btn-outline-primary btn-block" style="margin-bottom: 1rem">Kasir</a>
           <a href="produk.html" class="btn btn-primary btn-block" style="margin-bottom: 1rem">Daftar Produk</a>
-          <a href="belanja.html" class="btn btn-outline-primary btn-block">Riwayat Belanja</a>
+          <a href="belanja.html" class="btn btn-outline-primary btn-block">Riwayat Jual Beli</a>
         </div>
 
         <a href="logout.php" type="button" class="btn btn-danger btn-block" style="margin-top: auto">Logout</a>
@@ -125,7 +125,7 @@
                 if (produk.status === "Available") {
                   produkHtml += `<div class="status-circle bg-success" style="margin-right: 1rem"></div>Available</div></td>`;
                 } else {
-                  produkHtml += `<div class="status-circle bg-danger" style="margin-right: 1rem"></div>Nonavailable</div></td>`;
+                  produkHtml += `<div class="status-circle bg-danger" style="margin-right: 1rem"></div>Unavailable</div></td>`;
                 }
 
                 produkHtml += `<td><button class="btn btn-info" style="margin-right: 1rem;">Edit</button><button class="btn btn-danger">Delete</button></td></tr>`;

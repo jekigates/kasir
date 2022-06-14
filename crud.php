@@ -21,8 +21,27 @@ function loadProduk() {
   ]);
 }
 
+function buatProduk() {
+  global $conn;
+
+  $data = json_decode(file_get_contents("php://input"), true);
+  $nama = $data["nama"];
+  $stok = $data["stok"];
+  $satuan = $data["satuan"];
+  $harga = $data["harga"];
+  $kategori = $data["kategori"];
+  $status = $data["status"];
+
+  $sql = "INSERT INTO produk(nama, stok, satuan, harga, kategori, status) VALUES('$nama', '$stok', '$satuan', '$harga', '$kategori', '$status')";
+  $query = mysqli_query($conn, $sql) or die("error: $sql");
+
+  echo json_encode([
+    "result" => true,
+  ]);
+}
+
 if ($cmd == "login") {
-  $data = json_decode(file_get_contents('php://input'), true);
+  $data = json_decode(file_get_contents("php://input"), true);
   $username = $data["username"];
   $password = $data["password"];
 
@@ -49,4 +68,6 @@ if ($cmd == "login") {
   }
 } else if ($cmd === "loadProduk") {
   loadProduk();
+} else if ($cmd === "buatProduk") {
+  buatProduk();
 }

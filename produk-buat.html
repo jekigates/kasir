@@ -49,7 +49,7 @@
         <div>
           <a href="kasir.html" class="btn btn-outline-primary btn-block" style="margin-bottom: 1rem">Kasir</a>
           <a href="produk.html" class="btn btn-primary btn-block" style="margin-bottom: 1rem">Daftar Produk</a>
-          <a href="belanja.html" class="btn btn-outline-primary btn-block">Riwayat Belanja</a>
+          <a href="belanja.html" class="btn btn-outline-primary btn-block">Riwayat Jual Beli</a>
         </div>
 
         <a href="logout.php" type="button" class="btn btn-danger btn-block" style="margin-top: auto">Logout</a>
@@ -62,22 +62,22 @@
             <label for="nama" style="margin-bottom: 0.5rem">Nama</label>
             <input type="text" class="input-block" id="nama" name="nama" style="margin-bottom: 2rem" />
             <label for="stok" style="margin-bottom: 0.5rem">Stok</label>
-            <input type="number" class="input-block" id="stok" name="stok" style="margin-bottom: 2rem" />
+            <input type="number" class="input-block" id="stok" name="stok" style="margin-bottom: 2rem" min="0" value="0" />
             <label for="satuan" style="margin-bottom: 0.5rem">Satuan</label>
             <input type="text" class="input-block" id="satuan" name="satuan" style="margin-bottom: 2rem" />
             <label for="harga" style="margin-bottom: 0.5rem">Harga</label>
-            <input type="number" class="input-block" id="harga" name="harga" style="margin-bottom: 2rem" />
+            <input type="number" class="input-block" id="harga" name="harga" style="margin-bottom: 2rem" min="0" value="0" />
           </div>
           <div style="width: 50%">
             <label for="kategori" style="margin-bottom: 0.5rem">Kategori</label>
             <input type="text" class="input-block" id="kategori" name="kategori" style="margin-bottom: 2rem" />
-            <label for="status" style="margin-bottom: 0.5rem">Status</label>
-            <select class="input-block" name="status" id="status" style="margin-bottom: 2rem">
+            <label for="statusProduk" style="margin-bottom: 0.5rem">Status</label>
+            <select class="input-block" name="status" id="statusProduk" style="margin-bottom: 2rem">
               <option value="Available">Available</option>
               <option value="Unavailable">Unavailable</option>
             </select>
             <div style="float: right">
-              <button type="button" class="btn btn-primary" style="margin-bottom: 1rem">Buat Produk</button>
+              <button type="button" class="btn btn-primary" style="margin-bottom: 1rem" onclick="buatProduk()">Buat Produk</button>
             </div>
           </div>
         </div>
@@ -99,6 +99,25 @@
               alert("Maaf, Anda harus login terlebih dahulu.");
               location.href = "index.html";
             }
+          });
+      }
+
+      function buatProduk() {
+        fetch("crud.php?cmd=buatProduk", {
+          method: "POST",
+          body: JSON.stringify({
+            nama: this.nama.value,
+            stok: this.stok.value,
+            satuan: this.satuan.value,
+            harga: this.harga.value,
+            kategori: this.kategori.value,
+            status: this.statusProduk.value,
+          }),
+        })
+          .then((response) => response.json())
+          .then((data) => {
+            alert("Produk berhasil dibuat.");
+            location.href = "produk.html";
           });
       }
     </script>
