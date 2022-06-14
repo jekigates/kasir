@@ -169,26 +169,7 @@
       <div class="right-sidebar">
         <h1 style="margin-bottom: 4rem">Keranjang</h1>
 
-        <div>
-          <div class="cart-item">
-            <div>
-              <h4>Burger</h4>
-              <h4><span class="text-secondary">Rp 2,000</span> / Pcs</h4>
-              <h4>Jumlah: 2</h4>
-              <h4>Total Harga: <span class="text-primary">Rp4,000</span></h4>
-            </div>
-            <button type="button" class="btn btn-info" style="margin-bottom: 1rem">Edit</button>
-          </div>
-          <div class="cart-item">
-            <div>
-              <h4>LA BOLD</h4>
-              <h4><span class="text-secondary">Rp 5,000</span> / Slop</h4>
-              <h4>Jumlah: 3</h4>
-              <h4>Total Harga: <span class="text-primary">Rp15,000</span></h4>
-            </div>
-            <button type="button" class="btn btn-info" style="margin-bottom: 1rem">Edit</button>
-          </div>
-        </div>
+        <div class="cart-list" id="cart-list"></div>
 
         <div style="margin-top: auto">
           <hr style="margin-bottom: 1rem" />
@@ -208,11 +189,13 @@
       var menuTambahProdukSatuan = document.getElementById("menu-tambah-produk-satuan");
       var menuTambahProdukJumlah = document.getElementById("menu-tambah-produk-jumlah");
       var menuTambahProdukTotal = document.getElementById("menu-tambah-produk-total");
+      var cartList = document.getElementById("cart-list");
 
       window.onload = function () {
         checkAuth();
         loadKategori();
         loadProduk();
+        loadProdukDiKeranjang();
       };
 
       function tambahProdukKeKeranjang() {
@@ -226,7 +209,7 @@
         })
           .then((response) => response.json())
           .then((data) => {
-            // lakukan fungsi load produk di keranjang
+            loadProdukDiKeranjang();
           });
       }
 
@@ -286,6 +269,32 @@
             menuTambahProdukJumlah.value = 1;
             modifyMenuTambahProduk();
             menuTambahProdukUbahTotal();
+          });
+      }
+
+      function loadProdukDiKeranjang() {
+        fetch(`crud.php?cmd=loadProdukDiKeranjang`)
+          .then((response) => response.json())
+          .then((data) => {
+            var produkHtml = "";
+
+            if (data.produk.length > 0) {
+              var iteration = 1;
+              data.produk.forEach(function (produk) {
+                console.log(produk);
+                produkHtml += `<div class="cart-item"><div><h4>${
+                  produk.nama
+                }</h4><h4><span class="text-secondary">Rp ${new Intl.NumberFormat().format(produk.harga)}</span> / ${
+                  produk.satuan
+                }</h4><h4>Jumlah: ${new Intl.NumberFormat().format(
+                  produk.jumlah
+                )}</h4><h4>Total Harga: <span class="text-primary">Rp${new Intl.NumberFormat().format(
+                  produk.total
+                )}</span></h4></div><button type="button" class="btn btn-info" style="margin-bottom: 1rem">Edit</button></div>`;
+              });
+            }
+
+            cartList.innerHTML = produkHtml;
           });
       }
 

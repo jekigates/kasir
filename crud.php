@@ -125,8 +125,24 @@ function tambahProdukKeKeranjang() {
   $sql = "INSERT INTO keranjang(id, jumlah, total) VALUES('$id', '$jumlah', '$total')";
   $query = mysqli_query($conn, $sql) or die("error: $sql");
 
-    echo json_encode([
+  echo json_encode([
     "result" => true,
+  ]);
+}
+
+function loadProdukDiKeranjang() {
+  global $conn;
+
+  $sql = "SELECT * FROM keranjang INNER JOIN produk ON keranjang.id = produk.id WHERE produk.status='Available' AND produk.id > 0";
+  $query = mysqli_query($conn, $sql) or die("error: $sql");
+
+  $rows = [];
+  while($result = mysqli_fetch_assoc($query)) {
+    $rows[] = $result;
+  }
+
+  echo json_encode([
+    "produk" => $rows,
   ]);
 }
 
@@ -173,4 +189,6 @@ if ($cmd == "login") {
   loadKategori();
 } else if ($cmd === "tambahProdukKeKeranjang") {
   tambahProdukKeKeranjang();
+} else if ($cmd === "loadProdukDiKeranjang") {
+  loadProdukDiKeranjang();
 }
