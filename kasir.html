@@ -88,9 +88,53 @@
       border-radius: 0.4rem;
       margin-bottom: 1rem;
     }
+
+    .menu-tambah-produk {
+      background-color: var(--background);
+      left: 50%;
+      overflow: auto;
+      position: fixed;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      width: 30rem;
+      z-index: 1020;
+      border-radius: 0.4rem;
+      padding: 1rem;
+      display: block;
+    }
   </style>
   <body>
     <div class="page-home">
+      <div class="permalink-overlay d-none" id="permalink-overlay"></div>
+      <div class="menu-tambah-produk d-none" id="menu-tambah-produk">
+        <div style="display: flex; justify-content: space-between; align-items: start">
+          <div>
+            <h2 id="menu-tambah-produk-nama">Baju</h2>
+            <h3 style="margin-bottom: 4rem">
+              <span class="text-secondary" id="menu-tambah-produk-harga">Rp 2,000</span> / <span id="menu-tambah-produk-satuan">Pcs</span>
+            </h3>
+          </div>
+
+          <button type="button" class="btn btn-danger" onclick="modifyMenuTambahProduk()">X</button>
+        </div>
+
+        <label for="jumlah" style="margin-bottom: 0.5rem">Jumlah</label>
+        <input
+          type="text"
+          class="input-block"
+          id="menu-tambah-produk-jumlah"
+          name="jumlah"
+          autocomplete="off"
+          min="0"
+          value="1"
+          style="margin-bottom: 2rem"
+        />
+
+        <h2 id="menu-tambah-produk-total" style="margin-bottom: 1rem">Total Harga: Rp0</h2>
+
+        <button type="button" class="btn btn-primary btn-block">Tambahkan Keranjang</button>
+      </div>
+
       <div class="left-sidebar">
         <a href="index.php" style="width: 100%; margin-bottom: 4rem; text-align: center">
           <img src="./assets/img/logo.png" alt="" width="125" height="40" />
@@ -99,7 +143,7 @@
         <div>
           <a href="kasir.html" class="btn btn-primary btn-block" style="margin-bottom: 1rem">Kasir</a>
           <a href="produk.html" class="btn btn-outline-primary btn-block" style="margin-bottom: 1rem">Daftar Produk</a>
-          <a href="belanja.html" class="btn btn-outline-primary btn-block">Riwayat Jual Beli</a>
+          <a href="transaksi.html" class="btn btn-outline-primary btn-block">Riwayat Transaksi</a>
         </div>
 
         <a href="logout.php" type="button" class="btn btn-danger btn-block" style="margin-top: auto">Logout</a>
@@ -113,7 +157,7 @@
             <option value="Fashion">Fashion</option>
             <option value="Minuman">Minuman</option>
           </select>
-          <input type="text" placeholder="Cari Produk" id="search" name="search" oninput="loadProduk()" style="width: 20rem" />
+          <input type="text" placeholder="Cari Produk" id="search" name="search" oninput="loadProduk()" autocomplete="off" style="width: 20rem" />
         </div>
 
         <h2 style="margin-bottom: 1rem">Daftar Produk</h2>
@@ -128,7 +172,7 @@
             <div>
               <h4>Burger</h4>
               <h4><span class="text-secondary">Rp 2,000</span> / Pcs</h4>
-              <h4>Jlh: 2</h4>
+              <h4>Jumlah: 2</h4>
               <h4>Total Harga: <span class="text-primary">Rp4,000</span></h4>
             </div>
             <button type="button" class="btn btn-info" style="margin-bottom: 1rem">Edit</button>
@@ -137,7 +181,7 @@
             <div>
               <h4>LA BOLD</h4>
               <h4><span class="text-secondary">Rp 5,000</span> / Slop</h4>
-              <h4>Jlh: 3</h4>
+              <h4>Jumlah: 3</h4>
               <h4>Total Harga: <span class="text-primary">Rp15,000</span></h4>
             </div>
             <button type="button" class="btn btn-info" style="margin-bottom: 1rem">Edit</button>
@@ -145,8 +189,6 @@
         </div>
 
         <div style="margin-top: auto">
-          <label for="diskon" style="margin-bottom: 0.5rem">Diskon (%)</label>
-          <input type="text" class="input-block" id="diskon" name="diskon" style="margin-bottom: 1rem" value="10" />
           <hr style="margin-bottom: 1rem" />
           <h2 style="margin-bottom: 1rem">Total Harga: Rp 17,100</h2>
           <button type="button" class="btn btn-primary btn-block">Bayar</button>
@@ -156,6 +198,13 @@
 
     <script>
       var productList = document.getElementById("product-list");
+      var permalinkOverlay = document.getElementById("permalink-overlay");
+      var menuTambahProduk = document.getElementById("menu-tambah-produk");
+      var menuTambahProdukNama = document.getElementById("menu-tambah-produk-nama");
+      var menuTambahProdukHarga = document.getElementById("menu-tambah-produk-harga");
+      var menuTambahProdukSatuan = document.getElementById("menu-tambah-produk-satuan");
+      var menuTambahProdukJumlah = document.getElementById("menu-tambah-produk-jumlah");
+      var menuTambahProdukTotal = document.getElementById("menu-tambah-produk-total");
 
       window.onload = function () {
         checkAuth();
@@ -196,6 +245,25 @@
           });
       }
 
+      function modifyMenuTambahProduk() {
+        permalinkOverlay.classList.toggle("d-none");
+        menuTambahProduk.classList.toggle("d-none");
+      }
+
+      function detailProduk(id) {
+        fetch(`crud.php?cmd=detailProduk&id=${id}`)
+          .then((response) => response.json())
+          .then((data) => {
+            var produk = data.produk;
+            menuTambahProdukNama.innerHTML = produk.nama;
+            menuTambahProdukHarga.innerHTML = produk.harga;
+            menuTambahProdukSatuan.innerHTML = produk.satuan;
+            menuTambahProdukJumlah.value = 1;
+            menuTambahProdukTotal.innerHTML = `Total Harga: Rp${new Intl.NumberFormat().format(1 * produk.harga)}`;
+            modifyMenuTambahProduk();
+          });
+      }
+
       function loadProduk() {
         fetch(`crud.php?cmd=loadProduk&nama=${this.search.value}&kategori=${this.kategori.value}`)
           .then((response) => response.json())
@@ -205,7 +273,7 @@
             if (data.produk.length > 0) {
               var iteration = 1;
               data.produk.forEach(function (produk) {
-                produkHtml += `<div class="product-item"><h2>${
+                produkHtml += `<div class="product-item" onclick="detailProduk(${produk.id})"><h2>${
                   produk.nama
                 }</h2><h3 style="margin-bottom: 1rem;"><span class="text-secondary">Rp ${new Intl.NumberFormat().format(produk.harga)}</span> / ${
                   produk.satuan
