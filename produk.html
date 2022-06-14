@@ -60,10 +60,10 @@
         <div style="display: flex; justify-content: space-between; width: 100%; margin-bottom: 1rem">
           <a href="produk-buat.html" class="btn btn-primary">Buat Produk</a>
           <div>
-            <select name="kategori" id="kategori" style="margin-right: 1rem; width: 10rem">
+            <select name="kategori" id="kategori" style="margin-right: 1rem; width: 10rem" onchange="loadProduk()">
               <option value="">Semua</option>
-              <option value="">Fashion</option>
-              <option value="">Minuman</option>
+              <option value="Fashion">Fashion</option>
+              <option value="Minuman">Minuman</option>
             </select>
             <input type="text" placeholder="Cari Produk" id="search" name="search" oninput="loadProduk()" style="width: 20rem" />
           </div>
@@ -93,6 +93,7 @@
 
       window.onload = function () {
         checkAuth();
+        loadKategori();
         loadProduk();
       };
 
@@ -109,8 +110,28 @@
           });
       }
 
+      function loadKategori() {
+        this.kategori.selectedIndex = 0;
+
+        fetch("crud.php?cmd=loadKategori")
+          .then((response) => response.json())
+          .then((data) => {
+            var kategoriHtml = "";
+
+            kategoriHtml += `<option value="">Semua</option>`;
+            if (data.kategori.length > 0) {
+              var iteration = 1;
+              data.kategori.forEach(function (kategori) {
+                kategoriHtml += `<option value="${kategori.kategori}">${kategori.kategori}</option>`;
+              });
+            }
+
+            this.kategori.innerHTML = kategoriHtml;
+          });
+      }
+
       function loadProduk() {
-        fetch(`crud.php?cmd=loadProduk&nama=${this.search.value}`)
+        fetch(`crud.php?cmd=loadProduk&nama=${this.search.value}&kategori=${this.kategori.value}`)
           .then((response) => response.json())
           .then((data) => {
             var produkHtml = "";
@@ -147,6 +168,7 @@
             .then((response) => response.json())
             .then((data) => {
               alert("Berhasil menghapus produk.");
+              loadKategori();
               loadProduk();
             });
         }

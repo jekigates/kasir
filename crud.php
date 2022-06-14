@@ -5,12 +5,29 @@ require "koneksi.php";
 
 $cmd = $_GET["cmd"];
 
+function loadKategori() {
+  global $conn;
+
+  $sql = "SELECT DISTINCT produk.kategori FROM produk";
+  $query = mysqli_query($conn, $sql) or die("error: $sql");
+
+  $rows = [];
+  while($result = mysqli_fetch_assoc($query)) {
+    $rows[] = $result;
+  }
+
+  echo json_encode([
+    "kategori" => $rows,
+  ]);
+}
+
 function loadProduk() {
   global $conn;
 
+  $kategori = $_GET["kategori"];
   $nama = $_GET["nama"];
 
-  $sql = "SELECT * FROM produk WHERE produk.nama LIKE '%$nama%'";
+  $sql = "SELECT * FROM produk WHERE produk.nama LIKE '%$nama%' && produk.kategori LIKE '%$kategori%'";
   $query = mysqli_query($conn, $sql) or die("error: $sql");
   
   $rows = [];
@@ -126,4 +143,6 @@ if ($cmd == "login") {
   updateProduk();
 } else if ($cmd === "deleteProduk") {
   deleteProduk();
+} else if ($cmd === "loadKategori") {
+  loadKategori();
 }
