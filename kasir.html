@@ -215,7 +215,20 @@
         loadProduk();
       };
 
-      function tambahProdukKeKeranjang() {}
+      function tambahProdukKeKeranjang() {
+        fetch("crud.php?cmd=tambahProdukKeKeranjang", {
+          method: "POST",
+          body: JSON.stringify({
+            id: menuTambahProdukId.innerHTML,
+            jumlah: menuTambahProdukJumlah.value,
+            total: menuTambahProdukTotal.innerHTML.replace("Total Harga: Rp", "").replace(/,/, ""),
+          }),
+        })
+          .then((response) => response.json())
+          .then((data) => {
+            // lakukan fungsi load produk di keranjang
+          });
+      }
 
       function menuTambahProdukUbahTotal() {
         menuTambahProdukTotal.innerHTML = `Total Harga: Rp${new Intl.NumberFormat().format(

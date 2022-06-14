@@ -114,6 +114,22 @@ function updateProduk() {
   ]);
 }
 
+function tambahProdukKeKeranjang() {
+  global $conn;
+
+  $data = json_decode(file_get_contents("php://input"), true);
+  $id = $data["id"];
+  $jumlah = $data["jumlah"];
+  $total = $data["total"];
+
+  $sql = "INSERT INTO keranjang(id, jumlah, total) VALUES('$id', '$jumlah', '$total')";
+  $query = mysqli_query($conn, $sql) or die("error: $sql");
+
+    echo json_encode([
+    "result" => true,
+  ]);
+}
+
 if ($cmd == "login") {
   $data = json_decode(file_get_contents("php://input"), true);
   $username = $data["username"];
@@ -155,4 +171,6 @@ if ($cmd == "login") {
   updateProduk();
 } else if ($cmd === "loadKategori") {
   loadKategori();
+} else if ($cmd === "tambahProdukKeKeranjang") {
+  tambahProdukKeKeranjang();
 }
