@@ -51,19 +51,19 @@
     </div>
 
     <script>
-      var username = document.getElementById("username");
-      var password = document.getElementById("password");
-
       const login = function () {
-        if (username.value === "admin" && password.value === "admin123") {
-          // Ketika username dan password benar
-
-          location.href = "kasir.html";
-        } else {
-          // Ketika username dan password salah
-
-          alert("Maaf, tolong cek username dan password Anda.");
-        }
+        fetch("crud.php?cmd=login", {
+          method: "POST",
+          body: JSON.stringify({ username: this.username.value, password: this.password.value }),
+        })
+          .then((response) => response.json())
+          .then((data) => {
+            if (data.result === true) {
+              location.href = "kasir.html";
+            } else {
+              alert("Maaf, tolong periksa username dan password Anda.");
+            }
+          });
       };
     </script>
   </body>

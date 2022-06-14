@@ -52,7 +52,7 @@
           <a href="belanja.html" class="btn btn-outline-primary btn-block">Riwayat Belanja</a>
         </div>
 
-        <button type="button" class="btn btn-danger btn-block" onclick="logout()" style="margin-top: auto">Logout</button>
+        <a href="logout.php" type="button" class="btn btn-danger btn-block" style="margin-top: auto">Logout</a>
       </div>
       <div class="main">
         <h1 style="margin-bottom: 4rem">Buat Produk</h1>
@@ -77,11 +77,30 @@
               <option value="Unavailable">Unavailable</option>
             </select>
             <div style="float: right">
-              <a href="produk-buat.html" class="btn btn-primary" style="margin-bottom: 1rem">Buat Produk</a>
+              <button type="button" class="btn btn-primary" style="margin-bottom: 1rem">Buat Produk</button>
             </div>
           </div>
         </div>
       </div>
     </div>
+
+    <script>
+      window.onload = function () {
+        checkAuth();
+      };
+
+      function checkAuth() {
+        fetch("crud.php?cmd=checkAuth")
+          .then((response) => response.json())
+          .then((data) => {
+            if (data.result !== true) {
+              // Kalau pengguna tidak login dengan benar
+
+              alert("Maaf, Anda harus login terlebih dahulu.");
+              location.href = "index.html";
+            }
+          });
+      }
+    </script>
   </body>
 </html>

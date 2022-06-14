@@ -52,11 +52,30 @@
           <a href="belanja.html" class="btn btn-outline-primary btn-block">Riwayat Belanja</a>
         </div>
 
-        <button type="button" class="btn btn-danger btn-block" onclick="logout()" style="margin-top: auto">Logout</button>
+        <a href="logout.php" type="button" class="btn btn-danger btn-block" style="margin-top: auto">Logout</a>
       </div>
       <div class="main">
         <h1>Kasir</h1>
       </div>
     </div>
+
+    <script>
+      window.onload = function () {
+        checkAuth();
+      };
+
+      function checkAuth() {
+        fetch("crud.php?cmd=checkAuth")
+          .then((response) => response.json())
+          .then((data) => {
+            if (data.result !== true) {
+              // Kalau pengguna tidak login dengan benar
+
+              alert("Maaf, Anda harus login terlebih dahulu.");
+              location.href = "index.html";
+            }
+          });
+      }
+    </script>
   </body>
 </html>
