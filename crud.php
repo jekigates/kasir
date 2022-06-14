@@ -8,7 +8,9 @@ $cmd = $_GET["cmd"];
 function loadProduk() {
   global $conn;
 
-  $sql = "SELECT * FROM produk";
+  $nama = $_GET["nama"];
+
+  $sql = "SELECT * FROM produk WHERE produk.nama LIKE '%$nama%'";
   $query = mysqli_query($conn, $sql) or die("error: $sql");
   
   $rows = [];
@@ -43,8 +45,7 @@ function buatProduk() {
 function detailProduk() {
   global $conn;
 
-  $data = json_decode(file_get_contents("php://input"), true);
-  $id = $data["id"];
+  $id = $_GET["id"];
 
   $sql = "SELECT * FROM produk WHERE produk.id='$id'";
   $query = mysqli_query($conn, $sql) or die("error: $sql");
@@ -59,7 +60,7 @@ function updateProduk() {
   global $conn;
 
   $data = json_decode(file_get_contents("php://input"), true);
-  $id = $data["id"];
+  $id = $_GET["id"];
   $nama = $data["nama"];
   $stok = $data["stok"];
   $satuan = $data["satuan"];

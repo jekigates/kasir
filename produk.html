@@ -65,7 +65,7 @@
               <option value="">Fashion</option>
               <option value="">Minuman</option>
             </select>
-            <input type="text" placeholder="Cari Barang" style="width: 20rem" />
+            <input type="text" placeholder="Cari Produk" id="search" name="search" oninput="loadProduk()" style="width: 20rem" />
           </div>
         </div>
 
@@ -110,7 +110,7 @@
       }
 
       function loadProduk() {
-        fetch("crud.php?cmd=loadProduk")
+        fetch(`crud.php?cmd=loadProduk&nama=${this.search.value}`)
           .then((response) => response.json())
           .then((data) => {
             var produkHtml = "";

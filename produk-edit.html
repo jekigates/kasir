@@ -109,12 +109,7 @@
         const urlParams = new URLSearchParams(queryString);
         const produkId = urlParams.get("id");
 
-        fetch("crud.php?cmd=detailProduk", {
-          method: "POST",
-          body: JSON.stringify({
-            id: produkId,
-          }),
-        })
+        fetch(`crud.php?cmd=detailProduk&id=${produkId}`)
           .then((response) => response.json())
           .then((data) => {
             var produk = data.produk;
@@ -132,10 +127,9 @@
         const urlParams = new URLSearchParams(queryString);
         const produkId = urlParams.get("id");
 
-        fetch("crud.php?cmd=updateProduk", {
+        fetch(`crud.php?cmd=updateProduk&id=${produkId}`, {
           method: "POST",
           body: JSON.stringify({
-            id: produkId,
             nama: this.nama.value,
             stok: this.stok.value,
             satuan: this.satuan.value,
