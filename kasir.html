@@ -228,7 +228,7 @@
       function loadKategori() {
         this.kategori.selectedIndex = 0;
 
-        fetch("crud.php?cmd=loadKategori")
+        fetch("crud.php?cmd=loadKategori&status=Available")
           .then((response) => response.json())
           .then((data) => {
             var kategoriHtml = "";
@@ -251,7 +251,7 @@
       }
 
       function detailProduk(id) {
-        fetch(`crud.php?cmd=detailProduk&id=${id}`)
+        fetch(`crud.php?cmd=detailProduk&id=${id}&status=Available`)
           .then((response) => response.json())
           .then((data) => {
             var produk = data.produk;
@@ -265,7 +265,7 @@
       }
 
       function loadProduk() {
-        fetch(`crud.php?cmd=loadProduk&nama=${this.search.value}&kategori=${this.kategori.value}`)
+        fetch(`crud.php?cmd=loadProduk&nama=${this.search.value}&kategori=${this.kategori.value}&status=Available&stok=1`)
           .then((response) => response.json())
           .then((data) => {
             var produkHtml = "";

@@ -9,6 +9,11 @@ function loadKategori() {
   global $conn;
 
   $sql = "SELECT DISTINCT produk.kategori FROM produk";
+  if (isset($_GET["status"])) {
+    $status = $_GET["status"];
+    $sql = "SELECT DISTINCT produk.kategori FROM produk WHERE produk.status='$status'";
+  }
+
   $query = mysqli_query($conn, $sql) or die("error: $sql");
 
   $rows = [];
@@ -27,7 +32,23 @@ function loadProduk() {
   $kategori = $_GET["kategori"];
   $nama = $_GET["nama"];
 
-  $sql = "SELECT * FROM produk WHERE produk.nama LIKE '%$nama%' && produk.kategori LIKE '%$kategori%'";
+  if (isset($_GET["status"])) {
+    $status = $_GET["status"];
+    if (isset($_GET["stok"])) {
+      $stok = $_GET["stok"];
+      $sql = "SELECT * FROM produk WHERE produk.nama LIKE '%$nama%' AND produk.kategori LIKE '%$kategori%' AND produk.status='$status' AND produk.stok >= '$stok'";
+    } else {
+      $sql = "SELECT * FROM produk WHERE produk.nama LIKE '%$nama%' AND produk.kategori LIKE '%$kategori%' AND produk.status='$status'";
+    }
+  } else {
+    if (isset($_GET["stok"])) {
+      $stok = $_GET["stok"];
+      $sql = "SELECT * FROM produk WHERE produk.nama LIKE '%$nama%' AND produk.kategori LIKE '%$kategori%' AND produk.stok >= '$stok'";
+    } else {
+      $sql = "SELECT * FROM produk WHERE produk.nama LIKE '%$nama%' AND produk.kategori LIKE '%$kategori%'";
+    }
+  }
+
   $query = mysqli_query($conn, $sql) or die("error: $sql");
   
   $rows = [];
