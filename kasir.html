@@ -34,9 +34,59 @@
     }
 
     .main {
-      width: calc(100% - 20rem);
+      width: calc(100% - 20rem - 24rem);
       height: 100%;
       padding: 1rem;
+    }
+
+    .product-list {
+      display: flex;
+      flex-direction: row;
+      flex-wrap: wrap;
+    }
+
+    .product-item {
+      background-color: white;
+      border: 0.2rem solid var(--primary);
+      border-radius: 0.4rem;
+      width: calc(100% / 4 - 1rem);
+      padding: 1rem;
+      cursor: pointer;
+      transition: 0.2s;
+      margin-bottom: 1rem;
+    }
+
+    .product-item:not(:last-child) {
+      margin-right: 1rem;
+    }
+
+    .product-item:hover {
+      background-color: var(--primary);
+      color: var(--white) !important;
+    }
+
+    .product-item:hover .text-secondary,
+    .product-item:hover .text-primary {
+      color: var(--white) !important;
+    }
+
+    .right-sidebar {
+      width: 24rem;
+      height: 100%;
+      padding: 1rem;
+      display: flex;
+      flex-direction: column;
+      border-left: 0.2rem solid var(--primary);
+    }
+
+    .cart-item {
+      padding: 1rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border: 0.2rem solid var(--primary);
+      border-radius: 0.4rem;
+      margin-bottom: 1rem;
     }
   </style>
   <body>
@@ -55,13 +105,62 @@
         <a href="logout.php" type="button" class="btn btn-danger btn-block" style="margin-top: auto">Logout</a>
       </div>
       <div class="main">
-        <h1>Kasir</h1>
+        <h1 style="margin-bottom: 4rem">Kasir</h1>
+
+        <div style="margin-bottom: 1rem">
+          <select name="kategori" id="kategori" style="margin-right: 1rem; width: 10rem" onchange="loadProduk()">
+            <option value="">Semua</option>
+            <option value="Fashion">Fashion</option>
+            <option value="Minuman">Minuman</option>
+          </select>
+          <input type="text" placeholder="Cari Produk" id="search" name="search" oninput="loadProduk()" style="width: 20rem" />
+        </div>
+
+        <h2 style="margin-bottom: 1rem">Daftar Produk</h2>
+
+        <div class="product-list" id="product-list"></div>
+      </div>
+      <div class="right-sidebar">
+        <h1 style="margin-bottom: 4rem">Keranjang</h1>
+
+        <div>
+          <div class="cart-item">
+            <div>
+              <h4>Burger</h4>
+              <h4><span class="text-secondary">Rp 2,000</span> / Pcs</h4>
+              <h4>Jlh: 2</h4>
+              <h4>Total Harga: <span class="text-primary">Rp4,000</span></h4>
+            </div>
+            <button type="button" class="btn btn-info" style="margin-bottom: 1rem">Edit</button>
+          </div>
+          <div class="cart-item">
+            <div>
+              <h4>LA BOLD</h4>
+              <h4><span class="text-secondary">Rp 5,000</span> / Slop</h4>
+              <h4>Jlh: 3</h4>
+              <h4>Total Harga: <span class="text-primary">Rp15,000</span></h4>
+            </div>
+            <button type="button" class="btn btn-info" style="margin-bottom: 1rem">Edit</button>
+          </div>
+        </div>
+
+        <div style="margin-top: auto">
+          <label for="diskon" style="margin-bottom: 0.5rem">Diskon (%)</label>
+          <input type="text" class="input-block" id="diskon" name="diskon" style="margin-bottom: 1rem" value="10" />
+          <hr style="margin-bottom: 1rem" />
+          <h2 style="margin-bottom: 1rem">Total Harga: Rp 17,100</h2>
+          <button type="button" class="btn btn-primary btn-block">Bayar</button>
+        </div>
       </div>
     </div>
 
     <script>
+      var productList = document.getElementById("product-list");
+
       window.onload = function () {
         checkAuth();
+        loadKategori();
+        loadProduk();
       };
 
       function checkAuth() {
@@ -74,6 +173,47 @@
               alert("Maaf, Anda harus login terlebih dahulu.");
               location.href = "index.html";
             }
+          });
+      }
+
+      function loadKategori() {
+        this.kategori.selectedIndex = 0;
+
+        fetch("crud.php?cmd=loadKategori")
+          .then((response) => response.json())
+          .then((data) => {
+            var kategoriHtml = "";
+
+            kategoriHtml += `<option value="">Semua</option>`;
+            if (data.kategori.length > 0) {
+              var iteration = 1;
+              data.kategori.forEach(function (kategori) {
+                kategoriHtml += `<option value="${kategori.kategori}">${kategori.kategori}</option>`;
+              });
+            }
+
+            this.kategori.innerHTML = kategoriHtml;
+          });
+      }
+
+      function loadProduk() {
+        fetch(`crud.php?cmd=loadProduk&nama=${this.search.value}&kategori=${this.kategori.value}`)
+          .then((response) => response.json())
+          .then((data) => {
+            var produkHtml = "";
+
+            if (data.produk.length > 0) {
+              var iteration = 1;
+              data.produk.forEach(function (produk) {
+                produkHtml += `<div class="product-item"><h2>${
+                  produk.nama
+                }</h2><h3 style="margin-bottom: 1rem;"><span class="text-secondary">Rp ${new Intl.NumberFormat().format(produk.harga)}</span> / ${
+                  produk.satuan
+                }</h3><h3 style="text-align: right;" class="text-primary">${produk.kategori}</h3></div>`;
+              });
+            }
+
+            productList.innerHTML = produkHtml;
           });
       }
     </script>

@@ -23,7 +23,7 @@ select {
   display: inline-block;
   padding: 1rem;
   border: none;
-  background-color: #fff;
+  background-color: var(--white) !important;
   border-radius: 0.4rem;
   box-shadow: 0 6px 10px 0 rgba(0, 0, 0, 0.1);
   font-size: 1rem;
@@ -41,6 +41,10 @@ select {
   border-radius: 0.4rem;
   font-size: 1rem;
   box-shadow: 0 6px 10px 0 rgba(0, 0, 0, 0.1);
+}
+
+.text-primary {
+  color: var(--primary);
 }
 
 .btn-primary {
@@ -70,6 +74,10 @@ a {
 .btn-secondary {
   background-color: var(--secondary);
   color: var(--white);
+}
+
+.text-secondary {
+  color: var(--secondary);
 }
 
 .btn-danger {
