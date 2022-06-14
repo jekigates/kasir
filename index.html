@@ -36,12 +36,27 @@
         <img src="./assets/img/logo.png" alt="" width="125" height="40" />
       </a>
       <div class="form-login">
-        <form action="crud.php?cmd=login" method="POST">
-          <input type="text" id="username" name="username" placeholder="Username" autocomplete="off" style="margin-bottom: 1rem" />
-          <input type="password" id="password" name="password" placeholder="Password" autocomplete="off" style="margin-bottom: 1rem" />
-          <button type="submit" class="btn btn-primary btn-block">Login</button>
-        </form>
+        <input type="text" id="username" name="username" placeholder="Username" autocomplete="off" style="margin-bottom: 1rem" />
+        <input type="password" id="password" name="password" placeholder="Password" autocomplete="off" style="margin-bottom: 1rem" />
+        <button type="button" class="btn btn-primary btn-block" onclick="login()">Login</button>
       </div>
     </div>
+
+    <script>
+      var username = document.getElementById("username");
+      var password = document.getElementById("password");
+
+      const login = function () {
+        if (username.value === "admin" && password.value === "admin123") {
+          // Ketika username dan password benar
+
+          location.href = "kasir.html";
+        } else {
+          // Ketika username dan password salah
+
+          alert("Maaf, tolong cek username dan password Anda.");
+        }
+      };
+    </script>
   </body>
 </html>

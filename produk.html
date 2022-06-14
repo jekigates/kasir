@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Daftar Produk</title>
+
+    <!-- Favicons -->
+    <link rel="apple-touch-icon" sizes="180x180" href="./assets/img/favicons/apple-touch-icon.png" />
+    <link rel="icon" type="image/png" sizes="32x32" href="./assets/img/favicons/favicon-32x32.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="./assets/img/favicons/favicon-16x16.png" />
+    <link rel="manifest" href="./assets/img/favicons/site.webmanifest" />
+
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="./assets/css/main.css" />
+  </head>
+  <style>
+    .page-produk {
+      width: 100vw;
+      height: 100vh;
+      display: flex;
+      flex-direction: row;
+      background-color: var(--background);
+    }
+
+    .left-sidebar {
+      width: 20rem;
+      height: 100%;
+      padding: 1rem;
+      display: flex;
+      flex-direction: column;
+      border-right: 0.2rem solid var(--primary);
+    }
+
+    .main {
+      width: calc(100% - 20rem);
+      height: 100%;
+      padding: 1rem;
+    }
+  </style>
+  <body>
+    <div class="page-produk">
+      <div class="left-sidebar">
+        <a href="index.php" style="width: 100%; margin-bottom: 4rem; text-align: center">
+          <img src="./assets/img/logo.png" alt="" width="125" height="40" />
+        </a>
+
+        <div>
+          <a href="kasir.html" class="btn btn-outline-primary btn-block" style="margin-bottom: 1rem">Kasir</a>
+          <a href="produk.html" class="btn btn-primary btn-block" style="margin-bottom: 1rem">Daftar Produk</a>
+          <a href="belanja.html" class="btn btn-outline-primary btn-block">Riwayat Belanja</a>
+        </div>
+
+        <button type="button" class="btn btn-danger btn-block" onclick="logout()" style="margin-top: auto">Logout</button>
+      </div>
+      <div class="main">
+        <h1 style="margin-bottom: 1rem">Daftar Produk</h1>
+
+        <table>
+          <thead>
+            <tr>
+              <th>No</th>
+              <th>Nama</th>
+              <th>Stok</th>
+              <th>Satuan</th>
+              <th>Harga</th>
+              <th>Status</th>
+              <th></th>
+            </tr>
+          </thead>
+
+          <tbody>
+            <tr>
+              <td>1</td>
+              <td>Topi Supreme</td>
+              <td>2</td>
+              <td>Pcs</td>
+              <td>Rp 20.000</td>
+              <td>
+                <div style="display: flex; align-items: center">
+                  <div class="status-lingkaran bg-success" style="margin-right: 1rem"></div>
+                  Aktif
+                </div>
+              </td>
+              <td>
+                <button class="btn btn-info">Edit</button>
+                <button class="btn btn-danger">Delete</button>
+              </td>
+            </tr>
+            <tr>
+              <td>2</td>
+              <td>Kopi</td>
+              <td>10</td>
+              <td>Gram</td>
+              <td>Rp 3.000</td>
+              <td>
+                <div style="display: flex; align-items: center">
+                  <div class="status-lingkaran bg-danger" style="margin-right: 1rem"></div>
+                  Nonaktif
+                </div>
+              </td>
+              <td>
+                <button class="btn btn-info">Edit</button>
+                <button class="btn btn-danger">Delete</button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </body>
+</html>

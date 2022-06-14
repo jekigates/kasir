@@ -2,7 +2,11 @@
 
 :root {
   --primary: #f15412;
+  --success: #5fd068;
+  --danger: #f24c4c;
+  --info: #646fd4;
   --background: #f5f6fa;
+  --white: #fff;
 }
 
 * {
@@ -37,10 +41,59 @@ input {
   color: white;
 }
 
+.btn-outline-primary {
+  background-color: var(--white);
+  color: var(--primary);
+  border-color: var(--primary);
+}
+
 .btn-block {
   width: 100%;
 }
 
 input:-webkit-autofill {
   -webkit-background-clip: text;
+}
+
+a {
+  text-decoration: none;
+  display: inline-block;
+}
+
+.btn-danger {
+  background-color: var(--danger);
+  color: var(--white);
+}
+
+.bg-danger {
+  background-color: var(--danger);
+}
+
+table {
+  width: 100%;
+}
+
+th {
+  background-color: var(--primary);
+  color: var(--white);
+}
+
+th,
+td {
+  padding: 1rem;
+}
+
+.status-lingkaran {
+  width: 1rem;
+  height: 1rem;
+  border-radius: 100%;
+}
+
+.bg-success {
+  background-color: var(--success);
+}
+
+.btn-info {
+  background-color: var(--info);
+  color: var(--white);
 }
