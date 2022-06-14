@@ -75,6 +75,20 @@ function updateProduk() {
   ]);
 }
 
+function deleteProduk() {
+  global $conn;
+
+  $data = json_decode(file_get_contents("php://input"), true);
+  $id = $data["id"];
+
+  $sql = "DELETE FROM produk WHERE produk.id='$id'";
+  $query = mysqli_query($conn, $sql) or die("error: $sql");
+
+  echo json_encode([
+    "result" => true,
+  ]);
+}
+
 if ($cmd == "login") {
   $data = json_decode(file_get_contents("php://input"), true);
   $username = $data["username"];
@@ -109,4 +123,6 @@ if ($cmd == "login") {
   detailProduk();
 } else if ($cmd === "updateProduk") {
   updateProduk();
+} else if ($cmd === "deleteProduk") {
+  deleteProduk();
 }
