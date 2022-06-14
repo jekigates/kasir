@@ -55,9 +55,21 @@
         <button type="button" class="btn btn-danger btn-block" onclick="logout()" style="margin-top: auto">Logout</button>
       </div>
       <div class="main">
-        <h1 style="margin-bottom: 1rem">Daftar Produk</h1>
+        <h1 style="margin-bottom: 4rem">Daftar Produk</h1>
 
-        <table>
+        <div style="display: flex; justify-content: space-between; width: 100%; margin-bottom: 1rem">
+          <a href="produk-buat.html" class="btn btn-primary">Buat Produk</a>
+          <div>
+            <select name="kategori" id="kategori" style="margin-right: 1rem; width: 10rem;">
+              <option value="">Semua</option>
+              <option value="">Fashion</option>
+              <option value="">Minuman</option>
+            </select>
+            <input type="text" placeholder="Cari Barang" style="width: 20rem" />
+          </div>
+        </div>
+
+        <table cellspacing="0" cellpadding="0">
           <thead>
             <tr>
               <th>No</th>
@@ -65,6 +77,7 @@
               <th>Stok</th>
               <th>Satuan</th>
               <th>Harga</th>
+              <th>Kategori</th>
               <th>Status</th>
               <th></th>
             </tr>
@@ -77,10 +90,11 @@
               <td>2</td>
               <td>Pcs</td>
               <td>Rp 20.000</td>
+              <td>Fashion</th>
               <td>
                 <div style="display: flex; align-items: center">
-                  <div class="status-lingkaran bg-success" style="margin-right: 1rem"></div>
-                  Aktif
+                  <div class="status-circle bg-success" style="margin-right: 1rem"></div>
+                  Available
                 </div>
               </td>
               <td>
@@ -94,10 +108,11 @@
               <td>10</td>
               <td>Gram</td>
               <td>Rp 3.000</td>
+              <td>Minuman</td>
               <td>
                 <div style="display: flex; align-items: center">
-                  <div class="status-lingkaran bg-danger" style="margin-right: 1rem"></div>
-                  Nonaktif
+                  <div class="status-circle bg-danger" style="margin-right: 1rem"></div>
+                  Nonavailable
                 </div>
               </td>
               <td>
