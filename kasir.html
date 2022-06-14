@@ -109,9 +109,10 @@
       <div class="menu-tambah-produk d-none" id="menu-tambah-produk">
         <div style="display: flex; justify-content: space-between; align-items: start">
           <div>
-            <h2 id="menu-tambah-produk-nama">Baju</h2>
+            <p class="d-none" id="menu-tambah-produk-id"></p>
+            <h2 id="menu-tambah-produk-nama">Nama Barang</h2>
             <h3 style="margin-bottom: 4rem">
-              <span class="text-secondary" id="menu-tambah-produk-harga">Rp 2,000</span> / <span id="menu-tambah-produk-satuan">Pcs</span>
+              <span class="text-secondary" id="menu-tambah-produk-harga">Rp 0</span> / <span id="menu-tambah-produk-satuan">Satuan</span>
             </h3>
           </div>
 
@@ -128,11 +129,12 @@
           min="0"
           value="1"
           style="margin-bottom: 2rem"
+          oninput="menuTambahProdukUbahTotal()"
         />
 
         <h2 id="menu-tambah-produk-total" style="margin-bottom: 1rem">Total Harga: Rp0</h2>
 
-        <button type="button" class="btn btn-primary btn-block">Tambahkan Keranjang</button>
+        <button type="button" class="btn btn-primary btn-block" onclick="tambahProdukKeKeranjang()">Tambahkan Keranjang</button>
       </div>
 
       <div class="left-sidebar">
@@ -146,7 +148,7 @@
           <a href="transaksi.html" class="btn btn-outline-primary btn-block">Riwayat Transaksi</a>
         </div>
 
-        <a href="logout.php" type="button" class="btn btn-danger btn-block" style="margin-top: auto">Logout</a>
+        <a href="crud.php?cmd=logout" type="button" class="btn btn-danger btn-block" style="margin-top: auto">Logout</a>
       </div>
       <div class="main">
         <h1 style="margin-bottom: 4rem">Kasir</h1>
@@ -200,6 +202,7 @@
       var productList = document.getElementById("product-list");
       var permalinkOverlay = document.getElementById("permalink-overlay");
       var menuTambahProduk = document.getElementById("menu-tambah-produk");
+      var menuTambahProdukId = document.getElementById("menu-tambah-produk-id");
       var menuTambahProdukNama = document.getElementById("menu-tambah-produk-nama");
       var menuTambahProdukHarga = document.getElementById("menu-tambah-produk-harga");
       var menuTambahProdukSatuan = document.getElementById("menu-tambah-produk-satuan");
@@ -211,6 +214,14 @@
         loadKategori();
         loadProduk();
       };
+
+      function tambahProdukKeKeranjang() {}
+
+      function menuTambahProdukUbahTotal() {
+        menuTambahProdukTotal.innerHTML = `Total Harga: Rp${new Intl.NumberFormat().format(
+          parseFloat(menuTambahProdukJumlah.value) * parseFloat(menuTambahProdukHarga.innerHTML.replace("Rp", "").replace(/,/g, ""))
+        )}`;
+      }
 
       function checkAuth() {
         fetch("crud.php?cmd=checkAuth")
@@ -255,12 +266,13 @@
           .then((response) => response.json())
           .then((data) => {
             var produk = data.produk;
+            menuTambahProdukId.innerHTML = produk.id;
             menuTambahProdukNama.innerHTML = produk.nama;
-            menuTambahProdukHarga.innerHTML = produk.harga;
+            menuTambahProdukHarga.innerHTML = `Rp${new Intl.NumberFormat().format(produk.harga)}`;
             menuTambahProdukSatuan.innerHTML = produk.satuan;
             menuTambahProdukJumlah.value = 1;
-            menuTambahProdukTotal.innerHTML = `Total Harga: Rp${new Intl.NumberFormat().format(1 * produk.harga)}`;
             modifyMenuTambahProduk();
+            menuTambahProdukUbahTotal();
           });
       }
 

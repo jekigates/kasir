@@ -130,6 +130,11 @@ if ($cmd == "login") {
       "result" => false,
     ]);
   }
+ } else if ($cmd == "logout") {
+  session_unset();
+  session_destroy();
+
+  header("Location: index.html");
  } else if ($cmd === "checkAuth") {
   if (isset($_SESSION["auth"])) {
     echo json_encode([
