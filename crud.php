@@ -5,6 +5,22 @@ require "koneksi.php";
 
 $cmd = $_GET["cmd"];
 
+function loadProduk() {
+  global $conn;
+
+  $sql = "SELECT * FROM produk";
+  $query = mysqli_query($conn, $sql) or die("error: $sql");
+  
+  $rows = [];
+  while($result = mysqli_fetch_assoc($query)) {
+    $rows[] = $result;
+  }
+
+  echo json_encode([
+    "produk" => $rows,
+  ]);
+}
+
 if ($cmd == "login") {
   $data = json_decode(file_get_contents('php://input'), true);
   $username = $data["username"];
@@ -31,4 +47,6 @@ if ($cmd == "login") {
       "result" => false,
     ]);
   }
+} else if ($cmd === "loadProduk") {
+  loadProduk();
 }
