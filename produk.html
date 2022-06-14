@@ -149,29 +149,12 @@
                   produkHtml += `<div class="status-circle bg-danger" style="margin-right: 1rem"></div>Unavailable</div></td>`;
                 }
 
-                produkHtml += `<td><a href="produk-edit.html?id=${produk.id}" class="btn btn-info" style="margin-right: 1rem;">Edit</a><button class="btn btn-danger" onclick="deleteProduk(${produk.id})">Delete</button></td></tr>`;
+                produkHtml += `<td><a href="produk-edit.html?id=${produk.id}" class="btn btn-info" style="margin-right: 1rem;">Edit</a></td></tr>`;
               });
             }
 
             tableProduk.innerHTML = produkHtml;
           });
-      }
-
-      function deleteProduk(id) {
-        if (confirm("Apakah Anda yakin untuk menghapus produk ini?") === true) {
-          fetch(`crud.php?cmd=deleteProduk&id=${id}`, {
-            method: "POST",
-            body: JSON.stringify({
-              id: id,
-            }),
-          })
-            .then((response) => response.json())
-            .then((data) => {
-              alert("Berhasil menghapus produk.");
-              loadKategori();
-              loadProduk();
-            });
-        }
       }
     </script>
   </body>
