@@ -4,9 +4,11 @@
   --primary: #f15412;
   --success: #5fd068;
   --danger: #f24c4c;
+  --secondary: #73777b;
   --info: #646fd4;
   --background: #f5f6fa;
   --white: #fff;
+  --black: #000;
 }
 
 * {
@@ -63,6 +65,11 @@ input:-webkit-autofill {
 a {
   text-decoration: none;
   display: inline-block;
+}
+
+.btn-secondary {
+  background-color: var(--secondary);
+  color: var(--white);
 }
 
 .btn-danger {

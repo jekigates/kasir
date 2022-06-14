@@ -40,6 +40,41 @@ function buatProduk() {
   ]);
 }
 
+function detailProduk() {
+  global $conn;
+
+  $data = json_decode(file_get_contents("php://input"), true);
+  $id = $data["id"];
+
+  $sql = "SELECT * FROM produk WHERE produk.id='$id'";
+  $query = mysqli_query($conn, $sql) or die("error: $sql");
+  $result = mysqli_fetch_assoc($query);
+
+  echo json_encode([
+    "produk" => $result,
+  ]);
+}
+
+function updateProduk() {
+  global $conn;
+
+  $data = json_decode(file_get_contents("php://input"), true);
+  $id = $data["id"];
+  $nama = $data["nama"];
+  $stok = $data["stok"];
+  $satuan = $data["satuan"];
+  $harga = $data["harga"];
+  $kategori = $data["kategori"];
+  $status = $data["status"];
+
+  $sql = "UPDATE produk SET produk.nama='$nama', produk.stok='$stok', produk.satuan='$satuan', produk.harga='$harga', produk.kategori='$kategori', produk.status='$status' WHERE produk.id='$id'";
+  $query = mysqli_query($conn, $sql) or die("error: $sql");
+
+  echo json_encode([
+    "result" => true,
+  ]);
+}
+
 if ($cmd == "login") {
   $data = json_decode(file_get_contents("php://input"), true);
   $username = $data["username"];
@@ -70,4 +105,8 @@ if ($cmd == "login") {
   loadProduk();
 } else if ($cmd === "buatProduk") {
   buatProduk();
+} else if ($cmd == "detailProduk") {
+  detailProduk();
+} else if ($cmd === "updateProduk") {
+  updateProduk();
 }
