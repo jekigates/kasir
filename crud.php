@@ -85,7 +85,7 @@ function detailProduk() {
 
   $id = $_GET["id"];
 
-  $sql = "SELECT * FROM produk WHERE produk.id='$id'";
+  $sql = "SELECT * FROM produk LEFT JOIN keranjang ON produk.id = keranjang.id WHERE produk.id='$id'";
   $query = mysqli_query($conn, $sql) or die("error: $sql");
   $result = mysqli_fetch_assoc($query);
 
@@ -114,14 +114,15 @@ function updateProduk() {
   ]);
 }
 
-function tambahProdukKeKeranjang() {
+function pesanProdukKeKeranjang() {
   global $conn;
 
+  $mode = $_GET["mode"];
   $data = json_decode(file_get_contents("php://input"), true);
   $id = $data["id"];
   $jumlah = $data["jumlah"];
   $total = $data["total"];
-
+  
   $sql1 = "SELECT * FROM keranjang INNER JOIN produk ON keranjang.id = produk.id WHERE keranjang.id='$id'";
   $query1 = mysqli_query($conn, $sql1) or die("error: $sql1");
   $result1 = mysqli_fetch_assoc($query1);
@@ -131,7 +132,10 @@ function tambahProdukKeKeranjang() {
     $sql2 = "INSERT INTO keranjang(id, jumlah, total) VALUES('$id', '$jumlah', '$total')";
     $query2 = mysqli_query($conn, $sql2) or die("error: $sql2");
   } else {
-    $jumlah += $result1["jumlah"];
+    if ($mode === "tambah") {
+      $jumlah += $result1["jumlah"];
+    }
+
     $total = $result1["harga"] * $jumlah;
     $sql3 = "UPDATE keranjang SET keranjang.jumlah='$jumlah', keranjang.total='$total' WHERE keranjang.id='$id'";
     $query3 = mysqli_query($conn, $sql3) or die("error: $sql3");
@@ -199,8 +203,8 @@ if ($cmd == "login") {
   updateProduk();
 } else if ($cmd === "loadKategori") {
   loadKategori();
-} else if ($cmd === "tambahProdukKeKeranjang") {
-  tambahProdukKeKeranjang();
+} else if ($cmd === "pesanProdukKeKeranjang") {
+  pesanProdukKeKeranjang();
 } else if ($cmd === "loadProdukDiKeranjang") {
   loadProdukDiKeranjang();
 }

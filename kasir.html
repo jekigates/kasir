@@ -89,7 +89,7 @@
       margin-bottom: 1rem;
     }
 
-    .menu-tambah-produk {
+    .menu-pesan-produk {
       background-color: var(--background);
       left: 50%;
       overflow: auto;
@@ -102,39 +102,54 @@
       padding: 1rem;
       display: block;
     }
+
+    .menu-pesan-produk-tambah,
+    .menu-pesan-produk-edit {
+      display: none;
+    }
   </style>
   <body>
     <div class="page-home">
       <div class="permalink-overlay d-none" id="permalink-overlay"></div>
-      <div class="menu-tambah-produk d-none" id="menu-tambah-produk">
+      <div class="menu-pesan-produk d-none" id="menu-pesan-produk">
         <div style="display: flex; justify-content: space-between; align-items: start">
           <div>
-            <p class="d-none" id="menu-tambah-produk-id"></p>
-            <h2 id="menu-tambah-produk-nama">Nama Barang</h2>
+            <p class="d-none" id="menu-pesan-produk-id"></p>
+            <h2 id="menu-pesan-produk-nama">Nama Barang</h2>
             <h3 style="margin-bottom: 4rem">
-              <span class="text-secondary" id="menu-tambah-produk-harga">Rp 0</span> / <span id="menu-tambah-produk-satuan">Satuan</span>
+              <span class="text-secondary" id="menu-pesan-produk-harga">Rp 0</span> / <span id="menu-pesan-produk-satuan">Satuan</span>
             </h3>
           </div>
 
-          <button type="button" class="btn btn-danger" onclick="modifyMenuTambahProduk()">X</button>
+          <button type="button" class="btn btn-danger" onclick="displayMenuPesanProduk()">X</button>
         </div>
 
         <label for="jumlah" style="margin-bottom: 0.5rem">Jumlah</label>
         <input
           type="text"
           class="input-block"
-          id="menu-tambah-produk-jumlah"
+          id="menu-pesan-produk-jumlah"
           name="jumlah"
           autocomplete="off"
           min="0"
           value="1"
           style="margin-bottom: 2rem"
-          oninput="menuTambahProdukUbahTotal()"
+          oninput="menuPesanProdukUbahTotal()"
         />
 
-        <h2 id="menu-tambah-produk-total" style="margin-bottom: 1rem">Total Harga: Rp0</h2>
+        <h2 id="menu-pesan-produk-total" style="margin-bottom: 1rem">Total Harga: Rp0</h2>
 
-        <button type="button" class="btn btn-primary btn-block" onclick="tambahProdukKeKeranjang()">Tambahkan Keranjang</button>
+        <button
+          type="button"
+          id="menu-pesan-produk-tambah"
+          class="btn btn-primary btn-block menu-pesan-produk-tambah"
+          onclick="pesanProdukKeKeranjang()"
+        >
+          Tambahkan Keranjang
+        </button>
+        <button type="button" id="menu-pesan-produk-edit" class="btn btn-info btn-block menu-pesan-produk-edit" onclick="pesanProdukKeKeranjang()">
+          Edit Produk Keranjang
+        </button>
       </div>
 
       <div class="left-sidebar">
@@ -182,13 +197,15 @@
     <script>
       var productList = document.getElementById("product-list");
       var permalinkOverlay = document.getElementById("permalink-overlay");
-      var menuTambahProduk = document.getElementById("menu-tambah-produk");
-      var menuTambahProdukId = document.getElementById("menu-tambah-produk-id");
-      var menuTambahProdukNama = document.getElementById("menu-tambah-produk-nama");
-      var menuTambahProdukHarga = document.getElementById("menu-tambah-produk-harga");
-      var menuTambahProdukSatuan = document.getElementById("menu-tambah-produk-satuan");
-      var menuTambahProdukJumlah = document.getElementById("menu-tambah-produk-jumlah");
-      var menuTambahProdukTotal = document.getElementById("menu-tambah-produk-total");
+      var menuPesanProduk = document.getElementById("menu-pesan-produk");
+      var menuPesanProdukId = document.getElementById("menu-pesan-produk-id");
+      var menuPesanProdukNama = document.getElementById("menu-pesan-produk-nama");
+      var menuPesanProdukHarga = document.getElementById("menu-pesan-produk-harga");
+      var menuPesanProdukSatuan = document.getElementById("menu-pesan-produk-satuan");
+      var menuPesanProdukJumlah = document.getElementById("menu-pesan-produk-jumlah");
+      var menuPesanProdukTotal = document.getElementById("menu-pesan-produk-total");
+      var menuPesanProdukTambah = document.getElementById("menu-pesan-produk-tambah");
+      var menuPesanProdukEdit = document.getElementById("menu-pesan-produk-edit");
       var cartList = document.getElementById("cart-list");
 
       window.onload = function () {
@@ -198,13 +215,21 @@
         loadProdukDiKeranjang();
       };
 
-      function tambahProdukKeKeranjang() {
-        fetch("crud.php?cmd=tambahProdukKeKeranjang", {
+      function pesanProdukKeKeranjang() {
+        var url = "crud.php?cmd=pesanProdukKeKeranjang";
+
+        if (menuPesanProdukTambah.style.display === "block") {
+          url += "&mode=tambah";
+        } else {
+          url += "&mode=edit";
+        }
+
+        fetch(url, {
           method: "POST",
           body: JSON.stringify({
-            id: menuTambahProdukId.innerHTML,
-            jumlah: menuTambahProdukJumlah.value,
-            total: menuTambahProdukTotal.innerHTML.replace("Total Harga: Rp", "").replace(/,/, ""),
+            id: menuPesanProdukId.innerHTML,
+            jumlah: menuPesanProdukJumlah.value,
+            total: menuPesanProdukTotal.innerHTML.replace("Total Harga: Rp", "").replace(/,/, ""),
           }),
         })
           .then((response) => response.json())
@@ -213,9 +238,9 @@
           });
       }
 
-      function menuTambahProdukUbahTotal() {
-        menuTambahProdukTotal.innerHTML = `Total Harga: Rp${new Intl.NumberFormat().format(
-          parseFloat(menuTambahProdukJumlah.value) * parseFloat(menuTambahProdukHarga.innerHTML.replace("Rp", "").replace(/,/g, ""))
+      function menuPesanProdukUbahTotal() {
+        menuPesanProdukTotal.innerHTML = `Total Harga: Rp${new Intl.NumberFormat().format(
+          parseFloat(menuPesanProdukJumlah.value) * parseFloat(menuPesanProdukHarga.innerHTML.replace("Rp", "").replace(/,/g, ""))
         )}`;
       }
 
@@ -252,23 +277,33 @@
           });
       }
 
-      function modifyMenuTambahProduk() {
+      function displayMenuPesanProduk() {
         permalinkOverlay.classList.toggle("d-none");
-        menuTambahProduk.classList.toggle("d-none");
+        menuPesanProduk.classList.toggle("d-none");
       }
 
-      function detailProduk(id) {
+      function detailProduk(id, mode = "tambah") {
         fetch(`crud.php?cmd=detailProduk&id=${id}&status=Available`)
           .then((response) => response.json())
           .then((data) => {
             var produk = data.produk;
-            menuTambahProdukId.innerHTML = produk.id;
-            menuTambahProdukNama.innerHTML = produk.nama;
-            menuTambahProdukHarga.innerHTML = `Rp${new Intl.NumberFormat().format(produk.harga)}`;
-            menuTambahProdukSatuan.innerHTML = produk.satuan;
-            menuTambahProdukJumlah.value = 1;
-            modifyMenuTambahProduk();
-            menuTambahProdukUbahTotal();
+            menuPesanProdukId.innerHTML = produk.id;
+            menuPesanProdukNama.innerHTML = produk.nama;
+            menuPesanProdukHarga.innerHTML = `Rp${new Intl.NumberFormat().format(produk.harga)}`;
+            menuPesanProdukSatuan.innerHTML = produk.satuan;
+
+            if (mode === "tambah") {
+              menuPesanProdukJumlah.value = 1;
+              menuPesanProdukTambah.style.display = "block";
+              menuPesanProdukEdit.style.display = "none";
+            } else {
+              menuPesanProdukJumlah.value = produk.jumlah;
+              menuPesanProdukTambah.style.display = "none";
+              menuPesanProdukEdit.style.display = "block";
+            }
+
+            displayMenuPesanProduk();
+            menuPesanProdukUbahTotal();
           });
       }
 
@@ -282,7 +317,7 @@
               var iteration = 1;
               data.produk.forEach(function (produk) {
                 console.log(produk);
-                produkHtml += `<div class="cart-item"><div><h4>${
+                produkHtml += `<div class="cart-item" onclick="detailProduk(${produk.id}, 'edit')"><div><h4>${
                   produk.nama
                 }</h4><h4><span class="text-secondary">Rp ${new Intl.NumberFormat().format(produk.harga)}</span> / ${
                   produk.satuan
