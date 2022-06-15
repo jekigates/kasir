@@ -144,3 +144,7 @@ select {
 .d-none {
   display: none !important;
 }
+
+label {
+  display: inline-block;
+}

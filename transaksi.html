@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Riwayat Transaksi</title>
+
+    <!-- Favicons -->
+    <link rel="apple-touch-icon" sizes="180x180" href="./assets/img/favicons/apple-touch-icon.png" />
+    <link rel="icon" type="image/png" sizes="32x32" href="./assets/img/favicons/favicon-32x32.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="./assets/img/favicons/favicon-16x16.png" />
+    <link rel="manifest" href="./assets/img/favicons/site.webmanifest" />
+
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="./assets/css/main.css" />
+  </head>
+  <style>
+    .page-home {
+      width: 100vw;
+      height: 100vh;
+      display: flex;
+      flex-direction: row;
+      background-color: var(--background);
+    }
+
+    .left-sidebar {
+      width: 20rem;
+      height: 100%;
+      padding: 1rem;
+      display: flex;
+      flex-direction: column;
+      border-right: 0.2rem solid var(--primary);
+    }
+
+    .main {
+      width: calc(100% - 20rem);
+      height: 100%;
+      padding: 1rem;
+    }
+
+    .transaction-item {
+      background-color: white;
+      border: 0.2rem solid var(--primary);
+      border-radius: 0.4rem;
+      width: 100%;
+      padding: 1rem;
+      cursor: pointer;
+      transition: 0.2s;
+      margin-bottom: 1rem;
+    }
+
+    .transaction-item:hover {
+      background-color: var(--primary);
+      color: var(--white) !important;
+    }
+
+    .transaction-item:hover .text-secondary,
+    .transaction-item:hover .text-primary {
+      color: var(--white) !important;
+    }
+  </style>
+  <body>
+    <div class="page-home">
+      <div class="menu-pesan-produk d-none" id="menu-pesan-produk">
+        <div style="display: flex; justify-content: space-between; align-items: start">
+          <div>
+            <p class="d-none" id="menu-pesan-produk-id"></p>
+            <h2 id="menu-pesan-produk-nama">Nama Barang</h2>
+            <h3 style="margin-bottom: 4rem">
+              <span class="text-secondary" id="menu-pesan-produk-harga">Rp 0</span> / <span id="menu-pesan-produk-satuan">Satuan</span>
+            </h3>
+          </div>
+
+          <button type="button" class="btn btn-danger" onclick="displayMenuPesanProduk()">X</button>
+        </div>
+
+        <label for="jumlah" style="margin-bottom: 0.5rem">Jumlah</label>
+        <input
+          type="text"
+          class="input-block"
+          id="menu-pesan-produk-jumlah"
+          name="jumlah"
+          autocomplete="off"
+          min="0"
+          value="1"
+          style="margin-bottom: 2rem"
+          oninput="menuPesanProdukUbahTotal()"
+        />
+
+        <h2 style="margin-bottom: 1rem">Total Harga: <span id="menu-pesan-produk-total">Rp0</span></h2>
+
+        <button
+          type="button"
+          id="menu-pesan-produk-tambah"
+          class="btn btn-primary btn-block menu-pesan-produk-tambah"
+          onclick="pesanProdukKeKeranjang()"
+        >
+          Tambahkan Keranjang
+        </button>
+        <button type="button" id="menu-pesan-produk-edit" class="btn btn-info btn-block menu-pesan-produk-edit" onclick="pesanProdukKeKeranjang()">
+          Edit Produk Keranjang
+        </button>
+      </div>
+      <div class="menu-bayar-keranjang d-none" id="menu-bayar-keranjang">
+        <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 1rem">
+          <div>
+            <h2>Konfirmasi Pembayaran</h2>
+          </div>
+
+          <button type="button" class="btn btn-danger" onclick="displayMenuBayarKeranjang()">X</button>
+        </div>
+
+        <hr style="margin-bottom: 1rem" />
+
+        <p style="font-size: 1.5rem">Metode Pembayaran</p>
+        <div style="display: flex; align-items: center">
+          <input type="radio" id="lunas" name="metode_pembayaran" value="Lunas" style="margin-right: 0.5rem" checked />
+          <label for="lunas" style="font-size: 1.5rem">Lunas</label>
+        </div>
+        <div style="display: flex; align-items: center; margin-bottom: 1rem">
+          <input type="radio" id="utang" name="metode_pembayaran" value="Utang" style="margin-right: 0.5rem" />
+          <label for="utang" style="font-size: 1.5rem">Utang</label>
+        </div>
+
+        <button type="button" class="btn btn-primary btn-block" onclick="konfirmasiPembayaran()">Lanjutkan</button>
+      </div>
+
+      <div class="left-sidebar">
+        <a href="index.html" style="width: 100%; margin-bottom: 4rem; text-align: center">
+          <img src="./assets/img/logo.png" alt="" width="125" height="40" />
+        </a>
+
+        <div>
+          <a href="kasir.html" class="btn btn-outline-primary btn-block" style="margin-bottom: 1rem">Kasir</a>
+          <a href="produk.html" class="btn btn-primary btn-block" style="margin-bottom: 1rem">Daftar Produk</a>
+          <a href="transaksi.html" class="btn btn-outline-primary btn-block">Riwayat Transaksi</a>
+        </div>
+
+        <a href="crud.php?cmd=logout" type="button" class="btn btn-danger btn-block" style="margin-top: auto">Logout</a>
+      </div>
+      <div class="main">
+        <h1 style="margin-bottom: 4rem">Kasir</h1>
+
+        <div style="margin-bottom: 1rem">
+          <label for="tgl" style="margin-bottom: 0.5rem">Tanggal Transaksi:</label>
+          <input
+            type="date"
+            placeholder="Cari Nama Produk"
+            id="tgl_transaksi"
+            name="tgl_transaksi"
+            oninput="loadProduk()"
+            autocomplete="off"
+            style="width: 20rem; display: block"
+          />
+        </div>
+
+        <h2 style="margin-bottom: 1rem">Daftar Transaksi</h2>
+
+        <div class="transaction-list" id="transaction-list">
+          <div class="transaction-item">
+            <div style="display: flex; justify-content: space-between">
+              <h2>Transaksi #1</h2>
+              <h2 class="text-primary">Rp 20.000</h2>
+            </div>
+
+            <h3>Tanggal Transaksi: 2022-06-15 15:55:45</h3>
+          </div>
+          <div class="transaction-item">
+            <div style="display: flex; justify-content: space-between">
+              <h2>Transaksi #2</h2>
+              <h2 class="text-primary">Rp 40.000</h2>
+            </div>
+
+            <h3>Tanggal Transaksi: 2022-06-15 16:12:30</h3>
+          </div>
+          <div class="transaction-item">
+            <div style="display: flex; justify-content: space-between">
+              <h2>Transaksi #3</h2>
+              <h2 class="text-primary">Rp 80.000</h2>
+            </div>
+
+            <h3>Tanggal Transaksi: 2022-06-15 17:20:10</h3>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="./assets/js/main.js"></script>
+    <script>
+      var tglTranksi = document.getElementById("tgl_transaksi");
+
+      window.onload = function () {
+        checkAuth();
+        tglTranksi.value = dapatkanTglHariIni();
+      };
+
+      function dapatkanTglHariIni() {
+        var date = new Date();
+
+        return `${date.getFullYear()}-${date.getMonth().toString().padStart(2, "0")}-${date.getDate().toString().padStart(2, "0")}`;
+      }
+
+      function checkAuth() {
+        fetch("crud.php?cmd=checkAuth")
+          .then((response) => response.json())
+          .then((data) => {
+            if (data.result !== true) {
+              // Kalau pengguna tidak login dengan benar
+
+              alert("Maaf, Anda harus login terlebih dahulu.");
+              location.href = "index.html";
+            }
+          });
+      }
+    </script>
+  </body>
+</html>
