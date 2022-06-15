@@ -282,7 +282,7 @@
         menuPesanProduk.classList.toggle("d-none");
       }
 
-      function detailProduk(id, mode = "tambah") {
+      function detailProduk(id, mode = "tambah", show = true) {
         fetch(`crud.php?cmd=detailProduk&id=${id}&status=Available`)
           .then((response) => response.json())
           .then((data) => {
@@ -302,8 +302,13 @@
               menuPesanProdukEdit.style.display = "block";
             }
 
-            displayMenuPesanProduk();
             menuPesanProdukUbahTotal();
+            if (show === true) {
+              displayMenuPesanProduk();
+            } else {
+              menuPesanProdukJumlah.value = 0;
+              pesanProdukKeKeranjang();
+            }
           });
       }
 
@@ -326,7 +331,9 @@
                   produk.total
                 )}</span></h4></div><div><button type="button" class="btn btn-info" style="margin-right: 1rem;" onclick="detailProduk(${
                   produk.id
-                }, 'edit')">Edit</button><button type="button" class="btn btn-danger">X</button></div></div>`;
+                }, 'edit')">Edit</button><button type="button" class="btn btn-danger" onclick="detailProduk(${
+                  produk.id
+                }, 'edit', false)">X</button></div></div>`;
               });
             }
 
