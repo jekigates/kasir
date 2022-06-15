@@ -89,7 +89,8 @@
       margin-bottom: 1rem;
     }
 
-    .menu-pesan-produk {
+    .menu-pesan-produk,
+    .menu-bayar-keranjang {
       background-color: var(--background);
       left: 50%;
       overflow: auto;
@@ -151,6 +152,29 @@
           Edit Produk Keranjang
         </button>
       </div>
+      <div class="menu-bayar-keranjang d-none" id="menu-bayar-keranjang">
+        <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 1rem">
+          <div>
+            <h2>Konfirmasi Pembayaran</h2>
+          </div>
+
+          <button type="button" class="btn btn-danger" onclick="displayMenuBayarKeranjang()">X</button>
+        </div>
+
+        <hr style="margin-bottom: 1rem" />
+
+        <p style="font-size: 1.5rem">Metode Pembayaran</p>
+        <div style="display: flex; align-items: center">
+          <input type="radio" id="lunas" name="metode_pembayaran" value="Lunas" style="margin-right: 0.5rem" checked />
+          <label for="lunas" style="font-size: 1.5rem">Lunas</label>
+        </div>
+        <div style="display: flex; align-items: center; margin-bottom: 1rem">
+          <input type="radio" id="utang" name="metode_pembayaran" value="Utang" style="margin-right: 0.5rem" />
+          <label for="utang" style="font-size: 1.5rem">Utang</label>
+        </div>
+
+        <button type="button" class="btn btn-primary btn-block" onclick="konfirmasiPembayaran()">Lanjutkan</button>
+      </div>
 
       <div class="left-sidebar">
         <a href="index.html" style="width: 100%; margin-bottom: 4rem; text-align: center">
@@ -189,7 +213,7 @@
         <div style="margin-top: auto">
           <hr style="margin-bottom: 1rem" />
           <h2 style="margin-bottom: 1rem">Total Harga: <span id="cart-total"></span></h2>
-          <button type="button" class="btn btn-primary btn-block">Bayar</button>
+          <button type="button" class="btn btn-primary btn-block" onclick="bukaMenuBayarKeranjang()">Bayar</button>
         </div>
       </div>
     </div>
@@ -210,6 +234,7 @@
       var cartList = document.getElementById("cart-list");
       var cartJumlahJenisProduk = document.getElementById("cart-jumlah-jenis-produk");
       var cartTotal = document.getElementById("cart-total");
+      var menuBayarKeranjang = document.getElementById("menu-bayar-keranjang");
 
       window.onload = function () {
         checkAuth();
@@ -217,6 +242,23 @@
         loadProduk();
         loadProdukDiKeranjang();
       };
+
+      function konfirmasiPembayaran() {
+        if (this.lunas.checked === true) {
+          alert("lunas");
+        } else {
+          alert("utang");
+        }
+      }
+
+      function bukaMenuBayarKeranjang() {
+        displayMenuBayarKeranjang();
+      }
+
+      function displayMenuBayarKeranjang() {
+        permalinkOverlay.classList.toggle("d-none");
+        menuBayarKeranjang.classList.toggle("d-none");
+      }
 
       function pesanProdukKeKeranjang() {
         var url = "crud.php?cmd=pesanProdukKeKeranjang";
