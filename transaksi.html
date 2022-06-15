@@ -133,72 +133,65 @@
 
         <div>
           <a href="kasir.html" class="btn btn-outline-primary btn-block" style="margin-bottom: 1rem">Kasir</a>
-          <a href="produk.html" class="btn btn-primary btn-block" style="margin-bottom: 1rem">Daftar Produk</a>
-          <a href="transaksi.html" class="btn btn-outline-primary btn-block">Riwayat Transaksi</a>
+          <a href="produk.html" class="btn btn-outline-primary btn-block" style="margin-bottom: 1rem">Daftar Produk</a>
+          <a href="transaksi.html" class="btn btn-primary btn-block">Riwayat Transaksi</a>
         </div>
 
         <a href="crud.php?cmd=logout" type="button" class="btn btn-danger btn-block" style="margin-top: auto">Logout</a>
       </div>
       <div class="main">
-        <h1 style="margin-bottom: 4rem">Kasir</h1>
+        <h1 style="margin-bottom: 4rem">Riwayat Transaksi</h1>
 
-        <div style="margin-bottom: 1rem">
-          <label for="tgl" style="margin-bottom: 0.5rem">Tanggal Transaksi:</label>
-          <input
-            type="date"
-            placeholder="Cari Nama Produk"
-            id="tgl_transaksi"
-            name="tgl_transaksi"
-            oninput="loadProduk()"
-            autocomplete="off"
-            style="width: 20rem; display: block"
-          />
+        <div style="display: flex; margin-bottom: 1rem">
+          <div>
+            <label for="metode_pembayaran" style="margin-bottom: 0.5rem">Metode Pembayaran:</label>
+            <select
+              name="metode_pembayaran"
+              id="metode_pembayaran"
+              style="margin-right: 1rem; width: 10rem; display: block"
+              onchange="loadTransaksi()"
+            >
+              <option value="">Semua</option>
+              <option value="Lunas">Lunas</option>
+              <option value="Utang">Utang</option>
+            </select>
+          </div>
+          <div>
+            <label for="tgl" style="margin-bottom: 0.5rem">Tanggal Transaksi:</label>
+            <input
+              type="date"
+              placeholder="Cari Nama Produk"
+              id="tgl_transaksi"
+              name="tgl_transaksi"
+              onchange="loadTransaksi()"
+              autocomplete="off"
+              style="width: 20rem; display: block"
+            />
+          </div>
         </div>
 
         <h2 style="margin-bottom: 1rem">Daftar Transaksi</h2>
 
-        <div class="transaction-list" id="transaction-list">
-          <div class="transaction-item">
-            <div style="display: flex; justify-content: space-between">
-              <h2>Transaksi #1</h2>
-              <h2 class="text-primary">Rp 20.000</h2>
-            </div>
-
-            <h3>Tanggal Transaksi: 2022-06-15 15:55:45</h3>
-          </div>
-          <div class="transaction-item">
-            <div style="display: flex; justify-content: space-between">
-              <h2>Transaksi #2</h2>
-              <h2 class="text-primary">Rp 40.000</h2>
-            </div>
-
-            <h3>Tanggal Transaksi: 2022-06-15 16:12:30</h3>
-          </div>
-          <div class="transaction-item">
-            <div style="display: flex; justify-content: space-between">
-              <h2>Transaksi #3</h2>
-              <h2 class="text-primary">Rp 80.000</h2>
-            </div>
-
-            <h3>Tanggal Transaksi: 2022-06-15 17:20:10</h3>
-          </div>
-        </div>
+        <div class="transaction-list" id="transaction-list"></div>
       </div>
     </div>
 
     <script src="./assets/js/main.js"></script>
     <script>
       var tglTranksi = document.getElementById("tgl_transaksi");
+      var transactionList = document.getElementById("transaction-list");
+      var metodePembayaran = document.getElementById("metode_pembayaran");
 
       window.onload = function () {
         checkAuth();
         tglTranksi.value = dapatkanTglHariIni();
+        loadTransaksi();
       };
 
       function dapatkanTglHariIni() {
         var date = new Date();
 
-        return `${date.getFullYear()}-${date.getMonth().toString().padStart(2, "0")}-${date.getDate().toString().padStart(2, "0")}`;
+        return `${date.getFullYear()}-${(date.getMonth() + 1).toString().padStart(2, "0")}-${date.getDate().toString().padStart(2, "0")}`;
       }
 
       function checkAuth() {
@@ -211,6 +204,32 @@
               alert("Maaf, Anda harus login terlebih dahulu.");
               location.href = "index.html";
             }
+          });
+      }
+
+      function loadTransaksi() {
+        fetch(`crud.php?cmd=loadTransaksi&tgl_transaksi=${tglTranksi.value}&metode_pembayaran=${metodePembayaran.value}`)
+          .then((response) => response.json())
+          .then((data) => {
+            var transactionHtml = "";
+
+            var iteration = 1;
+            if (data.transaksi.length > 0) {
+              var firstTransaksiId = 0;
+              data.transaksi.forEach(function (transaksi) {
+                if (firstTransaksiId !== transaksi.id) {
+                  transactionHtml += `<div class="transaction-item"><div style="display: flex; justify-content: space-between"><h2>Transaksi #${formatAngkaTitik(
+                    iteration++
+                  )}</h2><h2 class="text-primary">${formatAngkaKeRupiah(
+                    transaksi.total_harus_dibayar
+                  )}</h2></div><h3 class="text-secondary">Tanggal Transaksi: ${transaksi.tgl_waktu}</h3>
+              </div>`;
+                  firstTransaksiId = transaksi.id;
+                }
+              });
+            }
+
+            transactionList.innerHTML = transactionHtml;
           });
       }
     </script>

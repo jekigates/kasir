@@ -222,6 +222,26 @@ function bayarKeranjang() {
   ]);
 }
 
+function loadTransaksi() {
+  global $conn;
+
+  $tgl_transaksi = strtotime($_GET["tgl_transaksi"]);
+  $metode_pembayaran = $_GET["metode_pembayaran"];
+
+  $tgl_transaksi_baru = date("Y", $tgl_transaksi) . "-" . date("m", $tgl_transaksi) . "-" . date("d", $tgl_transaksi);
+  $sql = "SELECT * FROM transaksi INNER JOIN transaksi_detail ON transaksi.id = transaksi_detail.id WHERE transaksi.tgl_waktu LIKE '%$tgl_transaksi_baru%' AND transaksi.metode_pembayaran LIKE '%$metode_pembayaran%'";
+  $query = mysqli_query($conn, $sql) or die("error: $sql");
+
+  $rows = [];
+  while($result = mysqli_fetch_assoc($query)) {
+    $rows[] = $result;
+  }
+
+  echo json_encode([
+    "transaksi" => $rows,
+  ]);
+}
+
 if ($cmd == "login") {
   $data = json_decode(file_get_contents("php://input"), true);
   $username = $data["username"];
@@ -271,4 +291,6 @@ if ($cmd == "login") {
   kosongkanKeranjang();
 } else if ($cmd == "bayarKeranjang") {
   bayarKeranjang();
+} else if ($cmd === "loadTransaksi") {
+  loadTransaksi();
 }
