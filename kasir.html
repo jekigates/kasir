@@ -206,14 +206,17 @@
         <div class="product-list" id="product-list"></div>
       </div>
       <div class="right-sidebar">
-        <h1 style="margin-bottom: 4rem">Keranjang <span id="cart-jumlah-jenis-produk">(0)</span></h1>
+        <div style="display: flex; justify-content: space-between; margin-bottom: 4rem">
+          <h1>Keranjang <span id="cart-jumlah-jenis-produk">(0)</span></h1>
+          <button type="button" class="btn btn-danger" onclick="kosongkanKeranjang()">Buang</button>
+        </div>
 
         <div class="cart-list" id="cart-list"></div>
 
         <div style="margin-top: auto">
           <hr style="margin-bottom: 1rem" />
-          <h2 style="margin-bottom: 1rem">Total Harga: <span id="cart-total"></span></h2>
-          <button type="button" class="btn btn-primary btn-block" onclick="bukaMenuBayarKeranjang()">Bayar</button>
+          <h2 style="margin-bottom: 1rem">Total Harga: <span id="cart-total" class="text-primary"></span></h2>
+          <button type="button" class="btn btn-primary btn-block" id="btn-bayar-keranjang" onclick="bukaMenuBayarKeranjang()">Bayar</button>
         </div>
       </div>
     </div>
@@ -243,16 +246,43 @@
         loadProdukDiKeranjang();
       };
 
-      function konfirmasiPembayaran() {
-        if (this.lunas.checked === true) {
-          alert("lunas");
-        } else {
-          alert("utang");
+      function kosongkanKeranjang() {
+        if (confirm("Apakah Anda yakin untuk membuang isi keranjang ini?") === true) {
+          fetch("crud.php?cmd=kosongkanKeranjang")
+            .then((response) => response.json())
+            .then((data) => {
+              alert("Isi keranjang berhasil dibuang.");
+              loadProdukDiKeranjang();
+            });
         }
       }
 
+      function konfirmasiPembayaran() {
+        var url = "crud.php?cmd=bayarKeranjang&metode_pembayaran=";
+
+        if (this.lunas.checked === true) {
+          url += "Lunas";
+          alert("lunas");
+        } else {
+          url += "Utang";
+          alert("utang");
+        }
+
+        fetch(url)
+          .then((response) => response.json())
+          .then((data) => {
+            alert("hai");
+          });
+      }
+
       function bukaMenuBayarKeranjang() {
-        displayMenuBayarKeranjang();
+        var cartItems = document.querySelectorAll(".cart-item");
+
+        if (cartItems.length === 0) {
+          alert("Maaf, produk keranjang Anda kosong.");
+        } else {
+          displayMenuBayarKeranjang();
+        }
       }
 
       function displayMenuBayarKeranjang() {

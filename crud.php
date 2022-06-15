@@ -176,6 +176,52 @@ function loadProdukDiKeranjang() {
   ]);
 }
 
+function kosongkanKeranjang() {
+  global $conn;
+
+  $sql = "DELETE FROM keranjang";
+  $query = mysqli_query($conn, $sql) or die("error: $sql");
+
+  echo json_encode([
+    "result" => true,
+  ]);
+}
+
+function bayarKeranjang() {
+  global $conn;
+
+  $metode_pembayaran = $_GET["metode_pembayaran"];
+
+  $sql1 = "SELECT * FROM keranjang";
+  $query1 = mysqli_query($conn, $sql1) or die("error: $sql1");
+  
+  date_default_timezone_set('Asia/Jakarta');
+  $tgl_waktu = date("Y-m-d H:i:s");
+  $total_harus_dibayar = 0;
+  $total_sudah_dibayar = 0;
+  
+  $sql2 = "INSERT INTO transaksi(tgl_waktu, total_harus_dibayar, total_sudah_dibayar, metode_pembayaran) VALUES('$tgl_waktu', 0, 0, '$metode_pembayaran')";
+  $query2 = mysqli_query($conn, $sql2) or die("error: $sql2");
+  $transaksi_id = $conn->insert_id;
+
+  while ($result1 = mysqli_fetch_assoc($query1)) {
+    $produk_id = $result1["id"];
+    $jumlah = $result1["jumlah"];
+    $total = $result1["total"];
+    $total_harus_dibayar += $total;
+    $sql3 = "INSERT INTO transaksi_detail(id, produk_id, jumlah, total) VALUES('$transaksi_id', '$produk_id', '$jumlah', '$total')";
+    $query3 = mysqli_query($conn, $sql3) or die("error: $sql3");
+  }
+
+  kosongkanKeranjang();
+  $sql4 = "UPDATE transaksi SET transaksi.total_harus_dibayar='$total_harus_dibayar', transaksi.total_sudah_dibayar='$total_sudah_dibayar', transaksi.metode_pembayaran='$metode_pembayaran'";
+  $query4 = mysqli_query($conn, $sql4) or die("error: $sql4");
+
+  echo json_encode([
+    "result" => true,
+  ]);
+}
+
 if ($cmd == "login") {
   $data = json_decode(file_get_contents("php://input"), true);
   $username = $data["username"];
@@ -221,4 +267,8 @@ if ($cmd == "login") {
   pesanProdukKeKeranjang();
 } else if ($cmd === "loadProdukDiKeranjang") {
   loadProdukDiKeranjang();
+} else if ($cmd === "kosongkanKeranjang") {
+  kosongkanKeranjang();
+} else if ($cmd == "bayarKeranjang") {
+  bayarKeranjang();
 }
