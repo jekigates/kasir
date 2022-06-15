@@ -137,7 +137,7 @@
           oninput="menuPesanProdukUbahTotal()"
         />
 
-        <h2 id="menu-pesan-produk-total" style="margin-bottom: 1rem">Total Harga: Rp0</h2>
+        <h2 style="margin-bottom: 1rem">Total Harga: <span id="menu-pesan-produk-total">Rp0</span></h2>
 
         <button
           type="button"
@@ -153,7 +153,7 @@
       </div>
 
       <div class="left-sidebar">
-        <a href="index.php" style="width: 100%; margin-bottom: 4rem; text-align: center">
+        <a href="index.html" style="width: 100%; margin-bottom: 4rem; text-align: center">
           <img src="./assets/img/logo.png" alt="" width="125" height="40" />
         </a>
 
@@ -182,18 +182,19 @@
         <div class="product-list" id="product-list"></div>
       </div>
       <div class="right-sidebar">
-        <h1 style="margin-bottom: 4rem">Keranjang</h1>
+        <h1 style="margin-bottom: 4rem">Keranjang <span id="cart-jumlah-jenis-produk">(0)</span></h1>
 
         <div class="cart-list" id="cart-list"></div>
 
         <div style="margin-top: auto">
           <hr style="margin-bottom: 1rem" />
-          <h2 style="margin-bottom: 1rem">Total Harga: Rp 17,100</h2>
+          <h2 style="margin-bottom: 1rem">Total Harga: <span id="cart-total"></span></h2>
           <button type="button" class="btn btn-primary btn-block">Bayar</button>
         </div>
       </div>
     </div>
 
+    <script src="./assets/js/main.js"></script>
     <script>
       var productList = document.getElementById("product-list");
       var permalinkOverlay = document.getElementById("permalink-overlay");
@@ -207,6 +208,8 @@
       var menuPesanProdukTambah = document.getElementById("menu-pesan-produk-tambah");
       var menuPesanProdukEdit = document.getElementById("menu-pesan-produk-edit");
       var cartList = document.getElementById("cart-list");
+      var cartJumlahJenisProduk = document.getElementById("cart-jumlah-jenis-produk");
+      var cartTotal = document.getElementById("cart-total");
 
       window.onload = function () {
         checkAuth();
@@ -229,7 +232,7 @@
           body: JSON.stringify({
             id: menuPesanProdukId.innerHTML,
             jumlah: menuPesanProdukJumlah.value,
-            total: menuPesanProdukTotal.innerHTML.replace("Total Harga: Rp", "").replace(/,/, ""),
+            total: formatAngkaDariRupiah(menuPesanProdukTotal.innerHTML),
           }),
         })
           .then((response) => response.json())
@@ -239,9 +242,9 @@
       }
 
       function menuPesanProdukUbahTotal() {
-        menuPesanProdukTotal.innerHTML = `Total Harga: Rp${new Intl.NumberFormat().format(
-          parseFloat(menuPesanProdukJumlah.value) * parseFloat(menuPesanProdukHarga.innerHTML.replace("Rp", "").replace(/,/g, ""))
-        )}`;
+        menuPesanProdukTotal.innerHTML = formatAngkaKeRupiah(
+          parseFloat(menuPesanProdukJumlah.value) * formatAngkaDariRupiah(menuPesanProdukHarga.innerHTML)
+        );
       }
 
       function checkAuth() {
@@ -289,7 +292,7 @@
             var produk = data.produk;
             menuPesanProdukId.innerHTML = produk.id;
             menuPesanProdukNama.innerHTML = produk.nama;
-            menuPesanProdukHarga.innerHTML = `Rp${new Intl.NumberFormat().format(produk.harga)}`;
+            menuPesanProdukHarga.innerHTML = formatAngkaKeRupiah(produk.harga);
             menuPesanProdukSatuan.innerHTML = produk.satuan;
 
             if (mode === "tambah") {
@@ -321,13 +324,11 @@
             if (data.produk.length > 0) {
               var iteration = 1;
               data.produk.forEach(function (produk) {
-                produkHtml += `<div class="cart-item"><div><h4>${
-                  produk.nama
-                }</h4><h4><span class="text-secondary">Rp ${new Intl.NumberFormat().format(produk.harga)}</span> / ${
-                  produk.satuan
-                }</h4><h4>Jumlah: ${new Intl.NumberFormat().format(
+                produkHtml += `<div class="cart-item"><div><h4>${produk.nama}</h4><h4><span class="text-secondary">${formatAngkaKeRupiah(
+                  produk.harga
+                )}</span> / ${produk.satuan}</h4><h4>Jumlah: ${formatAngkaTitik(
                   produk.jumlah
-                )}</h4><h4>Total Harga: <span class="text-primary">Rp${new Intl.NumberFormat().format(
+                )}</h4><h4>Total Harga: <span class="text-primary">${formatAngkaKeRupiah(
                   produk.total
                 )}</span></h4></div><div><button type="button" class="btn btn-info" style="margin-right: 1rem;" onclick="detailProduk(${
                   produk.id
@@ -338,6 +339,8 @@
             }
 
             cartList.innerHTML = produkHtml;
+            cartJumlahJenisProduk.innerHTML = `(${data.jumlah_jenis_produk})`;
+            cartTotal.innerHTML = formatAngkaKeRupiah(data.total);
           });
       }
 
@@ -352,7 +355,7 @@
               data.produk.forEach(function (produk) {
                 produkHtml += `<div class="product-item" onclick="detailProduk(${produk.id})"><h2>${
                   produk.nama
-                }</h2><h3 style="margin-bottom: 1rem;"><span class="text-secondary">Rp ${new Intl.NumberFormat().format(produk.harga)}</span> / ${
+                }</h2><h3 style="margin-bottom: 1rem;"><span class="text-secondary">${formatAngkaKeRupiah(produk.harga)}</span> / ${
                   produk.satuan
                 }</h3><h3 style="text-align: right;" class="text-primary">${produk.kategori}</h3></div>`;
               });

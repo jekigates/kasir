@@ -159,13 +159,20 @@ function loadProdukDiKeranjang() {
   $sql = "SELECT * FROM keranjang INNER JOIN produk ON keranjang.id = produk.id WHERE produk.status='Available' AND produk.id > 0";
   $query = mysqli_query($conn, $sql) or die("error: $sql");
 
+  $total = 0;
+  $jumlah_jenis_produk = 0;
+
   $rows = [];
   while($result = mysqli_fetch_assoc($query)) {
+    $jumlah_jenis_produk += 1;
+    $total += $result["total"];
     $rows[] = $result;
   }
 
   echo json_encode([
     "produk" => $rows,
+    'jumlah_jenis_produk' => $jumlah_jenis_produk,
+    'total' => $total,
   ]);
 }
 

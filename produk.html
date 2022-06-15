@@ -42,7 +42,7 @@
   <body>
     <div class="page-produk">
       <div class="left-sidebar">
-        <a href="index.php" style="width: 100%; margin-bottom: 4rem; text-align: center">
+        <a href="index.html" style="width: 100%; margin-bottom: 4rem; text-align: center">
           <img src="./assets/img/logo.png" alt="" width="125" height="40" />
         </a>
 
@@ -88,6 +88,7 @@
       </div>
     </div>
 
+    <script src="./assets/js/main.js"></script>
     <script>
       var tableProduk = document.getElementById("table-produk");
 
@@ -139,9 +140,9 @@
             if (data.produk.length > 0) {
               var iteration = 1;
               data.produk.forEach(function (produk) {
-                produkHtml += `<tr><td>${iteration++}</td><td>${produk.nama}</td><td>${produk.stok}</td><td>${produk.satuan}</td><td>${
-                  produk.harga
-                }</td><td>${produk.kategori}</td><td><div style="display: flex; align-items: center">`;
+                produkHtml += `<tr><td>${iteration++}</td><td>${produk.nama}</td><td>${formatAngkaTitik(produk.stok)}</td><td>${
+                  produk.satuan
+                }</td><td>${formatAngkaKeRupiah(produk.harga)}</td><td>${produk.kategori}</td><td><div style="display: flex; align-items: center">`;
 
                 if (produk.status === "Available") {
                   produkHtml += `<div class="status-circle bg-success" style="margin-right: 1rem"></div>Available</div></td>`;
