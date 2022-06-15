@@ -122,8 +122,20 @@ function tambahProdukKeKeranjang() {
   $jumlah = $data["jumlah"];
   $total = $data["total"];
 
-  $sql = "INSERT INTO keranjang(id, jumlah, total) VALUES('$id', '$jumlah', '$total')";
-  $query = mysqli_query($conn, $sql) or die("error: $sql");
+  $sql1 = "SELECT * FROM keranjang INNER JOIN produk ON keranjang.id = produk.id WHERE keranjang.id='$id'";
+  $query1 = mysqli_query($conn, $sql1) or die("error: $sql1");
+  $result1 = mysqli_fetch_assoc($query1);
+  $num1 = mysqli_num_rows($query1);
+
+  if ($num1 === 0) {
+    $sql2 = "INSERT INTO keranjang(id, jumlah, total) VALUES('$id', '$jumlah', '$total')";
+    $query2 = mysqli_query($conn, $sql2) or die("error: $sql2");
+  } else {
+    $jumlah += $result1["jumlah"];
+    $total = $result1["harga"] * $jumlah;
+    $sql3 = "UPDATE keranjang SET keranjang.jumlah='$jumlah', keranjang.total='$total' WHERE keranjang.id='$id'";
+    $query3 = mysqli_query($conn, $sql3) or die("error: $sql3");
+  }
 
   echo json_encode([
     "result" => true,
