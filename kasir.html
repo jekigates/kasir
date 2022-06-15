@@ -317,6 +317,17 @@
           menuJumlahUangClose.click();
           menuUAngKembalianJumlah.innerHTML = formatAngkaKeRupiah(uangHitung.toString().replace("-", ""));
           displayMenuUangKembalian();
+
+          fetch("crud.php?cmd=bayarKeranjang&metode_pembayaran=Lunas", {
+            method: "POST",
+            body: JSON.stringify({
+              total_sudah_dibayar: menuJumlahUangDibayar.value,
+            }),
+          })
+            .then((response) => response.json())
+            .then((data) => {
+              alert("Keranjang sudah dibayar dengan lunas.");
+            });
         }
       }
 

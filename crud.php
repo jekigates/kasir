@@ -192,15 +192,20 @@ function kosongkanKeranjang($call = "ajax") {
 function bayarKeranjang() {
   global $conn;
 
+  $data = json_decode(file_get_contents("php://input"), true);
   $metode_pembayaran = $_GET["metode_pembayaran"];
+  $total_harus_dibayar = 0;
+  $total_sudah_dibayar = 0;
+
+  if (isset($data["total_sudah_dibayar"])) {
+    $total_sudah_dibayar = $data["total_sudah_dibayar"];
+  }
 
   $sql1 = "SELECT * FROM keranjang";
   $query1 = mysqli_query($conn, $sql1) or die("error: $sql1");
   
   date_default_timezone_set('Asia/Jakarta');
   $tgl_waktu = date("Y-m-d H:i:s");
-  $total_harus_dibayar = 0;
-  $total_sudah_dibayar = 0;
   
   $sql2 = "INSERT INTO transaksi(tgl_waktu, total_harus_dibayar, total_sudah_dibayar, metode_pembayaran) VALUES('$tgl_waktu', 0, 0, '$metode_pembayaran')";
   $query2 = mysqli_query($conn, $sql2) or die("error: $sql2");
@@ -216,7 +221,7 @@ function bayarKeranjang() {
   }
 
   kosongkanKeranjang("php");
-  $sql4 = "UPDATE transaksi SET transaksi.total_harus_dibayar='$total_harus_dibayar', transaksi.total_sudah_dibayar='$total_sudah_dibayar', transaksi.metode_pembayaran='$metode_pembayaran'";
+  $sql4 = "UPDATE transaksi SET transaksi.total_harus_dibayar='$total_harus_dibayar', transaksi.total_sudah_dibayar='$total_sudah_dibayar', transaksi.metode_pembayaran='$metode_pembayaran' WHERE transaksi.id='$transaksi_id'";
   $query4 = mysqli_query($conn, $sql4) or die("error: $sql4");
 
   echo json_encode([
