@@ -90,7 +90,9 @@
     }
 
     .menu-pesan-produk,
-    .menu-bayar-keranjang {
+    .menu-bayar-keranjang,
+    .menu-jumlah-uang,
+    .menu-uang-kembalian {
       background-color: var(--background);
       left: 50%;
       overflow: auto;
@@ -158,7 +160,7 @@
             <h2>Konfirmasi Pembayaran</h2>
           </div>
 
-          <button type="button" class="btn btn-danger" onclick="displayMenuBayarKeranjang()">X</button>
+          <button type="button" id="menu-bayar-keranjang-close" class="btn btn-danger" onclick="displayMenuBayarKeranjang()">X</button>
         </div>
 
         <hr style="margin-bottom: 1rem" />
@@ -174,6 +176,46 @@
         </div>
 
         <button type="button" class="btn btn-primary btn-block" onclick="konfirmasiPembayaran()">Lanjutkan</button>
+      </div>
+      <div class="menu-jumlah-uang d-none" id="menu-jumlah-uang">
+        <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 1rem">
+          <div>
+            <h2>Pembayaran Uang</h2>
+          </div>
+
+          <button type="button" id="menu-jumlah-uang-close" class="btn btn-danger" onclick="displayMenuJumlahUang()">X</button>
+        </div>
+
+        <hr style="margin-bottom: 1rem" />
+
+        <label for="menu-jumlah-uang-dibayar" style="margin-bottom: 0.5rem">Uang Pembeli</label>
+        <input
+          type="number"
+          class="input-block"
+          id="menu-jumlah-uang-dibayar"
+          name="menu-jumlah-uang-dibayar"
+          autocomplete="off"
+          min="0"
+          value="0"
+          style="margin-bottom: 2rem"
+        />
+
+        <button type="button" class="btn btn-primary btn-block" onclick="hitungUangKembalian()">Lanjutkan</button>
+      </div>
+      <div class="menu-uang-kembalian d-none" id="menu-uang-kembalian">
+        <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 1rem">
+          <div>
+            <h2>Uang Kembalian</h2>
+          </div>
+
+          <button type="button" id="menu-uang-kembalian-close" class="btn btn-danger" onclick="displayMenuUangKembalian()">X</button>
+        </div>
+
+        <hr style="margin-bottom: 1rem" />
+
+        <h1 class="text-primary" style="text-align: center; margin-bottom: 1rem" id="menu-uang-kembalian-jumlah"></h1>
+
+        <button type="button" class="btn btn-info btn-block" onclick="printStruk()">Print Struk</button>
       </div>
 
       <div class="left-sidebar">
@@ -246,6 +288,13 @@
       var cartJumlahJenisProduk = document.getElementById("cart-jumlah-jenis-produk");
       var cartTotal = document.getElementById("cart-total");
       var menuBayarKeranjang = document.getElementById("menu-bayar-keranjang");
+      var menuBayarKeranjangClose = document.getElementById("menu-bayar-keranjang-close");
+      var menuJumlahUang = document.getElementById("menu-jumlah-uang");
+      var menuJumlahUangClose = document.getElementById("menu-jumlah-uang-close");
+      var menuUangKembalian = document.getElementById("menu-uang-kembalian");
+      var menuUangKembalianClose = document.getElementById("menu-uang-kembalian-close");
+      var menuUAngKembalianJumlah = document.getElementById("menu-uang-kembalian-jumlah");
+      var menuJumlahUangDibayar = document.getElementById("menu-jumlah-uang-dibayar");
 
       window.onload = function () {
         checkAuth();
@@ -253,6 +302,23 @@
         loadProduk();
         loadProdukDiKeranjang();
       };
+
+      function displayMenuUangKembalian() {
+        permalinkOverlay.classList.toggle("d-none");
+        menuUangKembalian.classList.toggle("d-none");
+      }
+
+      function hitungUangKembalian() {
+        var uangHitung = parseFloat(menuJumlahUangDibayar.value) - formatAngkaDariRupiah(cartTotal.innerHTML);
+
+        if (uangHitung < 0) {
+          alert(`Maaf, uang Anda kurang ${formatAngkaKeRupiah(uangHitung.toString().replace("-", ""))}`);
+        } else {
+          menuJumlahUangClose.click();
+          menuUAngKembalianJumlah.innerHTML = formatAngkaKeRupiah(uangHitung.toString().replace("-", ""));
+          displayMenuUangKembalian();
+        }
+      }
 
       function kosongkanKeranjang() {
         if (confirm("Apakah Anda yakin untuk membuang isi keranjang ini?") === true) {
@@ -265,22 +331,28 @@
         }
       }
 
+      function displayMenuJumlahUang() {
+        permalinkOverlay.classList.toggle("d-none");
+        menuJumlahUang.classList.toggle("d-none");
+      }
+
       function konfirmasiPembayaran() {
         var url = "crud.php?cmd=bayarKeranjang&metode_pembayaran=";
 
         if (this.lunas.checked === true) {
           url += "Lunas";
-          alert("lunas");
+          menuBayarKeranjangClose.click();
+          displayMenuJumlahUang();
         } else {
           url += "Utang";
-          alert("utang");
-        }
 
-        fetch(url)
-          .then((response) => response.json())
-          .then((data) => {
-            alert("hai");
-          });
+          fetch(url)
+            .then((response) => response.json())
+            .then((data) => {
+              alert("Keranjang sudah dibayar dengan metode utang.");
+              menuBayarKeranjangClose.click();
+            });
+        }
       }
 
       function bukaMenuBayarKeranjang() {

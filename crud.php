@@ -176,15 +176,17 @@ function loadProdukDiKeranjang() {
   ]);
 }
 
-function kosongkanKeranjang() {
+function kosongkanKeranjang($call = "ajax") {
   global $conn;
 
   $sql = "DELETE FROM keranjang";
   $query = mysqli_query($conn, $sql) or die("error: $sql");
 
-  echo json_encode([
-    "result" => true,
-  ]);
+  if ($call === "ajax") {
+    echo json_encode([
+      "result" => true,
+    ]);
+  }
 }
 
 function bayarKeranjang() {
@@ -213,7 +215,7 @@ function bayarKeranjang() {
     $query3 = mysqli_query($conn, $sql3) or die("error: $sql3");
   }
 
-  kosongkanKeranjang();
+  kosongkanKeranjang("php");
   $sql4 = "UPDATE transaksi SET transaksi.total_harus_dibayar='$total_harus_dibayar', transaksi.total_sudah_dibayar='$total_sudah_dibayar', transaksi.metode_pembayaran='$metode_pembayaran'";
   $query4 = mysqli_query($conn, $sql4) or die("error: $sql4");
 
