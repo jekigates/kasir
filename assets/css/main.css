@@ -49,7 +49,12 @@ select {
 
 .btn-primary {
   background-color: var(--primary);
-  color: white;
+  color: var(--white);
+}
+
+.btn-success {
+  background-color: var(--success);
+  color: var(--white);
 }
 
 .btn-outline-primary {

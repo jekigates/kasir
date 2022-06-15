@@ -16,7 +16,7 @@
     <link rel="stylesheet" href="./assets/css/main.css" />
   </head>
   <style>
-    .page-home {
+    .page-transaksi {
       width: 100vw;
       height: 100vh;
       display: flex;
@@ -61,71 +61,7 @@
     }
   </style>
   <body>
-    <div class="page-home">
-      <div class="menu-pesan-produk d-none" id="menu-pesan-produk">
-        <div style="display: flex; justify-content: space-between; align-items: start">
-          <div>
-            <p class="d-none" id="menu-pesan-produk-id"></p>
-            <h2 id="menu-pesan-produk-nama">Nama Barang</h2>
-            <h3 style="margin-bottom: 4rem">
-              <span class="text-secondary" id="menu-pesan-produk-harga">Rp 0</span> / <span id="menu-pesan-produk-satuan">Satuan</span>
-            </h3>
-          </div>
-
-          <button type="button" class="btn btn-danger" onclick="displayMenuPesanProduk()">X</button>
-        </div>
-
-        <label for="jumlah" style="margin-bottom: 0.5rem">Jumlah</label>
-        <input
-          type="text"
-          class="input-block"
-          id="menu-pesan-produk-jumlah"
-          name="jumlah"
-          autocomplete="off"
-          min="0"
-          value="1"
-          style="margin-bottom: 2rem"
-          oninput="menuPesanProdukUbahTotal()"
-        />
-
-        <h2 style="margin-bottom: 1rem">Total Harga: <span id="menu-pesan-produk-total">Rp0</span></h2>
-
-        <button
-          type="button"
-          id="menu-pesan-produk-tambah"
-          class="btn btn-primary btn-block menu-pesan-produk-tambah"
-          onclick="pesanProdukKeKeranjang()"
-        >
-          Tambahkan Keranjang
-        </button>
-        <button type="button" id="menu-pesan-produk-edit" class="btn btn-info btn-block menu-pesan-produk-edit" onclick="pesanProdukKeKeranjang()">
-          Edit Produk Keranjang
-        </button>
-      </div>
-      <div class="menu-bayar-keranjang d-none" id="menu-bayar-keranjang">
-        <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 1rem">
-          <div>
-            <h2>Konfirmasi Pembayaran</h2>
-          </div>
-
-          <button type="button" class="btn btn-danger" onclick="displayMenuBayarKeranjang()">X</button>
-        </div>
-
-        <hr style="margin-bottom: 1rem" />
-
-        <p style="font-size: 1.5rem">Metode Pembayaran</p>
-        <div style="display: flex; align-items: center">
-          <input type="radio" id="lunas" name="metode_pembayaran" value="Lunas" style="margin-right: 0.5rem" checked />
-          <label for="lunas" style="font-size: 1.5rem">Lunas</label>
-        </div>
-        <div style="display: flex; align-items: center; margin-bottom: 1rem">
-          <input type="radio" id="utang" name="metode_pembayaran" value="Utang" style="margin-right: 0.5rem" />
-          <label for="utang" style="font-size: 1.5rem">Utang</label>
-        </div>
-
-        <button type="button" class="btn btn-primary btn-block" onclick="konfirmasiPembayaran()">Lanjutkan</button>
-      </div>
-
+    <div class="page-transaksi">
       <div class="left-sidebar">
         <a href="index.html" style="width: 100%; margin-bottom: 4rem; text-align: center">
           <img src="./assets/img/logo.png" alt="" width="125" height="40" />
@@ -207,24 +143,34 @@
           });
       }
 
+      function goTransactionDetail(id) {
+        location.href = `transaksi-detail.html?id=${id}`;
+      }
+
       function loadTransaksi() {
         fetch(`crud.php?cmd=loadTransaksi&tgl_transaksi=${tglTranksi.value}&metode_pembayaran=${metodePembayaran.value}`)
           .then((response) => response.json())
           .then((data) => {
             var transactionHtml = "";
 
-            var iteration = 1;
             if (data.transaksi.length > 0) {
               var firstTransaksiId = 0;
               data.transaksi.forEach(function (transaksi) {
                 if (firstTransaksiId !== transaksi.id) {
-                  transactionHtml += `<div class="transaction-item"><div style="display: flex; justify-content: space-between"><h2>Transaksi #${formatAngkaTitik(
-                    iteration++
-                  )}</h2><h2 class="text-primary">${formatAngkaKeRupiah(
-                    transaksi.total_harus_dibayar
-                  )}</h2></div><h3 class="text-secondary">Tanggal Transaksi: ${transaksi.tgl_waktu}</h3>
-              </div>`;
+                  transactionHtml += `<div class="transaction-item" onclick="goTransactionDetail('${
+                    transaksi.id
+                  }')"><div style="display: flex; justify-content: space-between"><div><h2>Transaksi ID ${formatAngkaTitik(
+                    transaksi.id
+                  )}</h2><h3 class="text-secondary">Tanggal Transaksi: ${
+                    transaksi.tgl_waktu
+                  }</h3></div><div><h2 class="text-primary" style="margin-bottom: 1rem;">${formatAngkaKeRupiah(transaksi.total_harus_dibayar)}</h2>`;
                   firstTransaksiId = transaksi.id;
+
+                  if (transaksi.metode_pembayaran === "Lunas") {
+                    transactionHtml += `<button class="btn btn-success" style="float: right">Lunas</button></div></div></div>`;
+                  } else {
+                    transactionHtml += `<button class="btn btn-danger" style="float: right">Utang</button></div></div></div>`;
+                  }
                 }
               });
             }

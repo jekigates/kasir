@@ -242,6 +242,47 @@ function loadTransaksi() {
   ]);
 }
 
+function loadProdukDiTransaksi() {
+  global $conn;
+
+  $sql = "SELECT * FROM transaksi_detail INNER JOIN produk ON transaksi_detail.produk_id = produk.id";
+  $query = mysqli_query($conn, $sql) or die("error: $sql");
+
+  $total = 0;
+  $jumlah_jenis_produk = 0;
+
+  $rows = [];
+  while($result = mysqli_fetch_assoc($query)) {
+    $jumlah_jenis_produk += 1;
+    $total += $result["total"];
+    $rows[] = $result;
+  }
+
+  echo json_encode([
+    "produk" => $rows,
+    'jumlah_jenis_produk' => $jumlah_jenis_produk,
+    'total' => $total,
+  ]);
+}
+
+function detailTransaction() {
+  global $conn;
+
+  $id = $_GET["id"];
+
+  $sql = "SELECT *, transaksi.id AS id FROM transaksi INNER JOIN transaksi_detail ON transaksi.id = transaksi_detail.id INNER JOIN produk ON transaksi_detail.produk_id = produk.id WHERE transaksi.id='$id'";
+  $query = mysqli_query($conn, $sql) or die("error: $sql");
+
+  $rows = [];
+  while($result = mysqli_fetch_assoc($query)) {
+    $rows[] = $result;
+  }
+
+  echo json_encode([
+    "transaction" => $rows,
+  ]);
+}
+
 if ($cmd == "login") {
   $data = json_decode(file_get_contents("php://input"), true);
   $username = $data["username"];
@@ -293,4 +334,8 @@ if ($cmd == "login") {
   bayarKeranjang();
 } else if ($cmd === "loadTransaksi") {
   loadTransaksi();
+} else if ($cmd === "loadProdukDiTransaksi") {
+  loadProdukDiTransaksi();
+} else if ($cmd === "detailTransaction") {
+  detailTransaction();
 }
