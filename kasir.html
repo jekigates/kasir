@@ -316,8 +316,7 @@
             if (data.produk.length > 0) {
               var iteration = 1;
               data.produk.forEach(function (produk) {
-                console.log(produk);
-                produkHtml += `<div class="cart-item" onclick="detailProduk(${produk.id}, 'edit')"><div><h4>${
+                produkHtml += `<div class="cart-item"><div><h4>${
                   produk.nama
                 }</h4><h4><span class="text-secondary">Rp ${new Intl.NumberFormat().format(produk.harga)}</span> / ${
                   produk.satuan
@@ -325,7 +324,9 @@
                   produk.jumlah
                 )}</h4><h4>Total Harga: <span class="text-primary">Rp${new Intl.NumberFormat().format(
                   produk.total
-                )}</span></h4></div><button type="button" class="btn btn-info" style="margin-bottom: 1rem">Edit</button></div>`;
+                )}</span></h4></div><div><button type="button" class="btn btn-info" style="margin-right: 1rem;" onclick="detailProduk(${
+                  produk.id
+                }, 'edit')">Edit</button><button type="button" class="btn btn-danger">X</button></div></div>`;
               });
             }
 

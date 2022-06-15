@@ -85,7 +85,7 @@ function detailProduk() {
 
   $id = $_GET["id"];
 
-  $sql = "SELECT * FROM produk LEFT JOIN keranjang ON produk.id = keranjang.id WHERE produk.id='$id'";
+  $sql = "SELECT *, produk.id AS id FROM produk LEFT JOIN keranjang ON produk.id = keranjang.id WHERE produk.id='$id'";
   $query = mysqli_query($conn, $sql) or die("error: $sql");
   $result = mysqli_fetch_assoc($query);
 
@@ -137,8 +137,15 @@ function pesanProdukKeKeranjang() {
     }
 
     $total = $result1["harga"] * $jumlah;
-    $sql3 = "UPDATE keranjang SET keranjang.jumlah='$jumlah', keranjang.total='$total' WHERE keranjang.id='$id'";
-    $query3 = mysqli_query($conn, $sql3) or die("error: $sql3");
+
+    $jumlah = (int) $jumlah;
+    if ($jumlah === 0) {
+      $sql4 = "DELETE FROM keranjang WHERE keranjang.id='$id'";
+      $query4 = mysqli_query($conn, $sql4) or die("error: $sql4");
+    } else {
+      $sql3 = "UPDATE keranjang SET keranjang.jumlah='$jumlah', keranjang.total='$total' WHERE keranjang.id='$id'";
+      $query3 = mysqli_query($conn, $sql3) or die("error: $sql3");
+    }
   }
 
   echo json_encode([
