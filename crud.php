@@ -29,8 +29,15 @@ function loadKategori() {
 function loadProduk() {
   global $conn;
 
-  $kategori = $_GET["kategori"];
-  $nama = $_GET["nama"];
+  $kategori = "";
+  $nama = "";
+
+  if (isset($_GET["kategori"])) {
+    $kategori = $_GET["kategori"];
+  }
+  if (isset($_GET["nama"])) {
+    $nama = $_GET["nama"];
+  }
 
   if (isset($_GET["status"])) {
     $status = $_GET["status"];

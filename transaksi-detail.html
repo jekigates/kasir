@@ -81,7 +81,9 @@
         <a href="crud.php?cmd=logout" type="button" class="btn btn-danger btn-block" style="margin-top: auto">Logout</a>
       </div>
       <div class="main">
-        <h1 style="margin-bottom: 4rem" id="page-detail-transaksi-title">Detail Transaksi</h1>
+        <div style="display: flex; justify-content: space-between; margin-bottom: 4rem">
+          <h1 id="page-detail-transaksi-title">Detail Transaksi</h1>
+        </div>
         <div style="display: flex">
           <div>
             <h2>Daftar Produk</h2>
@@ -116,7 +118,6 @@
       window.onload = function () {
         checkAuth();
         detailTransaksi();
-        // loadProdukDiTransaksi();
       };
 
       function checkAuth() {

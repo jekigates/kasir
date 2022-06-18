@@ -14,6 +14,7 @@
 
     <!-- Stylesheets -->
     <link rel="stylesheet" href="./assets/css/main.css" />
+    <link rel="stylesheet" href="./assets/css/datatables.min.css" />
   </head>
   <style>
     .page-produk {
@@ -60,16 +61,25 @@
         <div style="display: flex; justify-content: space-between; width: 100%; margin-bottom: 1rem">
           <a href="produk-buat.html" class="btn btn-primary">Buat Produk</a>
           <div>
-            <select name="kategori" id="kategori" style="margin-right: 1rem; width: 10rem" onchange="loadProduk()">
+            <select class="kasir-select" name="kategori" id="kategori" style="margin-right: 1rem; width: 10rem" onchange="loadProduk()">
               <option value="">Semua</option>
               <option value="Fashion">Fashion</option>
               <option value="Minuman">Minuman</option>
             </select>
-            <input type="text" placeholder="Cari Produk" id="search" name="search" autocomplete="off" oninput="loadProduk()" style="width: 20rem" />
+            <input
+              type="text"
+              class="kasir-input"
+              placeholder="Cari Produk"
+              id="search"
+              name="search"
+              autocomplete="off"
+              oninput="loadProduk()"
+              style="width: 20rem"
+            />
           </div>
         </div>
 
-        <table cellspacing="0" cellpadding="0">
+        <table cellspacing="0" cellpadding="0" id="table-produk">
           <thead>
             <tr>
               <th>No</th>
@@ -82,13 +92,13 @@
               <th></th>
             </tr>
           </thead>
-
-          <tbody id="table-produk"></tbody>
+          <tbody></tbody>
         </table>
       </div>
     </div>
 
     <script src="./assets/js/main.js"></script>
+    <script src="./assets/js/datatables.min.js"></script>
     <script>
       var tableProduk = document.getElementById("table-produk");
 
@@ -154,7 +164,13 @@
               });
             }
 
-            tableProduk.innerHTML = produkHtml;
+            tableProduk.querySelector("tbody").innerHTML = produkHtml;
+            $(`#table-produk`).DataTable({
+              ordering: false,
+              searching: false,
+              lengthMenu: [5],
+              lengthChange: false,
+            });
           });
       }
     </script>

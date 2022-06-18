@@ -130,7 +130,7 @@
         <label for="jumlah" style="margin-bottom: 0.5rem">Jumlah</label>
         <input
           type="text"
-          class="input-block"
+          class="kasir-input input-block"
           id="menu-pesan-produk-jumlah"
           name="jumlah"
           autocomplete="off"
@@ -191,7 +191,7 @@
         <label for="menu-jumlah-uang-dibayar" style="margin-bottom: 0.5rem">Uang Pembeli</label>
         <input
           type="number"
-          class="input-block"
+          class="kasir-input input-block"
           id="menu-jumlah-uang-dibayar"
           name="menu-jumlah-uang-dibayar"
           autocomplete="off"
@@ -235,13 +235,14 @@
         <h1 style="margin-bottom: 4rem">Kasir</h1>
 
         <div style="margin-bottom: 1rem">
-          <select name="kategori" id="kategori" style="margin-right: 1rem; width: 10rem" onchange="loadProduk()">
+          <select class="kasir-select" name="kategori" id="kategori" style="margin-right: 1rem; width: 10rem" onchange="loadProduk()">
             <option value="">Semua</option>
             <option value="Fashion">Fashion</option>
             <option value="Minuman">Minuman</option>
           </select>
           <input
             type="text"
+            class="kasir-input"
             placeholder="Cari Nama Produk"
             id="search"
             name="search"
@@ -303,6 +304,10 @@
         loadProdukDiKeranjang();
       };
 
+      function printStruk() {
+        alert("print struk");
+      }
+
       function displayMenuUangKembalian() {
         permalinkOverlay.classList.toggle("d-none");
         menuUangKembalian.classList.toggle("d-none");
@@ -327,6 +332,7 @@
             .then((response) => response.json())
             .then((data) => {
               alert("Keranjang sudah dibayar dengan lunas.");
+              loadProdukDiKeranjang();
             });
         }
       }
@@ -362,6 +368,7 @@
             .then((data) => {
               alert("Keranjang sudah dibayar dengan metode utang.");
               menuBayarKeranjangClose.click();
+              loadProdukDiKeranjang();
             });
         }
       }
