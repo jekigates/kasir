@@ -105,7 +105,7 @@
           oninput="menuPesanProdukUbahTotal()"
         />
 
-        <h2 style="margin-bottom: 1rem">Total Harga: <span id="menu-pesan-produk-total">Rp0</span></h2>
+        <h2 style="margin-bottom: 1rem">Total Harga: <span id="menu-pesan-produk-total" class="text-primary">Rp0</span></h2>
 
         <button
           type="button"
@@ -460,11 +460,11 @@
             if (data.produk.length > 0) {
               var iteration = 1;
               data.produk.forEach(function (produk) {
-                produkHtml += `<tr class="cart-item"><td>${iteration++}</td><td>${produk.nama}</td><td>${formatAngkaKeRupiah(
-                  produk.harga
-                )}</td><td>${formatAngkaTitik(produk.jumlah)}</td><td>${
+                produkHtml += `<tr class="cart-item"><td>${iteration++}</td><td>${produk.nama}</td><td>${formatAngkaTitik(
+                  produk.jumlah
+                )}</td><td>${formatAngkaKeRupiah(produk.harga)}</td><td>${formatAngkaKeRupiah(
                   produk.total
-                }</td><td><div style="display: flex;"><button type="button" style="margin-right: 1rem;" class="btn btn-info" onclick="detailProduk(${
+                )}</td><td><div style="display: flex;"><button type="button" style="margin-right: 1rem;" class="btn btn-info" onclick="detailProduk(${
                   produk.id
                 }, 'edit')">Edit</button><button type="button" class="btn btn-danger" onclick="detailProduk(${
                   produk.id
@@ -489,9 +489,9 @@
             if (data.produk.length > 0) {
               var iteration = 1;
               data.produk.forEach(function (produk) {
-                produkHtml += `<tr><td>${iteration++}</td><td>${produk.nama}</td><td>${produk.stok}</td><td>${produk.satuan}</td><td>${
-                  produk.harga
-                }</td><td>${
+                produkHtml += `<tr><td>${iteration++}</td><td>${produk.nama}</td><td>${formatAngkaTitik(produk.stok)}</td><td>${
+                  produk.satuan
+                }</td><td>${formatAngkaKeRupiah(produk.harga)}</td><td>${
                   produk.kategori
                 }</td><td><button class="btn btn-primary" onclick="displayMenu('menu-masukkan-produk-belanja'); detailProduk(${
                   produk.id
