@@ -58,6 +58,10 @@
     <script src="./assets/js/datatables.min.js"></script>
     <script src="./assets/js/main.js"></script>
     <script>
+      window.onload = function () {
+        checkAuth(true);
+      };
+
       const login = function () {
         fetch("crud.php?cmd=login", {
           method: "POST",

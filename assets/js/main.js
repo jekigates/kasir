@@ -28,7 +28,7 @@ function initDataTable(namaTable, init = true) {
   }
 }
 
-function checkAuth() {
+function checkAuth(login) {
   fetch("crud.php?cmd=checkAuth")
     .then((response) => response.json())
     .then((data) => {
@@ -37,6 +37,10 @@ function checkAuth() {
 
         alert("Maaf, Anda harus login terlebih dahulu.");
         location.href = "index.html";
+      } else {
+        if (login) {
+          location.href = "kasir.html";
+        }
       }
     });
 }
