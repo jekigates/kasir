@@ -89,7 +89,7 @@
             </h3>
           </div>
 
-          <button type="button" class="btn btn-danger" onclick="displayMenuPesanProduk()">X</button>
+          <button type="button" class="btn btn-danger" onclick="displayMenu('menu-pesan-produk')">X</button>
         </div>
 
         <label for="jumlah" style="margin-bottom: 0.5rem">Jumlah</label>
@@ -125,7 +125,7 @@
             <h2>Konfirmasi Pembayaran</h2>
           </div>
 
-          <button type="button" id="menu-bayar-keranjang-close" class="btn btn-danger" onclick="displayMenuBayarKeranjang()">X</button>
+          <button type="button" id="menu-bayar-keranjang-close" class="btn btn-danger" onclick="displayMenu('menu-bayar-keranjang')">X</button>
         </div>
 
         <hr style="margin-bottom: 1rem" />
@@ -148,7 +148,7 @@
             <h2>Pembayaran Uang</h2>
           </div>
 
-          <button type="button" id="menu-jumlah-uang-close" class="btn btn-danger" onclick="displayMenuJumlahUang()">X</button>
+          <button type="button" id="menu-jumlah-uang-close" class="btn btn-danger" onclick="displayMenu('menu-jumlah-uang')">X</button>
         </div>
 
         <hr style="margin-bottom: 1rem" />
@@ -173,7 +173,7 @@
             <h2>Uang Kembalian</h2>
           </div>
 
-          <button type="button" id="menu-uang-kembalian-close" class="btn btn-danger" onclick="displayMenuUangKembalian()">X</button>
+          <button type="button" id="menu-uang-kembalian-close" class="btn btn-danger" onclick="displayMenu('menu-uang-kembalian')">X</button>
         </div>
 
         <hr style="margin-bottom: 1rem" />
@@ -183,7 +183,13 @@
         <button type="button" class="btn btn-info btn-block" onclick="printStruk()">Print Struk</button>
       </div>
       <div class="menu-masukkan-produk-belanja d-none" id="menu-masukkan-produk-belanja">
-        <h1 style="margin-bottom: 4rem">Masukkan Produk Belanja</h1>
+        <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 1rem">
+          <div>
+            <h2>Masukkan Produk Belanja</h2>
+          </div>
+
+          <button type="button" id="menu-uang-kembalian-close" class="btn btn-danger" onclick="displayMenu('menu-masukkan-produk-belanja')">X</button>
+        </div>
 
         <div style="margin-bottom: 1rem">
           <select class="kasir-select" name="kategori" id="kategori" style="margin-right: 1rem; width: 10rem" onchange="loadProduk()">
@@ -205,7 +211,20 @@
 
         <h2 style="margin-bottom: 1rem">Daftar Produk</h2>
 
-        <table cellspacing="0" cellpadding="0" id="table-produk"></table>
+        <table cellspacing="0" cellpadding="0" id="table-produk">
+          <thead>
+            <tr>
+              <th>No</th>
+              <th>Nama</th>
+              <th>Stok</th>
+              <th>Satuan</th>
+              <th>Harga</th>
+              <th>Kategori</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
       </div>
 
       <div class="left-sidebar">
@@ -222,13 +241,13 @@
         <a href="crud.php?cmd=logout" type="button" class="btn btn-danger btn-block" style="margin-top: auto">Logout</a>
       </div>
       <div class="main">
-        <h1 style="margin-bottom: 4rem">Kasir</h1>
+        <h1 style="margin-bottom: 4rem">Kasir <span id="cart-jumlah-jenis-produk"></span></h1>
 
         <button type="button" style="margin-bottom: 1rem" class="btn btn-primary" onclick="displayMenu('menu-masukkan-produk-belanja')">
           Masukkan Produk Belanja
         </button>
 
-        <table cellspacing="0" cellpadding="0" id="table-produk">
+        <table cellspacing="0" cellpadding="0" id="table-keranjang">
           <thead>
             <tr>
               <th>No</th>
@@ -241,12 +260,18 @@
           </thead>
           <tbody></tbody>
         </table>
+
+        <div style="width: 20rem; float: right; margin-top: 4rem">
+          <h2 style="margin-bottom: 1rem">Total Harga: <span id="cart-total" class="text-primary"></span></h2>
+          <button type="button" class="btn btn-primary btn-block" id="btn-bayar-keranjang" onclick="bukaMenuBayarKeranjang()">Bayar</button>
+        </div>
       </div>
     </div>
 
     <script src="./assets/js/datatables.min.js"></script>
     <script src="./assets/js/main.js"></script>
     <script>
+      var tableKeranjang = document.getElementById("table-keranjang");
       var tableProduk = document.getElementById("table-produk");
       var permalinkOverlay = document.getElementById("permalink-overlay");
       var menuPesanProduk = document.getElementById("menu-pesan-produk");
@@ -258,7 +283,6 @@
       var menuPesanProdukTotal = document.getElementById("menu-pesan-produk-total");
       var menuPesanProdukTambah = document.getElementById("menu-pesan-produk-tambah");
       var menuPesanProdukEdit = document.getElementById("menu-pesan-produk-edit");
-      var cartList = document.getElementById("cart-list");
       var cartJumlahJenisProduk = document.getElementById("cart-jumlah-jenis-produk");
       var cartTotal = document.getElementById("cart-total");
       var menuBayarKeranjang = document.getElementById("menu-bayar-keranjang");
@@ -272,9 +296,11 @@
 
       window.onload = function () {
         checkAuth();
+        initDataTable("table-keranjang");
+        initDataTable("table-produk");
         loadKategori();
         loadProduk();
-        // loadProdukDiKeranjang();
+        loadProdukDiKeranjang();
       };
 
       function printStruk() {
@@ -289,7 +315,7 @@
         } else {
           menuJumlahUangClose.click();
           menuUAngKembalianJumlah.innerHTML = formatAngkaKeRupiah(uangHitung.toString().replace("-", ""));
-          displayMenuUangKembalian();
+          displayMenu("menu-uang-kembalian");
 
           fetch("crud.php?cmd=bayarKeranjang&metode_pembayaran=Lunas", {
             method: "POST",
@@ -322,7 +348,7 @@
         if (this.lunas.checked === true) {
           url += "Lunas";
           menuBayarKeranjangClose.click();
-          displayMenuJumlahUang();
+          displayMenu("menu-jumlah-uang");
         } else {
           url += "Utang";
 
@@ -342,7 +368,7 @@
         if (cartItems.length === 0) {
           alert("Maaf, produk keranjang Anda kosong.");
         } else {
-          displayMenuBayarKeranjang();
+          displayMenu("menu-bayar-keranjang");
         }
       }
 
@@ -417,7 +443,7 @@
 
             menuPesanProdukUbahTotal();
             if (show === true) {
-              displayMenuPesanProduk();
+              displayMenu("menu-pesan-produk");
             } else {
               menuPesanProdukJumlah.value = 0;
               pesanProdukKeKeranjang();
@@ -434,21 +460,21 @@
             if (data.produk.length > 0) {
               var iteration = 1;
               data.produk.forEach(function (produk) {
-                produkHtml += `<div class="cart-item"><div><h4>${produk.nama}</h4><h4><span class="text-secondary">${formatAngkaKeRupiah(
+                produkHtml += `<tr class="cart-item"><td>${iteration++}</td><td>${produk.nama}</td><td>${formatAngkaKeRupiah(
                   produk.harga
-                )}</span> / ${produk.satuan}</h4><h4>Jumlah: ${formatAngkaTitik(
-                  produk.jumlah
-                )}</h4><h4>Total Harga: <span class="text-primary">${formatAngkaKeRupiah(
+                )}</td><td>${formatAngkaTitik(produk.jumlah)}</td><td>${
                   produk.total
-                )}</span></h4></div><div><button type="button" class="btn btn-info" style="margin-right: 1rem;" onclick="detailProduk(${
+                }</td><td><div style="display: flex;"><button type="button" style="margin-right: 1rem;" class="btn btn-info" onclick="detailProduk(${
                   produk.id
                 }, 'edit')">Edit</button><button type="button" class="btn btn-danger" onclick="detailProduk(${
                   produk.id
-                }, 'edit', false)">X</button></div></div>`;
+                }, 'edit', false)">X</button></div></td></tr>`;
               });
             }
 
-            cartList.innerHTML = produkHtml;
+            initDataTable("table-keranjang", false);
+            tableKeranjang.querySelector("tbody").innerHTML = produkHtml;
+            initDataTable("table-keranjang");
             cartJumlahJenisProduk.innerHTML = `(${data.jumlah_jenis_produk})`;
             cartTotal.innerHTML = formatAngkaKeRupiah(data.total);
           });
@@ -463,15 +489,19 @@
             if (data.produk.length > 0) {
               var iteration = 1;
               data.produk.forEach(function (produk) {
-                produkHtml += `<tr onclick="detailProduk(${produk.id})"><h2>${
-                  produk.nama
-                }</h2><h3 style="margin-bottom: 1rem;"><span class="text-secondary">${formatAngkaKeRupiah(produk.harga)}</span> / ${
-                  produk.satuan
-                }</h3><h3 style="text-align: right;" class="text-primary">${produk.kategori}</h3></tr>`;
+                produkHtml += `<tr><td>${iteration++}</td><td>${produk.nama}</td><td>${produk.stok}</td><td>${produk.satuan}</td><td>${
+                  produk.harga
+                }</td><td>${
+                  produk.kategori
+                }</td><td><button class="btn btn-primary" onclick="displayMenu('menu-masukkan-produk-belanja'); detailProduk(${
+                  produk.id
+                })">Tambah</button></td></tr>`;
               });
             }
 
-            tableProduk.innerHTML = produkHtml;
+            initDataTable("table-produk", false);
+            tableProduk.querySelector("tbody").innerHTML = produkHtml;
+            initDataTable("table-produk");
           });
       }
     </script>
