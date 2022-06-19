@@ -106,7 +106,21 @@
         checkAuth();
         loadKategori();
         loadProduk();
+        initTableProduk();
       };
+
+      function initTableProduk(init = true) {
+        if (init) {
+          $(`#table-produk`).DataTable({
+            ordering: false,
+            searching: false,
+            lengthMenu: [5],
+            lengthChange: false,
+          });
+        } else {
+          $(`#table-produk`).DataTable().destroy();
+        }
+      }
 
       function checkAuth() {
         fetch("crud.php?cmd=checkAuth")
@@ -164,13 +178,9 @@
               });
             }
 
+            initTableProduk(false);
             tableProduk.querySelector("tbody").innerHTML = produkHtml;
-            $(`#table-produk`).DataTable({
-              ordering: false,
-              searching: false,
-              lengthMenu: [5],
-              lengthChange: false,
-            });
+            initTableProduk(true);
           });
       }
     </script>
