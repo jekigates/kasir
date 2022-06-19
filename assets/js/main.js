@@ -9,3 +9,8 @@ function formatAngkaDariRupiah(rupiah) {
 function formatAngkaTitik(angka) {
   return new Intl.NumberFormat("id-ID", { minimumFractionDigits: 0 }).format(angka);
 }
+
+function displayMenu(namaMenu) {
+  permalinkOverlay.classList.toggle("d-none");
+  document.getElementById(namaMenu).classList.toggle("d-none");
+}

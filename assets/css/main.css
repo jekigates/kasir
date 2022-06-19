@@ -153,3 +153,26 @@ td {
 label {
   display: inline-block;
 }
+
+.page {
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  flex-direction: row;
+  background-color: var(--background);
+}
+
+.left-sidebar {
+  width: 20rem;
+  height: 100%;
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  border-right: 0.2rem solid var(--primary);
+}
+
+.main {
+  width: calc(100% - 20rem);
+  height: 100%;
+  padding: 1rem;
+}
