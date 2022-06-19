@@ -13,8 +13,8 @@
     <link rel="manifest" href="./assets/img/favicons/site.webmanifest" />
 
     <!-- Stylesheets -->
-    <link rel="stylesheet" href="./assets/css/main.css" />
     <link rel="stylesheet" href="./assets/css/datatables.min.css" />
+    <link rel="stylesheet" href="./assets/css/main.css" />
   </head>
   <body>
     <div class="page">
@@ -73,8 +73,8 @@
       </div>
     </div>
 
-    <script src="./assets/js/main.js"></script>
     <script src="./assets/js/datatables.min.js"></script>
+    <script src="./assets/js/main.js"></script>
     <script>
       var tableProduk = document.getElementById("table-produk");
 
@@ -82,34 +82,8 @@
         checkAuth();
         loadKategori();
         loadProduk();
-        initTableProduk();
+        initDataTable("table-produk");
       };
-
-      function initTableProduk(init = true) {
-        if (init) {
-          $(`#table-produk`).DataTable({
-            ordering: false,
-            searching: false,
-            lengthMenu: [5],
-            lengthChange: false,
-          });
-        } else {
-          $(`#table-produk`).DataTable().destroy();
-        }
-      }
-
-      function checkAuth() {
-        fetch("crud.php?cmd=checkAuth")
-          .then((response) => response.json())
-          .then((data) => {
-            if (data.result !== true) {
-              // Kalau pengguna tidak login dengan benar
-
-              alert("Maaf, Anda harus login terlebih dahulu.");
-              location.href = "index.html";
-            }
-          });
-      }
 
       function loadKategori() {
         this.kategori.selectedIndex = 0;
@@ -154,9 +128,9 @@
               });
             }
 
-            initTableProduk(false);
+            initDataTable("table-produk", false);
             tableProduk.querySelector("tbody").innerHTML = produkHtml;
-            initTableProduk(true);
+            initDataTable("table-produk");
           });
       }
     </script>

@@ -13,6 +13,7 @@
     <link rel="manifest" href="./assets/img/favicons/site.webmanifest" />
 
     <!-- Stylesheets -->
+    <link rel="stylesheet" href="./assets/css/datatables.min.css" />
     <link rel="stylesheet" href="./assets/css/main.css" />
   </head>
   <style>
@@ -80,6 +81,7 @@
       </div>
     </div>
 
+    <script src="./assets/js/datatables.min.js"></script>
     <script src="./assets/js/main.js"></script>
     <script>
       var tglTranksi = document.getElementById("tgl_transaksi");
@@ -96,19 +98,6 @@
         checkAuth();
         detailTransaksi();
       };
-
-      function checkAuth() {
-        fetch("crud.php?cmd=checkAuth")
-          .then((response) => response.json())
-          .then((data) => {
-            if (data.result !== true) {
-              // Kalau pengguna tidak login dengan benar
-
-              alert("Maaf, Anda harus login terlebih dahulu.");
-              location.href = "index.html";
-            }
-          });
-      }
 
       function detailTransaksi() {
         const queryString = window.location.search;

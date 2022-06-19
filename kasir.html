@@ -13,6 +13,7 @@
     <link rel="manifest" href="./assets/img/favicons/site.webmanifest" />
 
     <!-- Stylesheets -->
+    <link rel="stylesheet" href="./assets/css/datatables.min.css" />
     <link rel="stylesheet" href="./assets/css/main.css" />
   </head>
   <style>
@@ -47,29 +48,11 @@
       color: var(--white) !important;
     }
 
-    .right-sidebar {
-      width: 24rem;
-      height: 100%;
-      padding: 1rem;
-      display: flex;
-      flex-direction: column;
-      border-left: 0.2rem solid var(--primary);
-    }
-
-    .cart-item {
-      padding: 1rem;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      border: 0.2rem solid var(--primary);
-      border-radius: 0.4rem;
-      margin-bottom: 1rem;
-    }
-
     .menu-pesan-produk,
     .menu-bayar-keranjang,
     .menu-jumlah-uang,
-    .menu-uang-kembalian {
+    .menu-uang-kembalian,
+    .menu-masukkan-produk-belanja {
       background-color: var(--background);
       left: 50%;
       overflow: auto;
@@ -81,6 +64,11 @@
       border-radius: 0.4rem;
       padding: 1rem;
       display: block;
+    }
+
+    .menu-masukkan-produk-belanja {
+      width: 80%;
+      height: 80%;
     }
 
     .menu-pesan-produk-tambah,
@@ -95,7 +83,7 @@
         <div style="display: flex; justify-content: space-between; align-items: start">
           <div>
             <p class="d-none" id="menu-pesan-produk-id"></p>
-            <h2 id="menu-pesan-produk-nama">Nama Barang</h2>
+            <h2 id="menu-pesan-produk-nama">Nama Produk</h2>
             <h3 style="margin-bottom: 4rem">
               <span class="text-secondary" id="menu-pesan-produk-harga">Rp 0</span> / <span id="menu-pesan-produk-satuan">Satuan</span>
             </h3>
@@ -194,22 +182,8 @@
 
         <button type="button" class="btn btn-info btn-block" onclick="printStruk()">Print Struk</button>
       </div>
-
-      <div class="left-sidebar">
-        <a href="index.html" style="width: 100%; margin-bottom: 4rem; text-align: center">
-          <img src="./assets/img/logo.png" alt="" width="125" height="40" />
-        </a>
-
-        <div>
-          <a href="kasir.html" class="btn btn-primary btn-block" style="margin-bottom: 1rem">Kasir</a>
-          <a href="produk.html" class="btn btn-outline-primary btn-block" style="margin-bottom: 1rem">Daftar Produk</a>
-          <a href="transaksi.html" class="btn btn-outline-primary btn-block">Riwayat Transaksi</a>
-        </div>
-
-        <a href="crud.php?cmd=logout" type="button" class="btn btn-danger btn-block" style="margin-top: auto">Logout</a>
-      </div>
-      <div class="main">
-        <h1 style="margin-bottom: 4rem">Kasir</h1>
+      <div class="menu-masukkan-produk-belanja d-none" id="menu-masukkan-produk-belanja">
+        <h1 style="margin-bottom: 4rem">Masukkan Produk Belanja</h1>
 
         <div style="margin-bottom: 1rem">
           <select class="kasir-select" name="kategori" id="kategori" style="margin-right: 1rem; width: 10rem" onchange="loadProduk()">
@@ -231,27 +205,49 @@
 
         <h2 style="margin-bottom: 1rem">Daftar Produk</h2>
 
-        <div class="product-list" id="product-list"></div>
+        <table cellspacing="0" cellpadding="0" id="table-produk"></table>
       </div>
-      <div class="right-sidebar">
-        <div style="display: flex; justify-content: space-between; margin-bottom: 4rem">
-          <h1>Keranjang <span id="cart-jumlah-jenis-produk">(0)</span></h1>
-          <button type="button" class="btn btn-danger" onclick="kosongkanKeranjang()">Buang</button>
+
+      <div class="left-sidebar">
+        <a href="index.html" style="width: 100%; margin-bottom: 4rem; text-align: center">
+          <img src="./assets/img/logo.png" alt="" width="125" height="40" />
+        </a>
+
+        <div>
+          <a href="kasir.html" class="btn btn-primary btn-block" style="margin-bottom: 1rem">Kasir</a>
+          <a href="produk.html" class="btn btn-outline-primary btn-block" style="margin-bottom: 1rem">Daftar Produk</a>
+          <a href="transaksi.html" class="btn btn-outline-primary btn-block">Riwayat Transaksi</a>
         </div>
 
-        <div class="cart-list" id="cart-list"></div>
+        <a href="crud.php?cmd=logout" type="button" class="btn btn-danger btn-block" style="margin-top: auto">Logout</a>
+      </div>
+      <div class="main">
+        <h1 style="margin-bottom: 4rem">Kasir</h1>
 
-        <div style="margin-top: auto">
-          <hr style="margin-bottom: 1rem" />
-          <h2 style="margin-bottom: 1rem">Total Harga: <span id="cart-total" class="text-primary"></span></h2>
-          <button type="button" class="btn btn-primary btn-block" id="btn-bayar-keranjang" onclick="bukaMenuBayarKeranjang()">Bayar</button>
-        </div>
+        <button type="button" style="margin-bottom: 1rem" class="btn btn-primary" onclick="displayMenu('menu-masukkan-produk-belanja')">
+          Masukkan Produk Belanja
+        </button>
+
+        <table cellspacing="0" cellpadding="0" id="table-produk">
+          <thead>
+            <tr>
+              <th>No</th>
+              <th>Nama</th>
+              <th>Jumlah</th>
+              <th>Harga</th>
+              <th>Total</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
       </div>
     </div>
 
+    <script src="./assets/js/datatables.min.js"></script>
     <script src="./assets/js/main.js"></script>
     <script>
-      var productList = document.getElementById("product-list");
+      var tableProduk = document.getElementById("table-produk");
       var permalinkOverlay = document.getElementById("permalink-overlay");
       var menuPesanProduk = document.getElementById("menu-pesan-produk");
       var menuPesanProdukId = document.getElementById("menu-pesan-produk-id");
@@ -278,16 +274,11 @@
         checkAuth();
         loadKategori();
         loadProduk();
-        loadProdukDiKeranjang();
+        // loadProdukDiKeranjang();
       };
 
       function printStruk() {
         alert("print struk");
-      }
-
-      function displayMenuUangKembalian() {
-        permalinkOverlay.classList.toggle("d-none");
-        menuUangKembalian.classList.toggle("d-none");
       }
 
       function hitungUangKembalian() {
@@ -325,11 +316,6 @@
         }
       }
 
-      function displayMenuJumlahUang() {
-        permalinkOverlay.classList.toggle("d-none");
-        menuJumlahUang.classList.toggle("d-none");
-      }
-
       function konfirmasiPembayaran() {
         var url = "crud.php?cmd=bayarKeranjang&metode_pembayaran=";
 
@@ -358,11 +344,6 @@
         } else {
           displayMenuBayarKeranjang();
         }
-      }
-
-      function displayMenuBayarKeranjang() {
-        permalinkOverlay.classList.toggle("d-none");
-        menuBayarKeranjang.classList.toggle("d-none");
       }
 
       function pesanProdukKeKeranjang() {
@@ -394,19 +375,6 @@
         );
       }
 
-      function checkAuth() {
-        fetch("crud.php?cmd=checkAuth")
-          .then((response) => response.json())
-          .then((data) => {
-            if (data.result !== true) {
-              // Kalau pengguna tidak login dengan benar
-
-              alert("Maaf, Anda harus login terlebih dahulu.");
-              location.href = "index.html";
-            }
-          });
-      }
-
       function loadKategori() {
         this.kategori.selectedIndex = 0;
 
@@ -425,11 +393,6 @@
 
             this.kategori.innerHTML = kategoriHtml;
           });
-      }
-
-      function displayMenuPesanProduk() {
-        permalinkOverlay.classList.toggle("d-none");
-        menuPesanProduk.classList.toggle("d-none");
       }
 
       function detailProduk(id, mode = "tambah", show = true) {
@@ -500,15 +463,15 @@
             if (data.produk.length > 0) {
               var iteration = 1;
               data.produk.forEach(function (produk) {
-                produkHtml += `<div class="product-item" onclick="detailProduk(${produk.id})"><h2>${
+                produkHtml += `<tr onclick="detailProduk(${produk.id})"><h2>${
                   produk.nama
                 }</h2><h3 style="margin-bottom: 1rem;"><span class="text-secondary">${formatAngkaKeRupiah(produk.harga)}</span> / ${
                   produk.satuan
-                }</h3><h3 style="text-align: right;" class="text-primary">${produk.kategori}</h3></div>`;
+                }</h3><h3 style="text-align: right;" class="text-primary">${produk.kategori}</h3></tr>`;
               });
             }
 
-            productList.innerHTML = produkHtml;
+            tableProduk.innerHTML = produkHtml;
           });
       }
     </script>
