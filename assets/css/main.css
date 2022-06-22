@@ -35,6 +35,8 @@
 }
 
 .btn {
+  text-decoration: none;
+  display: inline-block;
   cursor: pointer;
   padding: 1rem;
   border: none;
@@ -71,11 +73,6 @@ input:-webkit-autofill {
   -webkit-background-clip: text;
 }
 
-a {
-  text-decoration: none;
-  display: inline-block;
-}
-
 .btn-secondary {
   background-color: var(--secondary);
   color: var(--white);
@@ -98,13 +95,13 @@ a {
   color: var(--danger);
 }
 
-table {
+.table {
   width: 100%;
   border-radius: 0.4rem;
   overflow: hidden;
 }
 
-thead {
+.table thead {
   background-color: var(--primary);
   color: var(--white);
 }

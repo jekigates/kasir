@@ -14,6 +14,7 @@
 
     <!-- Stylesheets -->
     <link rel="stylesheet" href="./assets/css/datatables.min.css" />
+    <link rel="stylesheet" href="./assets/css/jquery-ui.min.css" />
     <link rel="stylesheet" href="./assets/css/main.css" />
   </head>
   <body>
@@ -45,7 +46,7 @@
             <h4 style="margin-bottom: 1rem">Total Sudah Dibayar: <span class="text-primary" id="transaksi-detail-total-sudah-dibayar"></span></h4>
           </div>
         </div>
-        <table id="table-produk">
+        <table id="table-produk" class="table">
           <thead>
             <tr>
               <th>No</th>
@@ -61,7 +62,9 @@
       </div>
     </div>
 
+    <script src="./assets/js/jquery.min.js"></script>
     <script src="./assets/js/datatables.min.js"></script>
+    <script src="./assets/js/jquery-ui.min.js"></script>
     <script src="./assets/js/main.js"></script>
     <script>
       var tglTranksi = document.getElementById("tgl_transaksi");

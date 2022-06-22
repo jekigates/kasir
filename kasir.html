@@ -14,40 +14,10 @@
 
     <!-- Stylesheets -->
     <link rel="stylesheet" href="./assets/css/datatables.min.css" />
+    <link rel="stylesheet" href="./assets/css/jquery-ui.min.css" />
     <link rel="stylesheet" href="./assets/css/main.css" />
   </head>
   <style>
-    .product-list {
-      display: flex;
-      flex-direction: row;
-      flex-wrap: wrap;
-    }
-
-    .product-item {
-      background-color: white;
-      border: 0.2rem solid var(--primary);
-      border-radius: 0.4rem;
-      width: calc(100% / 4 - 1rem);
-      padding: 1rem;
-      cursor: pointer;
-      transition: 0.2s;
-      margin-bottom: 1rem;
-    }
-
-    .product-item:not(:last-child) {
-      margin-right: 1rem;
-    }
-
-    .product-item:hover {
-      background-color: var(--primary);
-      color: var(--white) !important;
-    }
-
-    .product-item:hover .text-secondary,
-    .product-item:hover .text-primary {
-      color: var(--white) !important;
-    }
-
     .menu-pesan-produk,
     .menu-bayar-keranjang,
     .menu-jumlah-uang,
@@ -211,7 +181,7 @@
 
         <h2 style="margin-bottom: 1rem">Daftar Produk</h2>
 
-        <table cellspacing="0" cellpadding="0" id="table-produk">
+        <table cellspacing="0" cellpadding="0" id="table-produk" class="table">
           <thead>
             <tr>
               <th>No</th>
@@ -247,7 +217,7 @@
           Masukkan Produk Belanja
         </button>
 
-        <table cellspacing="0" cellpadding="0" id="table-keranjang">
+        <table cellspacing="0" cellpadding="0" id="table-keranjang" class="table">
           <thead>
             <tr>
               <th>No</th>
@@ -268,7 +238,9 @@
       </div>
     </div>
 
+    <script src="./assets/js/jquery.min.js"></script>
     <script src="./assets/js/datatables.min.js"></script>
+    <script src="./assets/js/jquery-ui.min.js"></script>
     <script src="./assets/js/main.js"></script>
     <script>
       var tableKeranjang = document.getElementById("table-keranjang");

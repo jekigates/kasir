@@ -28,6 +28,12 @@ function initDataTable(namaTable, init = true) {
   }
 }
 
+function initDatepicker(namaInput) {
+  $(`#${namaInput}`).datepicker({
+    dateFormat: "yy-mm-dd",
+  });
+}
+
 function checkAuth(login) {
   fetch("crud.php?cmd=checkAuth")
     .then((response) => response.json())
