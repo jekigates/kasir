@@ -16,33 +16,6 @@
     <link rel="stylesheet" href="./assets/css/datatables.min.css" />
     <link rel="stylesheet" href="./assets/css/main.css" />
   </head>
-  <style>
-    .product-item {
-      background-color: white;
-      border: 0.2rem solid var(--primary);
-      border-radius: 0.4rem;
-      width: 100%;
-      padding: 1rem;
-      cursor: pointer;
-      transition: 0.2s;
-      margin-bottom: 1rem;
-    }
-
-    .product-item:hover {
-      background-color: var(--primary);
-      color: var(--white) !important;
-    }
-
-    .product-item:hover .text-secondary,
-    .product-item:hover .text-primary {
-      color: var(--white) !important;
-    }
-
-    .btn-transaksi-detail-lunas,
-    .btn-transaksi-detail-utang {
-      display: none;
-    }
-  </style>
   <body>
     <div class="page">
       <div class="left-sidebar">
@@ -59,14 +32,10 @@
         <a href="crud.php?cmd=logout" type="button" class="btn btn-danger btn-block" style="margin-top: auto">Logout</a>
       </div>
       <div class="main">
-        <div style="display: flex; justify-content: space-between; margin-bottom: 4rem">
-          <h1 id="page-detail-transaksi-title">Detail Transaksi</h1>
-        </div>
+        <h1 id="page-detail-transaksi-title">Detail Transaksi</h1>
+        <h4 class="text-secondary" id="page-detail-transaksi-tgl" style="margin-bottom: 4rem"></h4>
         <div style="display: flex">
-          <div>
-            <h2>Daftar Produk</h2>
-            <h4 class="text-secondary" id="page-detail-transaksi-tgl"></h4>
-          </div>
+          <h2>Daftar Produk</h2>
           <div style="margin-left: auto; margin-right: 1rem">
             <button class="btn btn-success btn-transaksi-detail-lunas" style="float: right" id="btn-transaksi-detail-lunas">Lunas</button>
             <button class="btn btn-danger btn-transaksi-detail-utang" style="float: right" id="btn-transaksi-detail-utang">Utang</button>
@@ -76,7 +45,19 @@
             <h4 style="margin-bottom: 1rem">Total Sudah Dibayar: <span class="text-primary" id="transaksi-detail-total-sudah-dibayar"></span></h4>
           </div>
         </div>
-        <div class="product-list" id="product-list"></div>
+        <table id="table-produk">
+          <thead>
+            <tr>
+              <th>No</th>
+              <th>Nama</th>
+              <th>Harga</th>
+              <th>Satuan</th>
+              <th>Jumlah</th>
+              <th>Total Harga</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
       </div>
     </div>
 
@@ -84,7 +65,7 @@
     <script src="./assets/js/main.js"></script>
     <script>
       var tglTranksi = document.getElementById("tgl_transaksi");
-      var productList = document.getElementById("product-list");
+      var tableProduk = document.getElementById("table-produk");
       var metodePembayaran = document.getElementById("metode_pembayaran");
       var pageDetailTransaksiTitle = document.getElementById("page-detail-transaksi-title");
       var pageDetailTransaksiTgl = document.getElementById("page-detail-transaksi-tgl");
@@ -95,6 +76,7 @@
 
       window.onload = function () {
         checkAuth();
+        initDataTable("table-produk");
         detailTransaksi();
       };
 
@@ -122,15 +104,16 @@
               btnTransaksiDetailUtang.style.display = "block";
             }
 
+            var iteration = 1;
             data.transaction.forEach(function (transaction) {
-              produkHtml += `<div class="product-item"><div><h4>${transaction.nama}</h4><h4><span class="text-secondary">${formatAngkaKeRupiah(
-                transaction.harga
-              )}</span> / ${transaction.satuan}</h4><h4>Jumlah: ${formatAngkaTitik(
-                transaction.jumlah
-              )}</h4><h4>Total Harga: <span class="text-primary">${formatAngkaKeRupiah(transaction.total)}</span></h4></div><div></div></div>`;
+              produkHtml += `<tr><td>${iteration++}</td><td>${transaction.nama}</td><td>${formatAngkaKeRupiah(transaction.harga)}</td><td>${
+                transaction.satuan
+              }</td><td>${formatAngkaTitik(transaction.jumlah)}</td><td>${formatAngkaKeRupiah(transaction.total)}</td></tr>`;
             });
 
-            productList.innerHTML = produkHtml;
+            initDataTable("table-produk", false);
+            tableProduk.querySelector("tbody").innerHTML = produkHtml;
+            initDataTable("table-produk");
           });
       }
     </script>
