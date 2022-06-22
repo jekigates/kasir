@@ -33,10 +33,10 @@ function checkAuth(login) {
     .then((response) => response.json())
     .then((data) => {
       if (data.result !== true) {
-        // Kalau pengguna tidak login dengan benar
-
-        alert("Maaf, Anda harus login terlebih dahulu.");
-        location.href = "index.html";
+        if (!login) {
+          alert("Maaf, Anda harus login terlebih dahulu.");
+          location.href = "index.html";
+        }
       } else {
         if (login) {
           location.href = "kasir.html";

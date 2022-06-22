@@ -301,18 +301,16 @@ if ($cmd == "login") {
   $data = json_decode(file_get_contents("php://input"), true);
   $username = $data["username"];
   $password = $data["password"];
+  $result = false;
 
-  if ($username === "admin" && $password === "admin123") {
+  if ($username === "admin" && $password === "admin123" || isset($_SESSION["auth"])) {
     $_SESSION["auth"] = true;
-
-    echo json_encode([
-      "result" => true,
-    ]);
-  } else {
-    echo json_encode([
-      "result" => false,
-    ]);
+    $result = true;
   }
+
+  echo json_encode([
+    "result" => $result,
+  ]);
  } else if ($cmd == "logout") {
   session_unset();
   session_destroy();
