@@ -35,11 +35,10 @@
       <div class="main">
         <h1 id="page-detail-transaksi-title">Detail Transaksi</h1>
         <h4 class="text-secondary" id="page-detail-transaksi-tgl" style="margin-bottom: 4rem"></h4>
-        <div style="display: flex">
-          <h2>Daftar Produk</h2>
+        <div style="display: flex; margin-bottom: 4rem;">
+          <h2 style="align-self: end;">Daftar Produk</h2>
           <div style="margin-left: auto; margin-right: 1rem">
-            <button class="btn btn-success btn-transaksi-detail-lunas" style="float: right" id="btn-transaksi-detail-lunas">Lunas</button>
-            <button class="btn btn-danger btn-transaksi-detail-utang" style="float: right" id="btn-transaksi-detail-utang">Utang</button>
+            <button class="btn btn-success" style="float: right" id="btn-transaksi-detail-status-terbaru"></button>
           </div>
           <table>
             <tbody>
@@ -47,6 +46,16 @@
                 <th style="text-align: left">Metode Pembayaran Sebelumnya</th>
                 <th style="text-align: left">:</td>
                 <th class="text-primary" id="transaksi-detail-metode-pembayaran" style="text-align: left"></th>
+              </tr>
+              <tr>
+                <th style="text-align: left">Tanggal Lunas</th>
+                <th style="text-align: left">:</td>
+                <th class="text-primary" id="transaksi-detail-tgl-lunas" style="text-align: left"></th>
+              </tr>
+              <tr>
+                <th style="text-align: left">Tanggal Direturn</th>
+                <th style="text-align: left">:</td>
+                <th class="text-primary" id="transaksi-detail-tgl-return" style="text-align: left"></th>
               </tr>
               <tr>
                 <th style="text-align: left">Total Harus Dibayar</th>
@@ -57,6 +66,11 @@
                 <th style="text-align: left">Total Sudah Dibayar</th>
                 <th style="text-align: left">:</th>
                 <th class="text-primary" id="transaksi-detail-total-sudah-dibayar" style="text-align: left"></th>
+              </tr>
+              <tr>
+                <th style="text-align: left">Total Uang Kembalian</th>
+                <th style="text-align: left">:</th>
+                <th class="text-primary" id="transaksi-detail-total-uang-kembalian" style="text-align: left"></th>
               </tr>
             </tbody>
           </table>
@@ -87,11 +101,13 @@
       var metodePembayaran = document.getElementById("metode_pembayaran");
       var pageDetailTransaksiTitle = document.getElementById("page-detail-transaksi-title");
       var pageDetailTransaksiTgl = document.getElementById("page-detail-transaksi-tgl");
-      var btnTransaksiDetailLunas = document.getElementById("btn-transaksi-detail-lunas");
-      var btnTransaksiDetailUtang = document.getElementById("btn-transaksi-detail-utang");
+      var btnTransaksiDetailStatusTerbaru = document.getElementById("btn-transaksi-detail-status-terbaru");
       var transaksiDetailMetodePembayaran = document.getElementById("transaksi-detail-metode-pembayaran");
+      var transaksiDetailTglLunas = document.getElementById("transaksi-detail-tgl-lunas");
+      var transaksiDetailTglReturn = document.getElementById("transaksi-detail-tgl-return");
       var transaksiDetailTotalHarusDibayar = document.getElementById("transaksi-detail-total-harus-dibayar");
       var transaksiDetailTotalSudahDibayar = document.getElementById("transaksi-detail-total-sudah-dibayar");
+      var transaksiDetailTotalUangKembalian = document.getElementById("transaksi-detail-total-uang-kembalian");
 
       window.onload = function () {
         checkAuth();
@@ -113,15 +129,33 @@
             pageDetailTransaksiTitle.innerHTML = `Detail Transaksi ID ${transactionId}`;
             pageDetailTransaksiTgl.innerHTML = data.transaction[0].tgl_waktu;
             transaksiDetailMetodePembayaran.innerHTML = data.transaction[0].metode_pembayaran;
+            transaksiDetailTglLunas.innerHTML = (data.transaction[0].tgl_lunas !== null) ? data.transaction[0].tgl_lunas : "-";
+            transaksiDetailTglReturn.innerHTML = (data.transaction[0].tgl_return !== null) ? data.transaction[0].tgl_return : "-";
             transaksiDetailTotalHarusDibayar.innerHTML = formatAngkaKeRupiah(data.transaction[0].total_harus_dibayar);
             transaksiDetailTotalSudahDibayar.innerHTML = formatAngkaKeRupiah(data.transaction[0].total_sudah_dibayar);
+            var total_uang_kembalian = formatAngkaKeRupiah(parseFloat(data.transaction[0].total_sudah_dibayar) - parseFloat(data.transaction[0].total_harus_dibayar));
+            transaksiDetailTotalUangKembalian.innerHTML = (total_uang_kembalian > 0) ? total_uang_kembalian : formatAngkaKeRupiah(0); 
 
             if (data.transaction[0].metode_pembayaran === "Lunas") {
-              btnTransaksiDetailLunas.style.display = "block";
-              btnTransaksiDetailUtang.style.display = "none";
+              if (data.transaction[0].tgl_return === null) {
+                // Kalau lunas, tapi gk direturn
+                btnTransaksiDetailStatusTerbaru.className = "btn btn-success";
+                btnTransaksiDetailStatusTerbaru.innerHTML = "Lunas tanpa return";
+              } else {
+                // Kalau lunas, tapi direturn
+                btnTransaksiDetailStatusTerbaru.className = "btn btn-info";
+                btnTransaksiDetailStatusTerbaru.innerHTML = "Lunas tapi direturn";
+              }
             } else {
-              btnTransaksiDetailLunas.style.display = "none";
-              btnTransaksiDetailUtang.style.display = "block";
+              if (data.transaction[0].tgl_return === null) {
+                // Kalau utang, tapi gk direturn
+                btnTransaksiDetailStatusTerbaru.className = "btn btn-danger";
+                btnTransaksiDetailStatusTerbaru.innerHTML = "Utang tanpa return";
+              } else {
+                // Kalau utang, tapi direturn
+                btnTransaksiDetailStatusTerbaru.className = "btn btn-info";
+                btnTransaksiDetailStatusTerbaru.innerHTML = "Utang tapi direturn";
+              }
             }
 
             var iteration = 1;
