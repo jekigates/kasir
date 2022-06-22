@@ -208,22 +208,27 @@ function bayarKeranjang() {
     $total_sudah_dibayar = $data["total_sudah_dibayar"];
   }
 
-  $sql1 = "SELECT * FROM keranjang";
+  $sql1 = "SELECT * FROM keranjang INNER JOIN produk ON keranjang.id = produk.id";
   $query1 = mysqli_query($conn, $sql1) or die("error: $sql1");
   
   date_default_timezone_set('Asia/Jakarta');
   $tgl_waktu = date("Y-m-d H:i:s");
-  
-  $sql2 = "INSERT INTO transaksi(tgl_waktu, total_harus_dibayar, total_sudah_dibayar, metode_pembayaran) VALUES('$tgl_waktu', 0, 0, '$metode_pembayaran')";
+
+  if ($metode_pembayaran === "Lunas") {
+    $sql2 = "INSERT INTO transaksi(tgl_waktu, total_harus_dibayar, total_sudah_dibayar, metode_pembayaran, tgl_lunas) VALUES('$tgl_waktu', 0, 0, '$metode_pembayaran', '$tgl_waktu')";
+  } else {
+    $sql2 = "INSERT INTO transaksi(tgl_waktu, total_harus_dibayar, total_sudah_dibayar, metode_pembayaran) VALUES('$tgl_waktu', 0, 0, '$metode_pembayaran')";
+  }
   $query2 = mysqli_query($conn, $sql2) or die("error: $sql2");
   $transaksi_id = $conn->insert_id;
 
   while ($result1 = mysqli_fetch_assoc($query1)) {
     $produk_id = $result1["id"];
+    $harga = $result1["harga"];
     $jumlah = $result1["jumlah"];
     $total = $result1["total"];
     $total_harus_dibayar += $total;
-    $sql3 = "INSERT INTO transaksi_detail(id, produk_id, jumlah, total) VALUES('$transaksi_id', '$produk_id', '$jumlah', '$total')";
+    $sql3 = "INSERT INTO transaksi_detail(id, produk_id, harga_sekarang, jumlah, total) VALUES('$transaksi_id', '$produk_id', '$harga', '$jumlah','$total')";
     $query3 = mysqli_query($conn, $sql3) or die("error: $sql3");
   }
 
@@ -242,7 +247,7 @@ function loadTransaksi() {
   $tgl_transaksi = $_GET["tgl_transaksi"];
   $metode_pembayaran = $_GET["metode_pembayaran"];
 
-  $sql = "SELECT * FROM transaksi INNER JOIN transaksi_detail ON transaksi.id = transaksi_detail.id WHERE transaksi.tgl_waktu LIKE '%$tgl_transaksi%' AND transaksi.metode_pembayaran LIKE '%$metode_pembayaran%'";
+  $sql = "SELECT * FROM transaksi INNER JOIN transaksi_detail ON transaksi.id = transaksi_detail.id WHERE transaksi.tgl_waktu LIKE '%$tgl_transaksi%' AND transaksi.metode_pembayaran LIKE '%$metode_pembayaran%' GROUP BY transaksi.id ";
   $query = mysqli_query($conn, $sql) or die("error: $sql");
 
   $rows = [];

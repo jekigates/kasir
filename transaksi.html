@@ -115,22 +115,19 @@
             var transactionHtml = "";
 
             if (data.transaksi.length > 0) {
-              var firstTransaksiId = 0;
               var iteration = 1;
               data.transaksi.forEach(function (transaksi) {
-                if (firstTransaksiId !== transaksi.id) {
-                  transactionHtml += `<tr><td>${iteration++}</td><td>${transaksi.tgl_waktu}</td><td>${formatAngkaKeRupiah(
-                    transaksi.total_harus_dibayar
-                  )}</td>`;
+                transactionHtml += `<tr><td>${iteration++}</td><td>${transaksi.tgl_waktu}</td><td>${formatAngkaKeRupiah(
+                  transaksi.total_harus_dibayar
+                )}</td>`;
 
-                  if (transaksi.metode_pembayaran === "Lunas") {
-                    transactionHtml += `<td class="text-success" style="font-weight: bold;">Lunas</td>`;
-                  } else {
-                    transactionHtml += `<td class="text-danger" style="font-weight: bold;">Utang</td>`;
-                  }
-
-                  transactionHtml += `<td><button class="btn btn-info" onclick="goTransactionDetail('${transaksi.id}')" style="white-space: nowrap;">Lihat Detail</button></td></tr>`;
+                if (transaksi.metode_pembayaran === "Lunas") {
+                  transactionHtml += `<td class="text-success" style="font-weight: bold;">Lunas</td>`;
+                } else {
+                  transactionHtml += `<td class="text-danger" style="font-weight: bold;">Utang</td>`;
                 }
+
+                transactionHtml += `<td><button class="btn btn-info" onclick="goTransactionDetail('${transaksi.id}')" style="white-space: nowrap;">Lihat Detail</button></td></tr>`;
               });
             }
 

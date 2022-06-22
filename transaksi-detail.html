@@ -41,10 +41,25 @@
             <button class="btn btn-success btn-transaksi-detail-lunas" style="float: right" id="btn-transaksi-detail-lunas">Lunas</button>
             <button class="btn btn-danger btn-transaksi-detail-utang" style="float: right" id="btn-transaksi-detail-utang">Utang</button>
           </div>
-          <div>
-            <h4>Total Harus Dibayar: <span class="text-primary" id="transaksi-detail-total-harus-dibayar"></span></h4>
-            <h4 style="margin-bottom: 1rem">Total Sudah Dibayar: <span class="text-primary" id="transaksi-detail-total-sudah-dibayar"></span></h4>
-          </div>
+          <table>
+            <tbody>
+              <tr>
+                <th style="text-align: left">Metode Pembayaran Sebelumnya</th>
+                <th style="text-align: left">:</td>
+                <th class="text-primary" id="transaksi-detail-metode-pembayaran" style="text-align: left"></th>
+              </tr>
+              <tr>
+                <th style="text-align: left">Total Harus Dibayar</th>
+                <th style="text-align: left">:</td>
+                <th class="text-primary" id="transaksi-detail-total-harus-dibayar" style="text-align: left"></th>
+              </tr>
+              <tr>
+                <th style="text-align: left">Total Sudah Dibayar</th>
+                <th style="text-align: left">:</th>
+                <th class="text-primary" id="transaksi-detail-total-sudah-dibayar" style="text-align: left"></th>
+              </tr>
+            </tbody>
+          </table>
         </div>
         <table id="table-produk" class="table">
           <thead>
@@ -74,6 +89,7 @@
       var pageDetailTransaksiTgl = document.getElementById("page-detail-transaksi-tgl");
       var btnTransaksiDetailLunas = document.getElementById("btn-transaksi-detail-lunas");
       var btnTransaksiDetailUtang = document.getElementById("btn-transaksi-detail-utang");
+      var transaksiDetailMetodePembayaran = document.getElementById("transaksi-detail-metode-pembayaran");
       var transaksiDetailTotalHarusDibayar = document.getElementById("transaksi-detail-total-harus-dibayar");
       var transaksiDetailTotalSudahDibayar = document.getElementById("transaksi-detail-total-sudah-dibayar");
 
@@ -96,6 +112,7 @@
             document.title = `Transaksi Detail ID ${transactionId}`;
             pageDetailTransaksiTitle.innerHTML = `Detail Transaksi ID ${transactionId}`;
             pageDetailTransaksiTgl.innerHTML = data.transaction[0].tgl_waktu;
+            transaksiDetailMetodePembayaran.innerHTML = data.transaction[0].metode_pembayaran;
             transaksiDetailTotalHarusDibayar.innerHTML = formatAngkaKeRupiah(data.transaction[0].total_harus_dibayar);
             transaksiDetailTotalSudahDibayar.innerHTML = formatAngkaKeRupiah(data.transaction[0].total_sudah_dibayar);
 
@@ -109,7 +126,7 @@
 
             var iteration = 1;
             data.transaction.forEach(function (transaction) {
-              produkHtml += `<tr><td>${iteration++}</td><td>${transaction.nama}</td><td>${formatAngkaKeRupiah(transaction.harga)}</td><td>${
+              produkHtml += `<tr><td>${iteration++}</td><td>${transaction.nama}</td><td>${formatAngkaKeRupiah(transaction.harga_sekarang)}</td><td>${
                 transaction.satuan
               }</td><td>${formatAngkaTitik(transaction.jumlah)}</td><td>${formatAngkaKeRupiah(transaction.total)}</td></tr>`;
             });
