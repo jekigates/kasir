@@ -121,7 +121,7 @@
                   transaksi.total_harus_dibayar
                 )}</td>`;
 
-                if (transaksi.metode_pembayaran === "Lunas") {
+                if (transaksi.tgl_lunas !== null) {
                   transactionHtml += `<td class="text-success" style="font-weight: bold;">Lunas</td>`;
                 } else {
                   transactionHtml += `<td class="text-danger" style="font-weight: bold;">Utang</td>`;

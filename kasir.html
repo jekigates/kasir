@@ -263,7 +263,7 @@
       var menuJumlahUangClose = document.getElementById("menu-jumlah-uang-close");
       var menuUangKembalian = document.getElementById("menu-uang-kembalian");
       var menuUangKembalianClose = document.getElementById("menu-uang-kembalian-close");
-      var menuUAngKembalianJumlah = document.getElementById("menu-uang-kembalian-jumlah");
+      var menuUangKembalianJumlah = document.getElementById("menu-uang-kembalian-jumlah");
       var menuJumlahUangDibayar = document.getElementById("menu-jumlah-uang-dibayar");
 
       window.onload = function () {
@@ -286,7 +286,7 @@
           alert(`Maaf, uang Anda kurang ${formatAngkaKeRupiah(uangHitung.toString().replace("-", ""))}`);
         } else {
           menuJumlahUangClose.click();
-          menuUAngKembalianJumlah.innerHTML = formatAngkaKeRupiah(uangHitung.toString().replace("-", ""));
+          menuUangKembalianJumlah.innerHTML = formatAngkaKeRupiah(uangHitung.toString().replace("-", ""));
           displayMenu("menu-uang-kembalian");
 
           fetch("crud.php?cmd=bayarKeranjang&metode_pembayaran=Lunas", {

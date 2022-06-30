@@ -17,8 +17,65 @@
     <link rel="stylesheet" href="./assets/css/jquery-ui.min.css" />
     <link rel="stylesheet" href="./assets/css/main.css" />
   </head>
+  <style>
+    .menu-jumlah-uang,
+    .menu-uang-kembalian {
+      background-color: var(--background);
+      left: 50%;
+      overflow: auto;
+      position: fixed;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      width: 30rem;
+      z-index: 1020;
+      border-radius: 0.4rem;
+      padding: 1rem;
+      display: block;
+    }
+  </style>
   <body>
     <div class="page">
+      <div class="permalink-overlay d-none" id="permalink-overlay"></div>
+      <div class="menu-jumlah-uang d-none" id="menu-jumlah-uang">
+        <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 1rem">
+          <div>
+            <h2>Pembayaran Uang</h2>
+          </div>
+
+          <button type="button" id="menu-jumlah-uang-close" class="btn btn-danger" onclick="displayMenu('menu-jumlah-uang')">X</button>
+        </div>
+
+        <hr style="margin-bottom: 1rem" />
+
+        <label for="menu-jumlah-uang-dibayar" style="margin-bottom: 0.5rem">Uang Pembeli</label>
+        <input
+          type="number"
+          class="kasir-input input-block"
+          id="menu-jumlah-uang-dibayar"
+          name="menu-jumlah-uang-dibayar"
+          autocomplete="off"
+          min="0"
+          value="0"
+          style="margin-bottom: 2rem"
+        />
+
+        <button type="button" class="btn btn-primary btn-block" onclick="hitungUangKembalian()">Lanjutkan</button>
+      </div>
+      <div class="menu-uang-kembalian d-none" id="menu-uang-kembalian">
+        <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 1rem">
+          <div>
+            <h2>Uang Kembalian</h2>
+          </div>
+
+          <button type="button" id="menu-uang-kembalian-close" class="btn btn-danger" onclick="location.reload()">X</button>
+        </div>
+
+        <hr style="margin-bottom: 1rem" />
+
+        <h1 class="text-primary" style="text-align: center; margin-bottom: 1rem" id="menu-uang-kembalian-jumlah"></h1>
+
+        <button type="button" class="btn btn-info btn-block" onclick="printStruk()">Print Struk</button>
+      </div>
       <div class="left-sidebar">
         <a href="index.html" style="width: 100%; margin-bottom: 4rem; text-align: center">
           <img src="./assets/img/logo.png" alt="" width="125" height="40" />
@@ -34,8 +91,13 @@
       </div>
       <div class="main">
         <h1 id="page-detail-transaksi-title">Detail Transaksi</h1>
-        <h4 class="text-secondary" id="page-detail-transaksi-tgl" style="margin-bottom: 4rem"></h4>
-        <div style="display: flex; margin-bottom: 4rem;">
+        <h4 class="text-secondary" id="page-detail-transaksi-tgl"></h4>
+        <div style="margin-top: 1rem;">
+          <button class="btn btn-primary d-none" id="btn-bayar-utang" onclick="displayMenu('menu-jumlah-uang');">Bayar Utang</button>
+          <button class="btn btn-secondary d-none" id="btn-return" onclick="returnTransaksi()">Return Transaksi</button>
+          <button class="btn btn-info d-none" id="btn-print-struk" onclick="printStruk()">Print Struk</button>
+        </div>
+        <div style="display: flex; margin-bottom: 4rem; margin-top: 4rem;">
           <h2 style="align-self: end;">Daftar Produk</h2>
           <div style="margin-left: auto; margin-right: 1rem">
             <button class="btn btn-success" style="float: right" id="btn-transaksi-detail-status-terbaru"></button>
@@ -96,6 +158,7 @@
     <script src="./assets/js/jquery-ui.min.js"></script>
     <script src="./assets/js/main.js"></script>
     <script>
+      var permalinkOverlay = document.getElementById("permalink-overlay");
       var tglTranksi = document.getElementById("tgl_transaksi");
       var tableProduk = document.getElementById("table-produk");
       var metodePembayaran = document.getElementById("metode_pembayaran");
@@ -108,12 +171,22 @@
       var transaksiDetailTotalHarusDibayar = document.getElementById("transaksi-detail-total-harus-dibayar");
       var transaksiDetailTotalSudahDibayar = document.getElementById("transaksi-detail-total-sudah-dibayar");
       var transaksiDetailTotalUangKembalian = document.getElementById("transaksi-detail-total-uang-kembalian");
+      var menuJumlahUangDibayar = document.getElementById("menu-jumlah-uang-dibayar");
+      var menuJumlahUangClose = document.getElementById("menu-jumlah-uang-close");
+      var menuUangKembalianJumlah = document.getElementById("menu-uang-kembalian-jumlah");
+      var btnBayarUtang = document.getElementById("btn-bayar-utang");
+      var btnReturn = document.getElementById("btn-return");
+      var btnPrintStruk = document.getElementById("btn-print-struk");
 
       window.onload = function () {
         checkAuth();
         initDataTable("table-produk");
         detailTransaksi();
       };
+
+      function printStruk() {
+        alert("print struk");
+      }
 
       function detailTransaksi() {
         const queryString = window.location.search;
@@ -128,19 +201,27 @@
             document.title = `Transaksi Detail ID ${transactionId}`;
             pageDetailTransaksiTitle.innerHTML = `Detail Transaksi ID ${transactionId}`;
             pageDetailTransaksiTgl.innerHTML = data.transaction[0].tgl_waktu;
-            transaksiDetailMetodePembayaran.innerHTML = data.transaction[0].metode_pembayaran;
+
+            if (data.transaction[0].tgl_lunas === data.transaction[0].tgl_waktu) {
+              transaksiDetailMetodePembayaran.innerHTML = "Lunas";
+            } else {
+              transaksiDetailMetodePembayaran.innerHTML = "Utang";
+            }
+
             transaksiDetailTglLunas.innerHTML = (data.transaction[0].tgl_lunas !== null) ? data.transaction[0].tgl_lunas : "-";
             transaksiDetailTglReturn.innerHTML = (data.transaction[0].tgl_return !== null) ? data.transaction[0].tgl_return : "-";
             transaksiDetailTotalHarusDibayar.innerHTML = formatAngkaKeRupiah(data.transaction[0].total_harus_dibayar);
             transaksiDetailTotalSudahDibayar.innerHTML = formatAngkaKeRupiah(data.transaction[0].total_sudah_dibayar);
-            var total_uang_kembalian = formatAngkaKeRupiah(parseFloat(data.transaction[0].total_sudah_dibayar) - parseFloat(data.transaction[0].total_harus_dibayar));
-            transaksiDetailTotalUangKembalian.innerHTML = (total_uang_kembalian > 0) ? total_uang_kembalian : formatAngkaKeRupiah(0); 
+            var totalUangKembalian =parseFloat(data.transaction[0].total_sudah_dibayar) - parseFloat(data.transaction[0].total_harus_dibayar);
+            transaksiDetailTotalUangKembalian.innerHTML = (totalUangKembalian > 0) ? formatAngkaKeRupiah(totalUangKembalian) : formatAngkaKeRupiah(0); 
 
-            if (data.transaction[0].metode_pembayaran === "Lunas") {
+            if (data.transaction[0].tgl_lunas !== null) {
               if (data.transaction[0].tgl_return === null) {
                 // Kalau lunas, tapi gk direturn
                 btnTransaksiDetailStatusTerbaru.className = "btn btn-success";
                 btnTransaksiDetailStatusTerbaru.innerHTML = "Lunas tanpa return";
+                btnReturn.classList.toggle("d-none");
+                btnPrintStruk.classList.toggle("d-none");
               } else {
                 // Kalau lunas, tapi direturn
                 btnTransaksiDetailStatusTerbaru.className = "btn btn-info";
@@ -151,6 +232,9 @@
                 // Kalau utang, tapi gk direturn
                 btnTransaksiDetailStatusTerbaru.className = "btn btn-danger";
                 btnTransaksiDetailStatusTerbaru.innerHTML = "Utang tanpa return";
+
+                btnReturn.classList.toggle("d-none");
+                btnBayarUtang.classList.toggle("d-none");
               } else {
                 // Kalau utang, tapi direturn
                 btnTransaksiDetailStatusTerbaru.className = "btn btn-info";
@@ -169,6 +253,53 @@
             tableProduk.querySelector("tbody").innerHTML = produkHtml;
             initDataTable("table-produk");
           });
+      }
+
+      function hitungUangKembalian() {
+        const queryString = window.location.search;
+        const urlParams = new URLSearchParams(queryString);
+        const transactionId = urlParams.get("id");
+
+        var uangHitung = parseFloat(menuJumlahUangDibayar.value) - formatAngkaDariRupiah(transaksiDetailTotalHarusDibayar.innerHTML);
+
+        if (uangHitung < 0) {
+          alert(`Maaf, uang Anda kurang ${formatAngkaKeRupiah(uangHitung.toString().replace("-", ""))}`);
+        } else {
+          menuJumlahUangClose.click();
+          menuUangKembalianJumlah.innerHTML = formatAngkaKeRupiah(uangHitung.toString().replace("-", ""));
+          displayMenu("menu-uang-kembalian");
+
+          fetch(`crud.php?cmd=bayarKeranjang&id=${transactionId}&metode_pembayaran=Lunas`, {
+            method: "POST",
+            body: JSON.stringify({
+              total_sudah_dibayar: menuJumlahUangDibayar.value,
+            }),
+          })
+            .then((response) => response.json())
+            .then((data) => {
+              alert("Transaksi sudah dibayar dengan lunas.");
+            });
+        }
+      }
+
+      function returnTransaksi() {
+        const queryString = window.location.search;
+        const urlParams = new URLSearchParams(queryString);
+        const transactionId = urlParams.get("id");
+
+        if (confirm("Apakah Anda yakin untuk mereturn transaksi ini?")) {
+          fetch(`crud.php?cmd=bayarKeranjang&id=${transactionId}&metode_pembayaran=Return`, {
+            method: "POST",
+            body: JSON.stringify({
+              total_sudah_dibayar: 0,
+            }),
+          })
+            .then((response) => response.json())
+            .then((data) => {
+              alert("Transaksi sudah berhasil direturn.");
+              location.reload();
+            });
+        }
       }
     </script>
   </body>
