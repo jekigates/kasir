@@ -150,7 +150,7 @@
 
         <h1 class="text-primary" style="text-align: center; margin-bottom: 1rem" id="menu-uang-kembalian-jumlah"></h1>
 
-        <button type="button" class="btn btn-info btn-block" onclick="printStruk()">Print Struk</button>
+        <a href="" target="blank" id="btnPrintStruk" class="btn btn-info btn-block" style="text-align: center">Print Struk</a>
       </div>
       <div class="menu-masukkan-produk-belanja d-none" id="menu-masukkan-produk-belanja">
         <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 1rem">
@@ -265,6 +265,7 @@
       var menuUangKembalianClose = document.getElementById("menu-uang-kembalian-close");
       var menuUangKembalianJumlah = document.getElementById("menu-uang-kembalian-jumlah");
       var menuJumlahUangDibayar = document.getElementById("menu-jumlah-uang-dibayar");
+      var btnPrintStruk = document.getElementById("btnPrintStruk");
 
       window.onload = function () {
         checkAuth();
@@ -274,10 +275,6 @@
         loadProduk();
         loadProdukDiKeranjang();
       };
-
-      function printStruk() {
-        alert("print struk");
-      }
 
       function hitungUangKembalian() {
         var uangHitung = parseFloat(menuJumlahUangDibayar.value) - formatAngkaDariRupiah(cartTotal.innerHTML);
@@ -298,6 +295,7 @@
             .then((response) => response.json())
             .then((data) => {
               alert("Keranjang sudah dibayar dengan lunas.");
+              btnPrintStruk.setAttribute("href", `print.html?id=${data.transaksi_id}`);
               loadProdukDiKeranjang();
             });
         }

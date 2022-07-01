@@ -140,21 +140,16 @@
             var produkHtml = "";
 
             document.title = `Print Transaksi ID ${transactionId}`;
-            // pageDetailTransaksiTgl.innerHTML = data.transaction[0].tgl_waktu;
-
-            // transaksiDetailTglLunas.innerHTML = data.transaction[0].tgl_lunas !== null ? data.transaction[0].tgl_lunas : "-";
-            // transaksiDetailTglReturn.innerHTML = data.transaction[0].tgl_return !== null ? data.transaction[0].tgl_return : "-";
-            // transaksiDetailTotalHarusDibayar.innerHTML = formatAngkaKeRupiah(data.transaction[0].total_harus_dibayar);
-            // transaksiDetailTotalSudahDibayar.innerHTML = formatAngkaKeRupiah(data.transaction[0].total_sudah_dibayar);
-            // var totalUangKembalian = parseFloat(data.transaction[0].total_sudah_dibayar) - parseFloat(data.transaction[0].total_harus_dibayar);
-            // transaksiDetailTotalUangKembalian.innerHTML = totalUangKembalian > 0 ? formatAngkaKeRupiah(totalUangKembalian) : formatAngkaKeRupiah(0);
-
             var i = 0;
             var limit = 8;
             var iteration = 1;
             data.transaction.forEach(function (transaction) {
               if (i % 8 === 0) {
-                produkHtml += `<section class="sheet padding-15mm"><div class="div-table-header"><table class="table-header"><tbody><tr><th>Kepada Yth</th><th>:</th><td></td></tr><tr><th>Alamat</th><th>:</th><td></td></tr><tr><th>Tanggal Transaksi</th><th>:</th><td>${transaction.tgl_waktu}</td></tr></tbody></table></div><div class="div-table-body"><table border="1" style="width: 100%" class="table-body"><thead><tr><th>No.</th><th>Nama Barang</th><th>Qty</th><th>Satuan</th><th>Harga</th><th>Total</th></tr></thead><tbody>`;
+                produkHtml += `<section class="sheet padding-15mm">`;
+                if (i === 0) {
+                  produkHtml += `<div class="div-table-header"><table class="table-header"><tbody><tr><th>Kepada Yth</th><th>:</th><td></td></tr><tr><th>Alamat</th><th>:</th><td></td></tr><tr><th>Tanggal Transaksi</th><th>:</th><td>${transaction.tgl_waktu}</td></tr></tbody></table>`;
+                }
+                produkHtml += `</div><div class="div-table-body"><table border="1" style="width: 100%" class="table-body"><thead><tr><th>No.</th><th>Nama Barang</th><th>Qty</th><th>Satuan</th><th>Harga</th><th>Total</th></tr></thead><tbody>`;
                 if (data.transaction.length - i > 8) {
                   // Kalau jumlah barang yang bisa ditampilkan lebih dari 8
                   limit = i + 8;
@@ -162,9 +157,11 @@
                   limit = i + (data.transaction.length - i);
                 }
               }
-              produkHtml += `<tr><td>${iteration++}</td><td>${transaction.nama}</td><td>${transaction.jumlah}</td><td>${
-                transaction.satuan
-              }</td><td>${formatAngkaTitik(transaction.harga)}</td><td>${formatAngkaTitik(transaction.total)}</td></tr>`;
+              produkHtml += `<tr><td style="text-align: center;">${iteration++}</td><td>${transaction.nama}</td><td style="text-align: center;">${
+                transaction.jumlah
+              }</td><td style="text-align: center;">${transaction.satuan}</td><td style="text-align: right;">${formatAngkaTitik(
+                transaction.harga
+              )}</tds><td style="text-align: right;">${formatAngkaTitik(transaction.total)}</td></tr>`;
 
               i++;
               if (limit === i) {

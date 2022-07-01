@@ -204,6 +204,7 @@ function bayarKeranjang() {
   $total_harus_dibayar = 0;
   $total_sudah_dibayar = 0;
   $transaction_id = (isset($_GET["id"])) ? $_GET["id"] : "";
+  $transaksi_id = null;
 
   if (isset($data["total_sudah_dibayar"])) {
     $total_sudah_dibayar = $data["total_sudah_dibayar"];
@@ -249,6 +250,7 @@ function bayarKeranjang() {
 
   echo json_encode([
     "result" => true,
+    "transaksi_id" => $transaksi_id,
   ]);
 }
 
