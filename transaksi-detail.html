@@ -95,7 +95,7 @@
         <div style="margin-top: 1rem;">
           <button class="btn btn-primary d-none" id="btn-bayar-utang" onclick="displayMenu('menu-jumlah-uang');">Bayar Utang</button>
           <button class="btn btn-secondary d-none" id="btn-return" onclick="returnTransaksi()">Return Transaksi</button>
-          <button class="btn btn-info d-none" id="btn-print-struk" onclick="printStruk()">Print Struk</button>
+          <a href="" target="_blank" class="btn btn-info d-none" id="btn-print-struk">Print Struk</a>
         </div>
         <div style="display: flex; margin-bottom: 4rem; margin-top: 4rem;">
           <h2 style="align-self: end;">Daftar Produk</h2>
@@ -184,14 +184,6 @@
         detailTransaksi();
       };
 
-      function printStruk() {
-        const queryString = window.location.search;
-        const urlParams = new URLSearchParams(queryString);
-        const transactionId = urlParams.get("id");
-
-        location.href = `print.html?id=${transactionId}`;
-      }
-
       function detailTransaksi() {
         const queryString = window.location.search;
         const urlParams = new URLSearchParams(queryString);
@@ -203,6 +195,7 @@
             var produkHtml = "";
 
             document.title = `Transaksi Detail ID ${transactionId}`;
+            btnPrintStruk.setAttribute("href", `print.html?id=${transactionId}`)
             pageDetailTransaksiTitle.innerHTML = `Detail Transaksi ID ${transactionId}`;
             pageDetailTransaksiTgl.innerHTML = data.transaction[0].tgl_waktu;
 
