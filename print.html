@@ -1,40 +1,227 @@
 <!DOCTYPE html>
 <html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Print Transaksi</title>
 
-<head>
-  <meta charset="utf-8">
-  <title>A4 landscape</title>
+    <!-- Favicons -->
+    <link rel="apple-touch-icon" sizes="180x180" href="./assets/img/favicons/apple-touch-icon.png" />
+    <link rel="icon" type="image/png" sizes="32x32" href="./assets/img/favicons/favicon-32x32.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="./assets/img/favicons/favicon-16x16.png" />
+    <link rel="manifest" href="./assets/img/favicons/site.webmanifest" />
 
-  <!-- Normalize or reset CSS with your favorite library -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/7.0.0/normalize.min.css">
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="./assets/css/datatables.min.css" />
+    <link rel="stylesheet" href="./assets/css/jquery-ui.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/paper-css/0.4.1/paper.css" />
 
-  <!-- Load paper.css for happy printing -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/paper-css/0.4.1/paper.css">
-
-  <!-- Set page size here: A5, A4 or A3 -->
+    <!-- Set page size here: A5, A4 or A3 -->
+    <!-- Set also "landscape" if you need -->
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      @page {
+        size: A4 landscape;
+      }
+      .table-header th {
+        text-align: left;
+      }
+      .table-body td,
+      .table-body th {
+        padding: 0.5rem;
+      }
+      .div-table-header {
+        height: 10%;
+      }
+      .div-table-body {
+        height: calc(70% - 2rem);
+        padding: 1rem 0;
+        overflow: hidden;
+      }
+      .div-table-footer {
+        height: 20%;
+      }
+    </style>
+  </head>
+  <!-- Set "A5", "A4" or "A3" for class name -->
   <!-- Set also "landscape" if you need -->
-  <style>@page { size: A4 landscape }</style>
-</head>
+  <body class="A4 landscape">
+    <!-- Each sheet element should have the class "sheet" -->
+    <!-- "padding-**mm" is optional: you can set 10, 15, 20 or 25 -->
+    <section class="sheet padding-15mm">
+      <!-- Write HTML just like a web page -->
+      <div class="div-table-header">
+        <table class="table-header">
+          <tbody>
+            <tr>
+              <th>Kepada Yth</th>
+              <th>:</th>
+              <td></td>
+            </tr>
+            <tr>
+              <th>Alamat</th>
+              <th>:</th>
+              <td></td>
+            </tr>
+            <tr>
+              <th>Tanggal Transaksi</th>
+              <th>:</th>
+              <td>2022-07-01 13:15:00</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
 
-<!-- Set "A5", "A4" or "A3" for class name -->
-<!-- Set also "landscape" if you need -->
-<body class="A4 landscape">
+      <div class="div-table-body">
+        <table border="1" style="width: 100%" class="table-body">
+          <thead>
+            <tr>
+              <th>No.</th>
+              <th>Nama Barang</th>
+              <th>Qty</th>
+              <th>Satuan</th>
+              <th>Harga</th>
+              <th>Total</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>1</td>
+              <td>Barang 1</td>
+              <td>2</td>
+              <td>Satuan 1</td>
+              <td>1.000</td>
+              <td>2.000</td>
+            </tr>
+            <tr>
+              <td>2</td>
+              <td>Barang 2</td>
+              <td>3</td>
+              <td>Satuan 2</td>
+              <td>2.000</td>
+              <td>6.000</td>
+            </tr>
+            <tr>
+              <td>3</td>
+              <td>Barang 3</td>
+              <td>4</td>
+              <td>Satuan 3</td>
+              <td>3.000</td>
+              <td>12.000</td>
+            </tr>
+            <tr>
+              <td>4</td>
+              <td>Barang 4</td>
+              <td>5</td>
+              <td>Satuan 4</td>
+              <td>4.000</td>
+              <td>20.000</td>
+            </tr>
+            <tr>
+              <td>5</td>
+              <td>Barang 5</td>
+              <td>6</td>
+              <td>Satuan 5</td>
+              <td>5.000</td>
+              <td>30.000</td>
+            </tr>
+            <tr>
+              <td>6</td>
+              <td>Barang 6</td>
+              <td>7</td>
+              <td>Satuan 6</td>
+              <td>6.000</td>
+              <td>42.000</td>
+            </tr>
+            <tr>
+              <td>7</td>
+              <td>Barang 7</td>
+              <td>8</td>
+              <td>Satuan 7</td>
+              <td>7.000</td>
+              <td>56.000</td>
+            </tr>
+            <tr>
+              <td>8</td>
+              <td>Barang 8</td>
+              <td>9</td>
+              <td>Satuan 8</td>
+              <td>8.000</td>
+              <td>72.000</td>
+            </tr>
+            <tr>
+              <td colspan="4">* Barang yang sudah dibeli tidak dapat ditukar atau dikembalikan</td>
+              <td>Total</td>
+              <td>240.000</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
 
-  <!-- Each sheet element should have the class "sheet" -->
-  <!-- "padding-**mm" is optional: you can set 10, 15, 20 or 25 -->
-  <section class="sheet padding-10mm">
+      <div class="div-table-footer">
+        <table style="width: 100%" class="table-footer">
+          <thead>
+            <tr>
+              <th>Tanda Terima</th>
+              <th>Gudang</th>
+              <th>Supir</th>
+              <th>Hormat Kami</th>
+            </tr>
+          </thead>
+        </table>
+      </div>
+    </section>
 
-    <!-- Write HTML just like a web page -->
-    <article>This is an A4 document (landscape).</article>
+    <script src="./assets/js/jquery.min.js"></script>
+    <script src="./assets/js/datatables.min.js"></script>
+    <script src="./assets/js/jquery-ui.min.js"></script>
+    <script src="./assets/js/main.js"></script>
+    <script>
+      var tableProduk = document.getElementById("table-produk");
 
-  </section>
-  <section class="sheet padding-10mm">
+      window.onload = function () {
+        checkAuth();
+        // initDataTable("table-produk");
+        detailTransaksi();
+      };
 
-    <!-- Write HTML just like a web page -->
-    <article>This is an A4 document (landscape).</article>
+      function detailTransaksi() {
+        const queryString = window.location.search;
+        const urlParams = new URLSearchParams(queryString);
+        const transactionId = urlParams.get("id");
 
-  </section>
+        fetch(`crud.php?cmd=detailTransaction&id=${transactionId}`)
+          .then((response) => response.json())
+          .then((data) => {
+            var produkHtml = "";
 
-</body>
+            document.title = `Print Transaksi ID ${transactionId}`;
+            // pageDetailTransaksiTgl.innerHTML = data.transaction[0].tgl_waktu;
 
+            // transaksiDetailTglLunas.innerHTML = data.transaction[0].tgl_lunas !== null ? data.transaction[0].tgl_lunas : "-";
+            // transaksiDetailTglReturn.innerHTML = data.transaction[0].tgl_return !== null ? data.transaction[0].tgl_return : "-";
+            // transaksiDetailTotalHarusDibayar.innerHTML = formatAngkaKeRupiah(data.transaction[0].total_harus_dibayar);
+            // transaksiDetailTotalSudahDibayar.innerHTML = formatAngkaKeRupiah(data.transaction[0].total_sudah_dibayar);
+            // var totalUangKembalian = parseFloat(data.transaction[0].total_sudah_dibayar) - parseFloat(data.transaction[0].total_harus_dibayar);
+            // transaksiDetailTotalUangKembalian.innerHTML = totalUangKembalian > 0 ? formatAngkaKeRupiah(totalUangKembalian) : formatAngkaKeRupiah(0);
+
+            var iteration = 1;
+            data.transaction.forEach(function (transaction) {
+              // produkHtml += `<tr><td>${iteration++}</td><td>${transaction.nama}</td><td>${formatAngkaKeRupiah(transaction.harga_sekarang)}</td><td>${
+              //   transaction.satuan
+              // }</td><td>${formatAngkaTitik(transaction.jumlah)}</td><td>${formatAngkaKeRupiah(transaction.total)}</td></tr>`;
+            });
+
+            // initDataTable("table-produk", false);
+            // tableProduk.querySelector("tbody").innerHTML = produkHtml;
+            // initDataTable("table-produk");
+          });
+      }
+    </script>
+  </body>
 </html>
