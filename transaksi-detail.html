@@ -185,7 +185,11 @@
       };
 
       function printStruk() {
-        alert("print struk");
+        const queryString = window.location.search;
+        const urlParams = new URLSearchParams(queryString);
+        const transactionId = urlParams.get("id");
+
+        location.href = `print.html?id=${transactionId}`;
       }
 
       function detailTransaksi() {
