@@ -51,10 +51,7 @@
   <!-- Set "A5", "A4" or "A3" for class name -->
   <!-- Set also "landscape" if you need -->
   <body class="A4 landscape">
-    <!-- Each sheet element should have the class "sheet" -->
-    <!-- "padding-**mm" is optional: you can set 10, 15, 20 or 25 -->
     <section class="sheet padding-15mm">
-      <!-- Write HTML just like a web page -->
       <div class="div-table-header">
         <table class="table-header">
           <tbody>
@@ -99,62 +96,6 @@
               <td>2.000</td>
             </tr>
             <tr>
-              <td>2</td>
-              <td>Barang 2</td>
-              <td>3</td>
-              <td>Satuan 2</td>
-              <td>2.000</td>
-              <td>6.000</td>
-            </tr>
-            <tr>
-              <td>3</td>
-              <td>Barang 3</td>
-              <td>4</td>
-              <td>Satuan 3</td>
-              <td>3.000</td>
-              <td>12.000</td>
-            </tr>
-            <tr>
-              <td>4</td>
-              <td>Barang 4</td>
-              <td>5</td>
-              <td>Satuan 4</td>
-              <td>4.000</td>
-              <td>20.000</td>
-            </tr>
-            <tr>
-              <td>5</td>
-              <td>Barang 5</td>
-              <td>6</td>
-              <td>Satuan 5</td>
-              <td>5.000</td>
-              <td>30.000</td>
-            </tr>
-            <tr>
-              <td>6</td>
-              <td>Barang 6</td>
-              <td>7</td>
-              <td>Satuan 6</td>
-              <td>6.000</td>
-              <td>42.000</td>
-            </tr>
-            <tr>
-              <td>7</td>
-              <td>Barang 7</td>
-              <td>8</td>
-              <td>Satuan 7</td>
-              <td>7.000</td>
-              <td>56.000</td>
-            </tr>
-            <tr>
-              <td>8</td>
-              <td>Barang 8</td>
-              <td>9</td>
-              <td>Satuan 8</td>
-              <td>8.000</td>
-              <td>72.000</td>
-            </tr>
-            <tr>
               <td colspan="4">* Barang yang sudah dibeli tidak dapat ditukar atau dikembalikan</td>
               <td>Total</td>
               <td>240.000</td>
@@ -182,8 +123,6 @@
     <script src="./assets/js/jquery-ui.min.js"></script>
     <script src="./assets/js/main.js"></script>
     <script>
-      var tableProduk = document.getElementById("table-produk");
-
       window.onload = function () {
         checkAuth();
         // initDataTable("table-produk");
@@ -210,15 +149,42 @@
             // var totalUangKembalian = parseFloat(data.transaction[0].total_sudah_dibayar) - parseFloat(data.transaction[0].total_harus_dibayar);
             // transaksiDetailTotalUangKembalian.innerHTML = totalUangKembalian > 0 ? formatAngkaKeRupiah(totalUangKembalian) : formatAngkaKeRupiah(0);
 
+            var i = 0;
+            var limit = 8;
             var iteration = 1;
             data.transaction.forEach(function (transaction) {
-              // produkHtml += `<tr><td>${iteration++}</td><td>${transaction.nama}</td><td>${formatAngkaKeRupiah(transaction.harga_sekarang)}</td><td>${
-              //   transaction.satuan
-              // }</td><td>${formatAngkaTitik(transaction.jumlah)}</td><td>${formatAngkaKeRupiah(transaction.total)}</td></tr>`;
+              if (i % 8 === 0) {
+                produkHtml += `<section class="sheet padding-15mm"><div class="div-table-header"><table class="table-header"><tbody><tr><th>Kepada Yth</th><th>:</th><td></td></tr><tr><th>Alamat</th><th>:</th><td></td></tr><tr><th>Tanggal Transaksi</th><th>:</th><td>${transaction.tgl_waktu}</td></tr></tbody></table></div><div class="div-table-body"><table border="1" style="width: 100%" class="table-body"><thead><tr><th>No.</th><th>Nama Barang</th><th>Qty</th><th>Satuan</th><th>Harga</th><th>Total</th></tr></thead><tbody>`;
+                if (data.transaction.length - i > 8) {
+                  // Kalau jumlah barang yang bisa ditampilkan lebih dari 8
+                  limit = i + 8;
+                } else {
+                  limit = i + (data.transaction.length - i);
+                }
+              }
+              produkHtml += `<tr><td>${iteration++}</td><td>${transaction.nama}</td><td>${transaction.jumlah}</td><td>${
+                transaction.satuan
+              }</td><td>${formatAngkaTitik(transaction.harga)}</td><td>${formatAngkaTitik(transaction.total)}</td></tr>`;
+
+              i++;
+              if (limit === i) {
+                if (i === data.transaction.length) {
+                  produkHtml += `<tr><td colspan="4">* Barang yang sudah dibeli tidak dapat ditukar atau dikembalikan</td><th>Total</th><td>${formatAngkaTitik(
+                    transaction.total_harus_dibayar
+                  )}</td></tr>`;
+                }
+                produkHtml += `</tbody></table></div>`;
+                if (i === data.transaction.length) {
+                  produkHtml += `<div class="div-table-footer"><table style="width: 100%" class="table-footer"><thead><tr><th>Tanda Terima</th><th>Gudang</th><th>Supir</th><th>Hormat Kami</th></tr></thead></table></div>`;
+                }
+                produkHtml += `</section>`;
+                limit--;
+              }
             });
 
+            // console.log(produkHtml);
             // initDataTable("table-produk", false);
-            // tableProduk.querySelector("tbody").innerHTML = produkHtml;
+            document.body.innerHTML = produkHtml;
             // initDataTable("table-produk");
           });
       }
