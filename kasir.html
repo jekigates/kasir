@@ -62,7 +62,7 @@
           <button type="button" class="btn btn-danger" onclick="displayMenu('menu-pesan-produk')">X</button>
         </div>
 
-        <form action="" method="" onsubmit="pesanProdukKeKeranjang(event)">
+        <form action="" method="POST" onsubmit="pesanProdukKeKeranjang(event)">
           <label for="jumlah" style="margin-bottom: 0.5rem">Jumlah</label>
           <input
             type="text"
@@ -117,19 +117,22 @@
 
         <hr style="margin-bottom: 1rem" />
 
-        <label for="menu-jumlah-uang-dibayar" style="margin-bottom: 0.5rem">Uang Pembeli</label>
-        <input
-          type="text"
-          class="kasir-input input-block"
-          id="menu-jumlah-uang-dibayar"
-          name="menu-jumlah-uang-dibayar"
-          autocomplete="off"
-          data-type="currency"
-          placeholder="0"
-          style="margin-bottom: 2rem"
-        />
+        <form action="" method="POST" onsubmit="hitungUangKembalian(event)">
+          <label for="menu-jumlah-uang-dibayar" style="margin-bottom: 0.5rem">Uang Pembeli</label>
+          <input
+            type="text"
+            class="kasir-input input-block"
+            id="menu-jumlah-uang-dibayar"
+            name="menu-jumlah-uang-dibayar"
+            autocomplete="off"
+            data-type="currency"
+            placeholder="0"
+            style="margin-bottom: 2rem"
+            required
+          />
 
-        <button type="button" class="btn btn-primary btn-block" onclick="hitungUangKembalian()">Lanjutkan</button>
+          <button type="submit" class="btn btn-primary btn-block">Lanjutkan</button>
+        </form>
       </div>
       <div class="menu-uang-kembalian d-none" id="menu-uang-kembalian">
         <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 1rem">
@@ -271,7 +274,8 @@
         loadProdukDiKeranjang();
       };
 
-      function hitungUangKembalian() {
+      function hitungUangKembalian(e) {
+        e.preventDefault();
         var uangHitung = formatAngkaDariRupiah(menuJumlahUangDibayar.value) - formatAngkaDariRupiah(cartTotal.innerHTML);
 
         if (uangHitung < 0) {
