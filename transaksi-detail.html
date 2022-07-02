@@ -47,19 +47,22 @@
 
         <hr style="margin-bottom: 1rem" />
 
-        <label for="menu-jumlah-uang-dibayar" style="margin-bottom: 0.5rem">Uang Pembeli</label>
-        <input
-          type="text"
-          class="kasir-input input-block"
-          id="menu-jumlah-uang-dibayar"
-          name="menu-jumlah-uang-dibayar"
-          autocomplete="off"
-          data-type="currency"
-          placeholder="0"
-          style="margin-bottom: 2rem"
-        />
-
-        <button type="button" class="btn btn-primary btn-block" onclick="hitungUangKembalian()">Lanjutkan</button>
+        <form action="" method="POST" onsubmit="hitungUangKembalian(event)">
+          <label for="menu-jumlah-uang-dibayar" style="margin-bottom: 0.5rem">Uang Pembeli</label>
+          <input
+            type="text"
+            class="kasir-input input-block"
+            id="menu-jumlah-uang-dibayar"
+            name="menu-jumlah-uang-dibayar"
+            autocomplete="off"
+            data-type="currency"
+            placeholder="0"
+            style="margin-bottom: 2rem"
+            required
+          />
+  
+          <button type="submit" class="btn btn-primary btn-block">Lanjutkan</button>
+        </form>
       </div>
       <div class="menu-uang-kembalian d-none" id="menu-uang-kembalian">
         <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 1rem">
@@ -252,7 +255,8 @@
           });
       }
 
-      function hitungUangKembalian() {
+      function hitungUangKembalian(e) {
+        e.preventDefault();
         const queryString = window.location.search;
         const urlParams = new URLSearchParams(queryString);
         const transactionId = urlParams.get("id");
