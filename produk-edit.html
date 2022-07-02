@@ -35,65 +35,80 @@
       <div class="main">
         <h1 style="margin-bottom: 4rem">Edit Produk</h1>
 
-        <div style="display: flex; justify-content: space-between; gap: 1rem">
-          <div style="width: 50%">
-            <label for="nama" style="margin-bottom: 0.5rem">Nama</label>
-            <input type="text" class="kasir-input input-block" id="nama" name="nama" autocomplete="off" maxlength="30" style="margin-bottom: 2rem" />
-            <label for="stok" style="margin-bottom: 0.5rem">Stok</label>
-            <input
-              type="text"
-              class="kasir-input input-block"
-              id="stok"
-              name="stok"
-              autocomplete="off"
-              style="margin-bottom: 2rem"
-              data-type="number"
-              placeholder="0"
-            />
-            <label for="satuan" style="margin-bottom: 0.5rem">Satuan</label>
-            <input
-              type="text"
-              class="kasir-input input-block"
-              id="satuan"
-              name="satuan"
-              autocomplete="off"
-              maxlength="30"
-              style="margin-bottom: 2rem"
-            />
-            <label for="harga" style="margin-bottom: 0.5rem">Harga</label>
-            <input
-              type="text"
-              class="kasir-input input-block"
-              id="harga"
-              name="harga"
-              autocomplete="off"
-              style="margin-bottom: 2rem"
-              data-type="currency"
-              placeholder="0"
-            />
-          </div>
-          <div style="width: 50%">
-            <label for="kategori" style="margin-bottom: 0.5rem">Kategori</label>
-            <input
-              type="text"
-              class="kasir-input input-block"
-              id="kategori"
-              name="kategori"
-              autocomplete="off"
-              maxlength="30"
-              style="margin-bottom: 2rem"
-            />
-            <label for="statusProduk" style="margin-bottom: 0.5rem">Status</label>
-            <select class="kasir-select input-block" name="status" id="statusProduk" autocomplete="off" style="margin-bottom: 2rem">
-              <option value="Available">Available</option>
-              <option value="Unavailable">Unavailable</option>
-            </select>
-            <div style="float: right">
-              <button type="button" class="btn btn-secondary" style="margin-bottom: 1rem" onclick="detailProduk()">Reset</button>
-              <button type="button" class="btn btn-info" style="margin-bottom: 1rem" onclick="updateProduk()">Update Produk</button>
+        <form action="" method="POST" onsubmit="updateProduk(event)">
+          <div style="display: flex; justify-content: space-between; gap: 1rem">
+            <div style="width: 50%">
+              <label for="nama" style="margin-bottom: 0.5rem">Nama</label>
+              <input
+                type="text"
+                class="kasir-input input-block"
+                id="nama"
+                name="nama"
+                autocomplete="off"
+                maxlength="30"
+                style="margin-bottom: 2rem"
+                required
+              />
+              <label for="stok" style="margin-bottom: 0.5rem">Stok</label>
+              <input
+                type="text"
+                class="kasir-input input-block"
+                id="stok"
+                name="stok"
+                autocomplete="off"
+                style="margin-bottom: 2rem"
+                data-type="number"
+                placeholder="0"
+                required
+              />
+              <label for="satuan" style="margin-bottom: 0.5rem">Satuan</label>
+              <input
+                type="text"
+                class="kasir-input input-block"
+                id="satuan"
+                name="satuan"
+                autocomplete="off"
+                maxlength="30"
+                style="margin-bottom: 2rem"
+                required
+              />
+              <label for="harga" style="margin-bottom: 0.5rem">Harga</label>
+              <input
+                type="text"
+                class="kasir-input input-block"
+                id="harga"
+                name="harga"
+                autocomplete="off"
+                style="margin-bottom: 2rem"
+                data-type="currency"
+                placeholder="0"
+                required
+              />
+            </div>
+            <div style="width: 50%">
+              <label for="kategori" style="margin-bottom: 0.5rem">Kategori</label>
+              <input
+                type="text"
+                class="kasir-input input-block"
+                id="kategori"
+                name="kategori"
+                autocomplete="off"
+                maxlength="30"
+                style="margin-bottom: 2rem"
+                required
+              />
+              <label for="statusProduk" style="margin-bottom: 0.5rem">Status</label>
+              <select class="kasir-select input-block" name="status" id="statusProduk" autocomplete="off" style="margin-bottom: 2rem" required>
+                <option value="Available">Available</option>
+                <option value="Unavailable">Unavailable</option>
+              </select>
+              <div style="float: right">
+                <button type="reset" class="btn btn-secondary" style="margin-bottom: 1rem" onclick="detailProduk()">Reset</button>
+                <button type="submit" class="btn btn-info" style="margin-bottom: 1rem">Update Produk</button>
+              </div>
             </div>
           </div>
-        </div>
+        </form>
       </div>
     </div>
 
@@ -125,7 +140,8 @@
           });
       }
 
-      function updateProduk() {
+      function updateProduk(e) {
+        e.preventDefault();
         const queryString = window.location.search;
         const urlParams = new URLSearchParams(queryString);
         const produkId = urlParams.get("id");
