@@ -33,7 +33,7 @@
       <a href="index.php" style="margin-bottom: 4rem">
         <img src="./assets/img/logo.png" alt="" width="125" height="40" />
       </a>
-      <div class="form-login">
+      <form action="" method="POST" onsubmit="login(event)" class="form-login">
         <input
           type="text"
           class="kasir-input input-block"
@@ -42,6 +42,7 @@
           placeholder="Username"
           autocomplete="off"
           style="margin-bottom: 1rem"
+          required
         />
         <input
           type="password"
@@ -51,9 +52,10 @@
           placeholder="Password"
           autocomplete="off"
           style="margin-bottom: 1rem"
+          required
         />
-        <button type="button" class="btn btn-primary btn-block" onclick="login()">Login</button>
-      </div>
+        <button type="submit" class="btn btn-primary btn-block">Login</button>
+      </form>
     </div>
 
     <script src="./assets/js/jquery.min.js"></script>
@@ -65,7 +67,8 @@
         checkAuth(true);
       };
 
-      const login = function () {
+      function login(e) {
+        e.preventDefault();
         fetch("crud.php?cmd=login", {
           method: "POST",
           body: JSON.stringify({ username: this.username.value, password: this.password.value }),
@@ -78,7 +81,7 @@
               alert("Maaf, tolong periksa username dan password Anda.");
             }
           });
-      };
+      }
     </script>
   </body>
 </html>
