@@ -57,58 +57,35 @@ function checkAuth(login) {
 
 $("input[data-type='currency']").on({
   keyup: function () {
-    formatCurrency($(this));
-  },
-  blur: function () {
-    formatCurrency($(this));
+    this.value = formatAngkaInput(this.value, true, true);
   },
 });
 
 $("input[data-type='number']").on({
   keyup: function () {
-    formatCurrency($(this), false);
-  },
-  blur: function () {
-    formatCurrency($(this), false);
+    this.value = formatAngkaInput(this.value);
   },
 });
 
-function formatNumber(n) {
-  // format number 1000000 to 1.234.567
-  return n.replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ".");
-}
+function formatAngkaInput(angka, prefix, uang = false) {
+  var number_string = angka.replace(/[^,\d]/g, "").toString(),
+    split = number_string.split(","),
+    sisa = split[0].length % 3,
+    rupiah = split[0].substr(0, sisa),
+    ribuan = split[0].substr(sisa).match(/\d{3}/gi);
 
-function formatCurrency(input, money = true) {
-  // appends $ to value, validates decimal side
-  // and puts cursor back in right position.
-
-  // get input value
-  var input_val = input.val();
-
-  // don't validate empty input
-  if (input_val === "") {
-    return;
+  if (ribuan) {
+    separator = sisa ? "." : "";
+    rupiah += separator + ribuan.join(".");
   }
 
-  // original length
-  var original_len = input_val.length;
+  rupiah = split[1] != undefined ? rupiah + "," + split[1] : rupiah;
 
-  // initial caret position
-  var caret_pos = input.prop("selectionStart");
+  var hasil_return = prefix == undefined ? rupiah : rupiah ? "Rp " + rupiah : "";
 
-  // no decimal entered
-  // add commas to number
-  // remove all non-digits
-  input_val = formatNumber(input_val);
-  if (money === true) {
-    input_val = "Rp" + input_val;
+  if (uang === false) {
+    hasil_return = prefix == undefined ? rupiah : rupiah ? rupiah : "";
   }
 
-  // send updated string to input
-  input.val(input_val);
-
-  // put caret back in the right position
-  var updated_len = input_val.length;
-  caret_pos = updated_len - original_len + caret_pos;
-  input[0].setSelectionRange(caret_pos, caret_pos);
+  return hasil_return;
 }
