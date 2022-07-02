@@ -70,7 +70,9 @@
           name="jumlah"
           autocomplete="off"
           min="0"
-          value="1"
+          pattern="^\$\d{1,3}(,\d{3})*(\.\d+)?$"
+          data-type="number"
+          placeholder="0"
           style="margin-bottom: 2rem"
           oninput="menuPesanProdukUbahTotal()"
         />
@@ -125,13 +127,15 @@
 
         <label for="menu-jumlah-uang-dibayar" style="margin-bottom: 0.5rem">Uang Pembeli</label>
         <input
-          type="number"
+          type="text"
           class="kasir-input input-block"
           id="menu-jumlah-uang-dibayar"
           name="menu-jumlah-uang-dibayar"
           autocomplete="off"
           min="0"
-          value="0"
+          pattern="^\$\d{1,3}(,\d{3})*(\.\d+)?$"
+          data-type="currency"
+          placeholder="0"
           style="margin-bottom: 2rem"
         />
 
@@ -175,6 +179,7 @@
             name="search"
             oninput="loadProduk()"
             autocomplete="off"
+            maxlength="30"
             style="width: 20rem"
           />
         </div>
@@ -277,7 +282,7 @@
       };
 
       function hitungUangKembalian() {
-        var uangHitung = parseFloat(menuJumlahUangDibayar.value) - formatAngkaDariRupiah(cartTotal.innerHTML);
+        var uangHitung = formatAngkaDariRupiah(menuJumlahUangDibayar.value) - formatAngkaDariRupiah(cartTotal.innerHTML);
 
         if (uangHitung < 0) {
           alert(`Maaf, uang Anda kurang ${formatAngkaKeRupiah(uangHitung.toString().replace("-", ""))}`);
@@ -355,7 +360,7 @@
           method: "POST",
           body: JSON.stringify({
             id: menuPesanProdukId.innerHTML,
-            jumlah: menuPesanProdukJumlah.value,
+            jumlah: formatAngkaDariTitik(menuPesanProdukJumlah.value),
             total: formatAngkaDariRupiah(menuPesanProdukTotal.innerHTML),
           }),
         })
@@ -367,7 +372,7 @@
 
       function menuPesanProdukUbahTotal() {
         menuPesanProdukTotal.innerHTML = formatAngkaKeRupiah(
-          parseFloat(menuPesanProdukJumlah.value) * formatAngkaDariRupiah(menuPesanProdukHarga.innerHTML)
+          formatAngkaDariTitik(menuPesanProdukJumlah.value) * formatAngkaDariRupiah(menuPesanProdukHarga.innerHTML)
         );
       }
 

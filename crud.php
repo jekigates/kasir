@@ -5,6 +5,14 @@ require "koneksi.php";
 
 $cmd = $_GET["cmd"];
 
+function formatAngka($angka, $tipe = "titik") {
+  if ($tipe === "uang") {
+    $angka = str_replace("Rp", "", $angka);
+  }
+  $angka = str_replace(".", "", $angka);
+  return $angka;
+}
+
 function loadKategori() {
   global $conn;
 
@@ -73,9 +81,9 @@ function buatProduk() {
 
   $data = json_decode(file_get_contents("php://input"), true);
   $nama = $data["nama"];
-  $stok = $data["stok"];
+  $stok = formatAngka($data["stok"]);
   $satuan = $data["satuan"];
-  $harga = $data["harga"];
+  $harga = formatAngka($data["harga"], "uang");
   $kategori = $data["kategori"];
   $status = $data["status"];
 
@@ -107,9 +115,9 @@ function updateProduk() {
   $data = json_decode(file_get_contents("php://input"), true);
   $id = $_GET["id"];
   $nama = $data["nama"];
-  $stok = $data["stok"];
+  $stok = formatAngka($data["stok"]);
   $satuan = $data["satuan"];
-  $harga = $data["harga"];
+  $harga = formatAngka($data["harga"], "uang");
   $kategori = $data["kategori"];
   $status = $data["status"];
 
@@ -203,17 +211,16 @@ function bayarKeranjang() {
   $metode_pembayaran = $_GET["metode_pembayaran"];
   $total_harus_dibayar = 0;
   $total_sudah_dibayar = 0;
-  $transaction_id = (isset($_GET["id"])) ? $_GET["id"] : "";
-  $transaksi_id = null;
+  $transaksi_id = (isset($_GET["id"])) ? $_GET["id"] : "";
 
   if (isset($data["total_sudah_dibayar"])) {
-    $total_sudah_dibayar = $data["total_sudah_dibayar"];
+    $total_sudah_dibayar = formatAngka($data["total_sudah_dibayar"], "uang");
   }
 
   date_default_timezone_set('Asia/Jakarta');
   $tgl_waktu = date("Y-m-d H:i:s");
 
-  if ($transaction_id === "") {
+  if ($transaksi_id === "") {
     $sql1 = "SELECT * FROM keranjang INNER JOIN produk ON keranjang.id = produk.id";
     $query1 = mysqli_query($conn, $sql1) or die("error: $sql1");
   
@@ -240,10 +247,10 @@ function bayarKeranjang() {
     $query4 = mysqli_query($conn, $sql4) or die("error: $sql4");
   } else {
     if ($metode_pembayaran === "Lunas") {
-      $sql5 = "UPDATE transaksi SET transaksi.tgl_lunas='$tgl_waktu', transaksi.total_sudah_dibayar='$total_sudah_dibayar' WHERE transaksi.id='$transaction_id'";
+      $sql5 = "UPDATE transaksi SET transaksi.tgl_lunas='$tgl_waktu', transaksi.total_sudah_dibayar='$total_sudah_dibayar' WHERE transaksi.id='$transaksi_id'";
       $query5 = mysqli_query($conn, $sql5) or die("error: $sql5");
     } else {
-      $sql6 = "UPDATE transaksi SET transaksi.tgl_lunas=NULL, transaksi.tgl_return='$tgl_waktu', transaksi.total_sudah_dibayar='$total_sudah_dibayar' WHERE transaksi.id='$transaction_id'";
+      $sql6 = "UPDATE transaksi SET transaksi.tgl_return='$tgl_waktu' WHERE transaksi.id='$transaksi_id'";
       $query6 = mysqli_query($conn, $sql6) or die("error: $sql6");
     }
   }
