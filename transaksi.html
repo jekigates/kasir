@@ -46,8 +46,10 @@
               onchange="loadTransaksi()"
             >
               <option value="">Semua</option>
-              <option value="Lunas">Lunas</option>
-              <option value="Utang">Utang</option>
+              <option value="lunas_tanpa_return">Lunas Tanpa Return</option>
+              <option value="lunas_tapi_return">Lunas Tapi Return</option>
+              <option value="utang_tanpa_return">Utang Tanpa Return</option>
+              <option value="utang_tapi_return">Utang Tapi Return</option>
             </select>
           </div>
           <div>
@@ -122,9 +124,25 @@
                 )}</td>`;
 
                 if (transaksi.tgl_lunas !== null) {
-                  transactionHtml += `<td class="text-success" style="font-weight: bold;">Lunas</td>`;
+                  // Kalau lunas
+
+                  if (transaksi.tgl_return === null) {
+                    // Kalau lunas tanpa return
+                    transactionHtml += `<td class="text-success" style="font-weight: bold;">Lunas Tanpa Return</td>`;
+                  } else {
+                    // Kalau lunas tapi return
+                    transactionHtml += `<td class="text-info" style="font-weight: bold;">Lunas Tapi Return</td>`;
+                  }
                 } else {
-                  transactionHtml += `<td class="text-danger" style="font-weight: bold;">Utang</td>`;
+                  // Kalau utang
+
+                  if (transaksi.tgl_return === null) {
+                    // Kalau utang tanpa return
+                    transactionHtml += `<td class="text-danger" style="font-weight: bold;">Utang Tanpa Return</td>`;
+                  } else {
+                    // Kalau utang tapi return
+                    transactionHtml += `<td class="text-info" style="font-weight: bold;">Utang Tapi Return</td>`;
+                  }
                 }
 
                 transactionHtml += `<td><button class="btn btn-info" onclick="goTransactionDetail('${transaksi.id}')" style="white-space: nowrap;">Lihat Detail</button></td></tr>`;

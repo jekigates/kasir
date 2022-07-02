@@ -82,6 +82,10 @@ input:-webkit-autofill {
   color: var(--secondary);
 }
 
+.text-info {
+  color: var(--info);
+}
+
 .btn-danger {
   background-color: var(--danger);
   color: var(--white);

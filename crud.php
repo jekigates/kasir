@@ -270,12 +270,17 @@ function loadTransaksi() {
   $sql = "SELECT * FROM transaksi INNER JOIN transaksi_detail ON transaksi.id = transaksi_detail.id ";
   if ($metode_pembayaran === "") {
     $sql .= "WHERE transaksi.tgl_waktu LIKE '%$tgl_transaksi%'";
-  } else if ($metode_pembayaran === "Lunas") {
-    $sql .= "WHERE transaksi.tgl_lunas !=== NULL";
-  } else {
-    $sql .= "WHERE transaksi.tgl_lunas === NULL";
+  } else if ($metode_pembayaran === "lunas_tanpa_return") {
+    $sql .= "WHERE transaksi.tgl_lunas IS NOT NULL AND transaksi.tgl_return IS NULL";
+  } else if ($metode_pembayaran === "lunas_tapi_return") {
+    $sql .= "WHERE transaksi.tgl_lunas IS NOT NULL AND transaksi.tgl_return IS NOT NULL";
+  } else if ($metode_pembayaran === "utang_tanpa_return") {
+    $sql .= "WHERE transaksi.tgl_lunas IS NULL AND transaksi.tgl_return IS NULL";
+  } else if ($metode_pembayaran === "utang_tapi_return") {
+    $sql .= "WHERE transaksi.tgl_lunas IS NULL AND transaksi.tgl_return IS NOT NULL";
   }
-  $sql .= "GROUP BY transaksi.id";
+  
+  $sql .= " GROUP BY transaksi.id";
   $query = mysqli_query($conn, $sql) or die("error: $sql");
 
   $rows = [];
