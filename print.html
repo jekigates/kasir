@@ -166,7 +166,7 @@
               i++;
               if (limit === i) {
                 if (i === data.transaction.length) {
-                  produkHtml += `<tr><td colspan="4">* Barang yang sudah dibeli tidak dapat ditukar atau dikembalikan</td><th>Total</th><td>${formatAngkaTitik(
+                  produkHtml += `<tr><td colspan="4">* Barang yang sudah dibeli tidak dapat ditukar atau dikembalikan</td><th>Total</th><td style="text-align: right;">${formatAngkaTitik(
                     transaction.total_harus_dibayar
                   )}</td></tr>`;
                 }
@@ -179,10 +179,7 @@
               }
             });
 
-            // console.log(produkHtml);
-            // initDataTable("table-produk", false);
             document.body.innerHTML = produkHtml;
-            // initDataTable("table-produk");
           });
       }
     </script>
