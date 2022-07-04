@@ -60,6 +60,13 @@
         text-align: center;
         font-weight: inherit;
       }
+      .btn-print {
+        position: fixed;
+        bottom: 1rem;
+        right: 1rem;
+        padding: 1rem;
+        font-weight: bold;
+      }
       @media print {
         ::-webkit-input-placeholder {
           /* WebKit browsers */
@@ -99,11 +106,13 @@
         textarea::placeholder {
           color: transparent;
         }
-
         .input-print {
           border: 0;
           background-color: transparent;
           font-size: inherit;
+        }
+        .btn-print {
+          display: none;
         }
       }
     </style>
@@ -120,7 +129,6 @@
         checkAuth();
         detailTransaksi();
         loadProfil();
-        // window.print();
       };
 
       function loadProfil() {
@@ -187,6 +195,8 @@
                 limit--;
               }
             });
+
+            produkHtml += `<button class="btn-print" onclick="window.print()">Print Transaksi</button>`;
 
             document.body.innerHTML = produkHtml;
           });
