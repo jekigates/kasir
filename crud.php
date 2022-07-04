@@ -274,8 +274,22 @@ function bayarKeranjang() {
       $sql5 = "UPDATE transaksi SET transaksi.tgl_lunas='$tgl_waktu', transaksi.total_sudah_dibayar='$total_sudah_dibayar' WHERE transaksi.id='$transaksi_id'";
       $query5 = mysqli_query($conn, $sql5) or die("error: $sql5");
     } else {
+      // Return transaksi
       $sql6 = "UPDATE transaksi SET transaksi.tgl_return='$tgl_waktu' WHERE transaksi.id='$transaksi_id'";
       $query6 = mysqli_query($conn, $sql6) or die("error: $sql6");
+
+      $sql8 = "SELECT * FROM transaksi_detail INNER JOIN produk ON transaksi_detail.produk_id = produk.id WHERE transaksi_detail.id='$transaksi_id'";
+      $query8 = mysqli_query($conn, $sql8) or die("error: $sql8");
+      
+      while ($result8 = mysqli_fetch_array($query8)) {
+        $produk_id = $result8["produk_id"];
+        $jumlah = $result8["jumlah"];
+        $stok = $result8["stok"];
+
+        $jumlah_baru = $jumlah + $stok;
+        $sql9 = "UPDATE produk SET produk.stok='$jumlah_baru' WHERE produk.id='$produk_id'";
+        $query9 = mysqli_query($conn, $sql9) or die("error: $sql9");
+      }
     }
   }
 
