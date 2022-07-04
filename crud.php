@@ -256,9 +256,14 @@ function bayarKeranjang() {
       $harga = $result1["harga"];
       $jumlah = $result1["jumlah"];
       $total = $result1["total"];
+      $stok = $result1["stok"];
       $total_harus_dibayar += $total;
       $sql3 = "INSERT INTO transaksi_detail(id, produk_id, harga_sekarang, jumlah, total) VALUES('$transaksi_id', '$produk_id', '$harga', '$jumlah','$total')";
       $query3 = mysqli_query($conn, $sql3) or die("error: $sql3");
+
+      $jumlah_baru = $stok - $jumlah;
+      $sql7 = "UPDATE produk SET produk.stok='$jumlah_baru' WHERE produk.id='$produk_id'";
+      $query7 = mysqli_query($conn, $sql7) or die("error: $sql7");
     }
   
     kosongkanKeranjang("php");
