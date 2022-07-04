@@ -9,6 +9,8 @@
   --background: #f5f6fa;
   --white: #fff;
   --black: #000;
+  --border-radius: 0.4rem;
+  --primary-background: #ffab76;
 }
 
 * {
@@ -24,7 +26,7 @@
   padding: 1rem;
   border: none;
   background-color: var(--white) !important;
-  border-radius: 0.4rem;
+  border-radius: var(--border-radius);
   box-shadow: 0 6px 10px 0 rgba(0, 0, 0, 0.1);
   font-size: 1rem;
   outline-color: var(--primary);
@@ -40,7 +42,7 @@
   cursor: pointer;
   padding: 1rem;
   border: none;
-  border-radius: 0.4rem;
+  border-radius: var(--border-radius);
   font-size: 1rem;
   box-shadow: 0 6px 10px 0 rgba(0, 0, 0, 0.1);
 }
@@ -95,13 +97,17 @@ input:-webkit-autofill {
   background-color: var(--danger);
 }
 
+.bg-primary-background {
+  background-color: var(--primary-background);
+}
+
 .text-danger {
   color: var(--danger);
 }
 
 .table {
   width: 100%;
-  border-radius: 0.4rem;
+  border-radius: var(--border-radius);
   overflow: hidden;
 }
 
