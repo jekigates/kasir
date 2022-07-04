@@ -148,7 +148,7 @@ function pesanProdukKeKeranjang() {
 
     $sql2 = "SELECT * FROM keranjang INNER JOIN produk ON keranjang.id = produk.id WHERE keranjang.id='$id'";
     $query2 = mysqli_query($conn, $sql2) or die("error: $sql2");
-    $result2 = mysqli_fetch_array($query2);
+    $result2 = mysqli_fetch_assoc($query2);
     $num2 = mysqli_num_rows($query2);
 
     if ($num2 === 0) {
@@ -281,7 +281,7 @@ function bayarKeranjang() {
       $sql8 = "SELECT * FROM transaksi_detail INNER JOIN produk ON transaksi_detail.produk_id = produk.id WHERE transaksi_detail.id='$transaksi_id'";
       $query8 = mysqli_query($conn, $sql8) or die("error: $sql8");
       
-      while ($result8 = mysqli_fetch_array($query8)) {
+      while ($result8 = mysqli_fetch_assoc($query8)) {
         $produk_id = $result8["produk_id"];
         $jumlah = $result8["jumlah"];
         $stok = $result8["stok"];
@@ -372,13 +372,31 @@ function detailTransaction() {
   ]);
 }
 
-if ($cmd == "login") {
+function loadProfil() {
+  global $conn;
+
+  $sql = "SELECT * FROM profil";
+  $query = mysqli_query($conn, $sql) or die("error: $sql");
+  $row = [];
+
+  while ($result = mysqli_fetch_assoc($query)) {
+    $row[$result["nama"]] = $result["nilai"];
+  }
+
+  return $row;
+}
+
+function login() {
+  global $conn;
+
   $data = json_decode(file_get_contents("php://input"), true);
   $username = $data["username"];
   $password = $data["password"];
   $result = false;
 
-  if ($username === "admin" && $password === "admin123" || isset($_SESSION["auth"])) {
+  $profil = loadprofil();
+
+  if ($profil["username"] === $username && $profil["password"] === $password || isset($_SESSION["auth"])) {
     $_SESSION["auth"] = true;
     $result = true;
   }
@@ -386,6 +404,10 @@ if ($cmd == "login") {
   echo json_encode([
     "result" => $result,
   ]);
+}
+
+if ($cmd == "login") {
+  login();
  } else if ($cmd == "logout") {
   session_unset();
   session_destroy();
