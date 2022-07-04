@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Buat Produk</title>
+    <title>Profil</title>
 
     <!-- Favicons -->
     <link rel="apple-touch-icon" sizes="180x180" href="./assets/img/favicons/apple-touch-icon.png" />
@@ -26,85 +26,55 @@
 
         <div>
           <a href="kasir.html" class="btn btn-outline-primary btn-block" style="margin-bottom: 1rem">Kasir</a>
-          <a href="produk.html" class="btn btn-primary btn-block" style="margin-bottom: 1rem">Daftar Produk</a>
+          <a href="produk.html" class="btn btn-outline-primary btn-block" style="margin-bottom: 1rem">Daftar Produk</a>
           <a href="transaksi.html" class="btn btn-outline-primary btn-block" style="margin-bottom: 1rem">Riwayat Transaksi</a>
-          <a href="profil.html" class="btn btn-outline-primary btn-block">Profil</a>
+          <a href="profil.html" class="btn btn-primary btn-block">Profil</a>
         </div>
 
         <a href="crud.php?cmd=logout" type="button" class="btn btn-danger btn-block" style="margin-top: auto">Logout</a>
       </div>
       <div class="main">
-        <h1 style="margin-bottom: 4rem">Buat Produk</h1>
+        <h1 style="margin-bottom: 4rem">Edit Profil</h1>
 
-        <form action="" method="POST" onsubmit="buatProduk(event)">
-          <div style="display: flex; justify-content: space-between; gap: 1rem">
+        <form action="" method="POST" onsubmit="updateProfil(event)">
+          <div style="display: flex">
             <div style="width: 50%">
-              <label for="nama" style="margin-bottom: 0.5rem">Nama</label>
+              <label for="username" style="margin-bottom: 0.5rem">Username</label>
               <input
                 type="text"
                 class="kasir-input input-block"
-                id="nama"
-                name="nama"
+                id="username"
+                name="username"
                 autocomplete="off"
                 maxlength="30"
                 style="margin-bottom: 2rem"
                 required
               />
-              <label for="stok" style="margin-bottom: 0.5rem">Stok</label>
+              <label for="password" style="margin-bottom: 0.5rem">Password</label>
               <input
                 type="text"
                 class="kasir-input input-block"
-                id="stok"
-                name="stok"
-                autocomplete="off"
-                style="margin-bottom: 2rem"
-                data-type="number"
-                placeholder="0"
-                required
-              />
-              <label for="satuan" style="margin-bottom: 0.5rem">Satuan</label>
-              <input
-                type="text"
-                class="kasir-input input-block"
-                id="satuan"
-                name="satuan"
+                id="password"
+                name="password"
                 autocomplete="off"
                 maxlength="30"
                 style="margin-bottom: 2rem"
                 required
               />
-              <label for="harga" style="margin-bottom: 0.5rem">Harga</label>
+              <label for="hormat_kami" style="margin-bottom: 0.5rem">Hormat Kami</label>
               <input
                 type="text"
                 class="kasir-input input-block"
-                id="harga"
-                name="harga"
-                autocomplete="off"
-                style="margin-bottom: 2rem"
-                data-type="currency"
-                placeholder="0"
-                required
-              />
-            </div>
-            <div style="width: 50%">
-              <label for="kategori" style="margin-bottom: 0.5rem">Kategori</label>
-              <input
-                type="text"
-                class="kasir-input input-block"
-                id="kategori"
-                name="kategori"
+                id="hormat_kami"
+                name="hormat_kami"
                 autocomplete="off"
                 maxlength="30"
                 style="margin-bottom: 2rem"
                 required
               />
-              <label for="statusProduk" style="margin-bottom: 0.5rem">Status</label>
-              <select class="kasir-select input-block" name="status" id="statusProduk" autocomplete="off" style="margin-bottom: 2rem">
-                <option value="Available">Available</option>
-                <option value="Unavailable">Unavailable</option>
-              </select>
               <div style="float: right">
-                <button type="submit" class="btn btn-primary" style="margin-bottom: 1rem">Buat Produk</button>
+                <button type="reset" class="btn btn-secondary" style="margin-bottom: 1rem" onclick="loadProfil()">Reset</button>
+                <button type="submit" class="btn btn-info" style="margin-bottom: 1rem">Update Profil</button>
               </div>
             </div>
           </div>
@@ -117,27 +87,44 @@
     <script src="./assets/js/jquery-ui.min.js"></script>
     <script src="./assets/js/main.js"></script>
     <script>
+      var username = document.getElementById("username");
+      var password = document.getElementById("password");
+      var hormatKami = document.getElementById("hormat_kami");
+
       window.onload = function () {
         checkAuth();
+        loadProfil();
       };
 
-      function buatProduk(e) {
+      function loadProfil() {
+        fetch("crud.php?cmd=loadProfil")
+          .then((response) => response.json())
+          .then((data) => {
+            var profil = data.profil;
+
+            username.value = profil.username;
+            password.value = profil.password;
+            hormatKami.value = profil.hormat_kami;
+          });
+      }
+
+      function updateProfil(e) {
         e.preventDefault();
-        fetch("crud.php?cmd=buatProduk", {
+        const queryString = window.location.search;
+        const urlParams = new URLSearchParams(queryString);
+        const produkId = urlParams.get("id");
+
+        fetch(`crud.php?cmd=updateProfil`, {
           method: "POST",
           body: JSON.stringify({
-            nama: this.nama.value,
-            stok: this.stok.value,
-            satuan: this.satuan.value,
-            harga: this.harga.value,
-            kategori: this.kategori.value,
-            status: this.statusProduk.value,
+            username: this.username.value,
+            password: this.password.value,
+            hormat_kami: this.hormat_kami.value,
           }),
         })
           .then((response) => response.json())
           .then((data) => {
-            alert("Produk berhasil dibuat.");
-            location.href = "produk.html";
+            alert("Profil berhasil diupdate.");
           });
       }
     </script>

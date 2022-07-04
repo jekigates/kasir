@@ -412,6 +412,25 @@ function login() {
   ]);
 }
 
+function updateProfil() {
+  global $conn;
+
+  $data = json_decode(file_get_contents("php://input"), true);
+  $username = $data["username"];
+  $password = $data["password"];
+  $hormat_kami = $data["hormat_kami"];
+
+  $sql_array = ["UPDATE profil SET profil.nilai='$username' WHERE profil.nama='username'", "UPDATE profil SET profil.nilai='$password' WHERE profil.nama='password'", "UPDATE profil SET profil.nilai='$hormat_kami' WHERE profil.nama='hormat_kami'"];
+
+  foreach ($sql_array as $sql) {
+    $query = mysqli_query($conn, $sql) or die("error: $sql");
+  }
+
+  echo json_encode([
+    "result" => true,
+  ]);
+}
+
 if ($cmd === "loadProfil") {
   loadProfil();
 } else if ($cmd === "login") {
@@ -455,4 +474,6 @@ if ($cmd === "loadProfil") {
   loadProdukDiTransaksi();
 } else if ($cmd === "detailTransaction") {
   detailTransaction();
+} else if ($cmd === "updateProfil") {
+  updateProfil();
 }
