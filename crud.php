@@ -372,18 +372,24 @@ function detailTransaction() {
   ]);
 }
 
-function loadProfil() {
+function loadProfil($call = "ajax") {
   global $conn;
 
   $sql = "SELECT * FROM profil";
   $query = mysqli_query($conn, $sql) or die("error: $sql");
-  $row = [];
+  $profil = [];
 
   while ($result = mysqli_fetch_assoc($query)) {
-    $row[$result["nama"]] = $result["nilai"];
+    $profil[$result["nama"]] = $result["nilai"];
   }
 
-  return $row;
+  if ($call === "ajax") {
+    echo json_encode([
+      "profil" => $profil,
+    ]);
+  } else {
+    return $profil;
+  }
 }
 
 function login() {
@@ -394,7 +400,7 @@ function login() {
   $password = $data["password"];
   $result = false;
 
-  $profil = loadprofil();
+  $profil = loadprofil("php");
 
   if ($profil["username"] === $username && $profil["password"] === $password || isset($_SESSION["auth"])) {
     $_SESSION["auth"] = true;
@@ -406,9 +412,11 @@ function login() {
   ]);
 }
 
-if ($cmd == "login") {
+if ($cmd === "loadProfil") {
+  loadProfil();
+} else if ($cmd === "login") {
   login();
- } else if ($cmd == "logout") {
+ } else if ($cmd === "logout") {
   session_unset();
   session_destroy();
 

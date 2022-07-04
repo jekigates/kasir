@@ -45,79 +45,72 @@
       }
       .div-table-footer {
         height: 20%;
+        display: flex;
+        justify-content: space-between;
+      }
+      .div-print-item {
+        width: 25%;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        text-align: center;
+      }
+      .input-print {
+        margin: 0 1rem;
+        text-align: center;
+        font-weight: inherit;
+      }
+      @media print {
+        ::-webkit-input-placeholder {
+          /* WebKit browsers */
+          color: transparent;
+        }
+        :-moz-placeholder {
+          /* Mozilla Firefox 4 to 18 */
+          color: transparent;
+        }
+        ::-moz-placeholder {
+          /* Mozilla Firefox 19+ */
+          color: transparent;
+        }
+        :-ms-input-placeholder {
+          /* Internet Explorer 10+ */
+          color: transparent;
+        }
+        input::placeholder {
+          color: transparent;
+        }
+        textarea::-webkit-input-placeholder {
+          /* WebKit browsers */
+          color: transparent;
+        }
+        textarea:-moz-placeholder {
+          /* Mozilla Firefox 4 to 18 */
+          color: transparent;
+        }
+        textarea::-moz-placeholder {
+          /* Mozilla Firefox 19+ */
+          color: transparent;
+        }
+        textarea:-ms-input-placeholder {
+          /* Internet Explorer 10+ */
+          color: transparent;
+        }
+        textarea::placeholder {
+          color: transparent;
+        }
+
+        .input-print {
+          border: 0;
+          background-color: transparent;
+          font-size: inherit;
+        }
       }
     </style>
   </head>
   <!-- Set "A5", "A4" or "A3" for class name -->
   <!-- Set also "landscape" if you need -->
   <body class="A4 landscape">
-    <section class="sheet padding-15mm">
-      <div class="div-table-header">
-        <table class="table-header">
-          <tbody>
-            <tr>
-              <th>Kepada Yth</th>
-              <th>:</th>
-              <td></td>
-            </tr>
-            <tr>
-              <th>Alamat</th>
-              <th>:</th>
-              <td></td>
-            </tr>
-            <tr>
-              <th>Tanggal Transaksi</th>
-              <th>:</th>
-              <td>2022-07-01 13:15:00</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-
-      <div class="div-table-body">
-        <table border="1" style="width: 100%" class="table-body">
-          <thead>
-            <tr>
-              <th>No.</th>
-              <th>Nama Barang</th>
-              <th>Qty</th>
-              <th>Satuan</th>
-              <th>Harga</th>
-              <th>Total</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>1</td>
-              <td>Barang 1</td>
-              <td>2</td>
-              <td>Satuan 1</td>
-              <td>1.000</td>
-              <td>2.000</td>
-            </tr>
-            <tr>
-              <td colspan="4">* Barang yang sudah dibeli tidak dapat ditukar atau dikembalikan</td>
-              <td>Total</td>
-              <td>240.000</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-
-      <div class="div-table-footer">
-        <table style="width: 100%" class="table-footer">
-          <thead>
-            <tr>
-              <th>Tanda Terima</th>
-              <th>Gudang</th>
-              <th>Supir</th>
-              <th>Hormat Kami</th>
-            </tr>
-          </thead>
-        </table>
-      </div>
-    </section>
-
     <script src="./assets/js/jquery.min.js"></script>
     <script src="./assets/js/datatables.min.js"></script>
     <script src="./assets/js/jquery-ui.min.js"></script>
@@ -126,8 +119,24 @@
       window.onload = function () {
         checkAuth();
         detailTransaksi();
-        window.print();
+        loadProfil();
+        // window.print();
       };
+
+      function loadProfil() {
+        fetch("crud.php?cmd=loadProfil")
+          .then((response) => response.json())
+          .then((data) => {
+            var inputTandaTerima = document.getElementById("input-tanda-terima");
+            var inputGudang = document.getElementById("input-gudang");
+            var inputSupir = document.getElementById("input-supir");
+            var inputHormatKami = document.getElementById("input-hormat-kami");
+
+            var profil = data.profil;
+
+            inputHormatKami.value = profil.hormat_kami;
+          });
+      }
 
       function detailTransaksi() {
         const queryString = window.location.search;
@@ -147,7 +156,7 @@
               if (i % 8 === 0) {
                 produkHtml += `<section class="sheet padding-15mm">`;
                 if (i === 0) {
-                  produkHtml += `<div class="div-table-header"><table class="table-header"><tbody><tr><th>Kepada Yth</th><th>:</th><td></td></tr><tr><th>Alamat</th><th>:</th><td></td></tr><tr><th>Tanggal Transaksi</th><th>:</th><td>${transaction.tgl_waktu}</td></tr></tbody></table>`;
+                  produkHtml += `<div class="div-table-header"><table class="table-header"><tbody><tr><th>Kepada Yth</th><th>:</th><td><input class="input-print" style="text-align: left; margin: 0;" id="input-kepada-yth" placeholder="Kepada Yth"></td></tr><tr><th>Alamat</th><th>:</th><td><input class="input-print" style="text-align: left; margin: 0;" id="input-alamat" placeholder="Alamat"></td></tr><tr><th>Tanggal Transaksi</th><th>:</th><td>${transaction.tgl_waktu}</td></tr></tbody></table>`;
                 }
                 produkHtml += `</div><div class="div-table-body"><table border="1" style="width: 100%" class="table-body"><thead><tr><th>No.</th><th>Nama Barang</th><th>Qty</th><th>Satuan</th><th>Harga</th><th>Total</th></tr></thead><tbody>`;
                 if (data.transaction.length - i > 8) {
@@ -172,7 +181,7 @@
                 }
                 produkHtml += `</tbody></table></div>`;
                 if (i === data.transaction.length) {
-                  produkHtml += `<div class="div-table-footer"><table style="width: 100%" class="table-footer"><thead><tr><th>Tanda Terima</th><th>Gudang</th><th>Supir</th><th>Hormat Kami</th></tr></thead></table></div>`;
+                  produkHtml += `<div class="div-table-footer"><div class="div-print-item"><h4>Tanda Terima</h4><h4><input class="input-print" id="input-tanda-terima" placeholder="Tanda Terima"></div><div class="div-print-item"></h4><h4>Gudang</h4><h4><input class="input-print" id="input-gudang" placeholder="Gudang"></h4></div><div class="div-print-item"><h4>Supir</h4><h4><input class="input-print" id="input-supir" placeholder="Supir"></h4></div><div class="div-print-item"><h4>Hormat Kami</h4><h4><input class="input-print" id="input-hormat-kami" placeholder="Hormat Kami"></h4></div></div>`;
                 }
                 produkHtml += `</section>`;
                 limit--;
