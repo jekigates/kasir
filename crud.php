@@ -137,34 +137,53 @@ function pesanProdukKeKeranjang() {
   $id = $data["id"];
   $jumlah = $data["jumlah"];
   $total = $data["total"];
+  $error = "";
   
-  $sql1 = "SELECT * FROM keranjang INNER JOIN produk ON keranjang.id = produk.id WHERE keranjang.id='$id'";
+  $sql1 = "SELECT * FROM produk WHERE produk.id='$id'";
   $query1 = mysqli_query($conn, $sql1) or die("error: $sql1");
   $result1 = mysqli_fetch_assoc($query1);
-  $num1 = mysqli_num_rows($query1);
 
-  if ($num1 === 0) {
-    $sql2 = "INSERT INTO keranjang(id, jumlah, total) VALUES('$id', '$jumlah', '$total')";
+  if ($jumlah <= $result1["stok"]) {
+    // Kalau jumlah lebih dari stok
+
+    $sql2 = "SELECT * FROM keranjang INNER JOIN produk ON keranjang.id = produk.id WHERE keranjang.id='$id'";
     $query2 = mysqli_query($conn, $sql2) or die("error: $sql2");
-  } else {
-    if ($mode === "tambah") {
-      $jumlah += $result1["jumlah"];
-    }
+    $result2 = mysqli_fetch_array($query2);
+    $num2 = mysqli_num_rows($query2);
 
-    $total = $result1["harga"] * $jumlah;
-
-    $jumlah = (int) $jumlah;
-    if ($jumlah === 0) {
-      $sql4 = "DELETE FROM keranjang WHERE keranjang.id='$id'";
-      $query4 = mysqli_query($conn, $sql4) or die("error: $sql4");
-    } else {
-      $sql3 = "UPDATE keranjang SET keranjang.jumlah='$jumlah', keranjang.total='$total' WHERE keranjang.id='$id'";
+    if ($num2 === 0) {
+      // Kalau produknya belum ada di keranjang
+      $sql3 = "INSERT INTO keranjang(id, jumlah, total) VALUES('$id', '$jumlah', '$total')";
       $query3 = mysqli_query($conn, $sql3) or die("error: $sql3");
+    } else {
+      // Kalau produkmya sudah ada di keranjang
+      if ($mode === "tambah") {
+        $jumlah += $result2["jumlah"];
+      }
+
+      $total = $result1["harga"] * $jumlah;
+
+      $jumlah = (int) $jumlah;
+      if ($jumlah === 0) {
+        $sql4 = "DELETE FROM keranjang WHERE keranjang.id='$id'";
+        $query4 = mysqli_query($conn, $sql4) or die("error: $sql4");
+      } else {
+        if ($jumlah <= $result1["stok"]) {
+          $sql5 = "UPDATE keranjang SET keranjang.jumlah='$jumlah', keranjang.total='$total' WHERE keranjang.id='$id'";
+          $query5 = mysqli_query($conn, $sql5) or die("error: $sql5");
+        } else {
+          $error = "Maaf, jumlah produk ini bisa ditambahkan ke dalam keranjang lagi karena melebihi stok yang ada.";
+        }
+      }
     }
+  } else {
+    // Kalau jumlah tidak lebih dari stok
+    $error = "Maaf, jumlah yang dimasukkan melebihi stok yang ada.";
   }
 
   echo json_encode([
     "result" => true,
+    "error" => $error,
   ]);
 }
 

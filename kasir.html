@@ -341,8 +341,10 @@
         }
       }
 
-      function pesanProdukKeKeranjang(e) {
-        e.preventDefault();
+      function pesanProdukKeKeranjang(e = "") {
+        if (e !== "") {
+          e.preventDefault();
+        }
         var url = "crud.php?cmd=pesanProdukKeKeranjang";
 
         if (menuPesanProdukTambah.style.display === "block") {
@@ -361,7 +363,11 @@
         })
           .then((response) => response.json())
           .then((data) => {
-            loadProdukDiKeranjang();
+            if (data.error === "") {
+              loadProdukDiKeranjang();
+            } else {
+              alert(data.error);
+            }
           });
       }
 
