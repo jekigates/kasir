@@ -217,7 +217,7 @@
               produkHtml += `<section class="sheet padding-10mm"><div class="div-table-footer"><div class="div-print-item"><h4>Tanda Terima</h4><h4><input class="input-print" id="input-tanda-terima" placeholder="Tanda Terima"></div><div class="div-print-item"></h4><h4>Gudang</h4><h4><input class="input-print" id="input-gudang" placeholder="Gudang"></h4></div><div class="div-print-item"><h4>Supir</h4><h4><input class="input-print" id="input-supir" placeholder="Supir"></h4></div><div class="div-print-item"><h4>Hormat Kami</h4><h4><input class="input-print" id="input-hormat-kami" placeholder="Hormat Kami"></h4></div></div></section>`;
             }
 
-            produkHtml += `<button class="btn-print" onclick="window.print()">Print Transaksi</button>`;
+            produkHtml += `<button class="btn-print" style="background-color: blue; color: white;" onclick="window.print()">Print Transaksi</button>`;
 
             document.body.innerHTML = produkHtml;
           });
