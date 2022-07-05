@@ -89,3 +89,11 @@ function formatAngkaInput(angka, prefix, uang = false) {
 
   return hasil_return;
 }
+
+function cariValueDariKeyUrl(katakunci) {
+  const queryString = window.location.search;
+  const urlParams = new URLSearchParams(queryString);
+  var nilaiKatakunci = urlParams.get(katakunci);
+
+  return nilaiKatakunci;
+}

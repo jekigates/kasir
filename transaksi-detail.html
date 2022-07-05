@@ -204,9 +204,7 @@
       };
 
       function loadDetailTransaksi() {
-        const queryString = window.location.search;
-        const urlParams = new URLSearchParams(queryString);
-        const transactionId = urlParams.get("id");
+        const transactionId = cariValueDariKeyUrl("id");
 
         fetch(`crud.php?cmd=loadDetailTransaction&id=${transactionId}&nama=${this.search.value}`)
           .then((response) => response.json())
@@ -228,9 +226,7 @@
       }
       
       function loadTransaksi() {
-        const queryString = window.location.search;
-        const urlParams = new URLSearchParams(queryString);
-        const transactionId = urlParams.get("id");
+        const transactionId = cariValueDariKeyUrl("id");
 
         fetch(`crud.php?cmd=loadTransaction&id=${transactionId}`)
           .then((response) => response.json())
@@ -286,9 +282,7 @@
 
       function hitungUangKembalian(e) {
         e.preventDefault();
-        const queryString = window.location.search;
-        const urlParams = new URLSearchParams(queryString);
-        const transactionId = urlParams.get("id");
+        const transactionId = cariValueDariKeyUrl("id");
 
         var uangHitung = formatAngkaDariRupiah(menuJumlahUangDibayar.value) - formatAngkaDariRupiah(transaksiDetailTotalHarusDibayar.innerHTML);
 
@@ -314,9 +308,7 @@
       }
 
       function returnTransaksi() {
-        const queryString = window.location.search;
-        const urlParams = new URLSearchParams(queryString);
-        const transactionId = urlParams.get("id");
+        const transactionId = cariValueDariKeyUrl("id");
 
         if (confirm("Apakah Anda yakin untuk mereturn transaksi ini?")) {
           fetch(`crud.php?cmd=bayarKeranjang&id=${transactionId}&metode_pembayaran=Return`, {

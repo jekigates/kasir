@@ -125,9 +125,7 @@
       };
 
       function detailProduk() {
-        const queryString = window.location.search;
-        const urlParams = new URLSearchParams(queryString);
-        const produkId = urlParams.get("id");
+        const produkId = cariValueDariKeyUrl("id");
 
         fetch(`crud.php?cmd=detailProduk&id=${produkId}`)
           .then((response) => response.json())
@@ -144,9 +142,7 @@
 
       function updateProduk(e) {
         e.preventDefault();
-        const queryString = window.location.search;
-        const urlParams = new URLSearchParams(queryString);
-        const produkId = urlParams.get("id");
+        const produkId = cariValueDariKeyUrl("id");
 
         fetch(`crud.php?cmd=updateProduk&id=${produkId}`, {
           method: "POST",

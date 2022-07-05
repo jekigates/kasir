@@ -154,9 +154,7 @@
       }
 
       function loadDetailTransaksi() {
-        const queryString = window.location.search;
-        const urlParams = new URLSearchParams(queryString);
-        const transactionId = urlParams.get("id");
+        const transactionId = cariValueDariKeyUrl("id");
 
         fetch(`crud.php?cmd=loadDetailTransaction&id=${transactionId}`)
           .then((response) => response.json())
@@ -227,9 +225,7 @@
       }
 
       function loadTransaksi() {
-        const queryString = window.location.search;
-        const urlParams = new URLSearchParams(queryString);
-        const transactionId = urlParams.get("id");
+        const transactionId = cariValueDariKeyUrl("id");
 
         fetch(`crud.php?cmd=loadTransaction&id=${transactionId}`)
           .then((response) => response.json())

@@ -139,9 +139,7 @@
 
       function updateProfil(e) {
         e.preventDefault();
-        const queryString = window.location.search;
-        const urlParams = new URLSearchParams(queryString);
-        const produkId = urlParams.get("id");
+        const produkId = cariValueDariKeyUrl("id");
         var ajaxBody = "";
         var passwordUbah = realPassword;
 
