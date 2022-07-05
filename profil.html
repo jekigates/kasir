@@ -37,8 +37,12 @@
       <div class="main">
         <h1 style="margin-bottom: 4rem">Edit Profil</h1>
 
+        <div class="bg-primary-background" style="padding: 1rem; margin-bottom: 1rem; border-radius: var(--border-radius)">
+          <p>* Jika hanya ingin mengubah username dan hormat kami, jangan mengisi input password.</p>
+        </div>
+
         <form action="" method="POST" onsubmit="updateProfil(event)">
-          <div style="display: flex">
+          <div style="display: flex; justify-content: space-between; gap: 1rem">
             <div style="width: 50%">
               <label for="username" style="margin-bottom: 0.5rem">Username</label>
               <input
@@ -51,27 +55,48 @@
                 style="margin-bottom: 2rem"
                 required
               />
-              <label for="password" style="margin-bottom: 0.5rem">Password</label>
+              <label for="hormat-kami" style="margin-bottom: 0.5rem">Hormat Kami</label>
               <input
                 type="text"
                 class="kasir-input input-block"
-                id="password"
-                name="password"
+                id="hormat-kami"
+                name="hormat-kami"
                 autocomplete="off"
                 maxlength="30"
                 style="margin-bottom: 2rem"
                 required
               />
-              <label for="hormat_kami" style="margin-bottom: 0.5rem">Hormat Kami</label>
+            </div>
+            <div style="width: 50%">
+              <label for="password-lama" style="margin-bottom: 0.5rem">Password Lama</label>
               <input
-                type="text"
+                type="password"
                 class="kasir-input input-block"
-                id="hormat_kami"
-                name="hormat_kami"
+                id="password-lama"
+                name="password-lama"
                 autocomplete="off"
                 maxlength="30"
                 style="margin-bottom: 2rem"
-                required
+              />
+              <label for="password-baru" style="margin-bottom: 0.5rem">Password Baru</label>
+              <input
+                type="password"
+                class="kasir-input input-block"
+                id="password-baru"
+                name="password-baru"
+                autocomplete="off"
+                maxlength="30"
+                style="margin-bottom: 2rem"
+              />
+              <label for="konfirmasi-password" style="margin-bottom: 0.5rem">Konfirmasi Password</label>
+              <input
+                type="password"
+                class="kasir-input input-block"
+                id="konfirmasi-password"
+                name="konfirmasi-password"
+                autocomplete="off"
+                maxlength="30"
+                style="margin-bottom: 2rem"
               />
               <div style="float: right">
                 <button type="reset" class="btn btn-secondary" style="margin-bottom: 1rem" onclick="loadProfil()">Reset</button>
@@ -88,9 +113,12 @@
     <script src="./assets/js/jquery-ui.min.js"></script>
     <script src="./assets/js/main.js"></script>
     <script>
+      var realPassword = "";
       var username = document.getElementById("username");
-      var password = document.getElementById("password");
-      var hormatKami = document.getElementById("hormat_kami");
+      var passwordLama = document.getElementById("password-lama");
+      var passwordBaru = document.getElementById("password-baru");
+      var konfirmasiPassword = document.getElementById("konfirmasi-password");
+      var hormatKami = document.getElementById("hormat-kami");
 
       window.onload = function () {
         checkAuth();
@@ -104,7 +132,7 @@
             var profil = data.profil;
 
             username.value = profil.username;
-            password.value = profil.password;
+            realPassword = profil.password;
             hormatKami.value = profil.hormat_kami;
           });
       }
@@ -114,13 +142,39 @@
         const queryString = window.location.search;
         const urlParams = new URLSearchParams(queryString);
         const produkId = urlParams.get("id");
+        var ajaxBody = "";
+        var passwordUbah = realPassword;
+
+        if (passwordLama.value !== "" || passwordBaru.value !== "" || konfirmasiPassword.value !== "") {
+          // Kalau password baru dan konfirmasi password tidak kosong
+          if (passwordBaru.value === "" || konfirmasiPassword.value === "") {
+            alert("Maaf, password baru dan konfirmasi password tidak boleh kosong.");
+            return;
+          }
+
+          // Kalau user rencana ganti password, dan data sudah sesuai...
+          if (passwordBaru.value === konfirmasiPassword.value) {
+            // Kalau password baru dan konfirmasi password tidak sesuai
+
+            // Kalau password lama sesuai dengan password aslinya
+            if (passwordLama.value === realPassword) {
+              passwordUbah = passwordBaru.value;
+            } else {
+              alert("Maaf, tidak bisa menyimpan password baru karena password lama Anda salah.");
+              return;
+            }
+          } else {
+            alert("Maaf, password baru dan konfirmasi password Anda tidak sesuai.");
+            return;
+          }
+        }
 
         fetch(`crud.php?cmd=updateProfil`, {
           method: "POST",
           body: JSON.stringify({
-            username: this.username.value,
-            password: this.password.value,
-            hormat_kami: this.hormat_kami.value,
+            username: username.value,
+            password: passwordUbah,
+            hormat_kami: hormatKami.value,
           }),
         })
           .then((response) => response.json())
