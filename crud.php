@@ -189,8 +189,13 @@ function pesanProdukKeKeranjang() {
 
 function loadProdukDiKeranjang() {
   global $conn;
+  $nama = "";
 
-  $sql = "SELECT * FROM keranjang INNER JOIN produk ON keranjang.id = produk.id WHERE produk.status='Available' AND produk.id > 0";
+  if (isset($_GET["nama"])) {
+    $nama = $_GET["nama"];
+  }
+
+  $sql = "SELECT * FROM keranjang INNER JOIN produk ON keranjang.id = produk.id WHERE produk.nama LIKE '%$nama%' AND produk.status='Available' AND produk.id > 0";
   $query = mysqli_query($conn, $sql) or die("error: $sql");
 
   $total = 0;

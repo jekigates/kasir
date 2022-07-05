@@ -220,9 +220,22 @@
           <button type="button" class="btn btn-danger" onclick="kosongkanKeranjang()">Bersihkan Keranjang</button>
         </div>
 
-        <button type="button" style="margin-bottom: 1rem" class="btn btn-primary" onclick="displayMenu('menu-masukkan-produk-belanja')">
-          Masukkan Produk Belanja
-        </button>
+        <div style="display: flex; justify-content: space-between; width: 100%; margin-bottom: 1rem">
+          <button type="button" class="btn btn-primary" onclick="displayMenu('menu-masukkan-produk-belanja')">Masukkan Produk Belanja</button>
+          <div>
+            <input
+              type="text"
+              class="kasir-input"
+              placeholder="Cari Produk Belanja"
+              id="search-produk-belanja"
+              name="search-produk-belanja"
+              autocomplete="off"
+              maxlength="30"
+              oninput="loadProdukDiKeranjang()"
+              style="width: 20rem"
+            />
+          </div>
+        </div>
 
         <table cellspacing="0" cellpadding="0" id="table-keranjang" class="table">
           <thead>
@@ -273,6 +286,7 @@
       var menuUangKembalianJumlah = document.getElementById("menu-uang-kembalian-jumlah");
       var menuJumlahUangDibayar = document.getElementById("menu-jumlah-uang-dibayar");
       var btnPrintStruk = document.getElementById("btnPrintStruk");
+      var searchProdukBelanja = document.getElementById("search-produk-belanja");
 
       window.onload = function () {
         checkAuth();
@@ -341,6 +355,11 @@
       }
 
       function bukaMenuBayarKeranjang() {
+        if (searchProdukBelanja.value !== "") {
+          alert("Tolong bersihkan teks pada input cari produk belanja terlebih dahulu.");
+          return;
+        }
+
         var cartItems = document.querySelectorAll(".cart-item");
 
         if (cartItems.length === 0) {
@@ -438,7 +457,7 @@
       }
 
       function loadProdukDiKeranjang() {
-        fetch(`crud.php?cmd=loadProdukDiKeranjang`)
+        fetch(`crud.php?cmd=loadProdukDiKeranjang&nama=${searchProdukBelanja.value}`)
           .then((response) => response.json())
           .then((data) => {
             var produkHtml = "";
