@@ -102,8 +102,21 @@
           <button class="btn btn-secondary d-none" id="btn-return" onclick="returnTransaksi()">Return Transaksi</button>
           <a href="" target="_blank" class="btn btn-info d-none" id="btn-print-struk">Print Struk</a>
         </div>
-        <div style="display: flex; margin-bottom: 4rem; margin-top: 4rem;">
-          <h2 style="align-self: end;">Daftar Produk</h2>
+        <div style="display: flex; margin-bottom: 2rem; margin-top: 4rem;">
+          <div style="align-self: end;">
+            <h2 style="margin-bottom: 1rem;">Daftar Produk</h2>
+            <input
+              type="text"
+              class="kasir-input"
+              placeholder="Cari Produk Transaksi"
+              id="search"
+              name="search"
+              autocomplete="off"
+              maxlength="30"
+              oninput="loadDetailTransaksi()"
+              style="width: 20rem"
+            />
+          </div>
           <div style="margin-left: auto; margin-right: 1rem">
             <button class="btn btn-success" style="float: right" id="btn-transaksi-detail-status-terbaru"></button>
           </div>
@@ -186,39 +199,64 @@
       window.onload = function () {
         checkAuth();
         initDataTable("table-produk");
-        detailTransaksi();
+        loadTransaksi();
+        loadDetailTransaksi();
       };
 
-      function detailTransaksi() {
+      function loadDetailTransaksi() {
         const queryString = window.location.search;
         const urlParams = new URLSearchParams(queryString);
         const transactionId = urlParams.get("id");
 
-        fetch(`crud.php?cmd=detailTransaction&id=${transactionId}`)
+        fetch(`crud.php?cmd=loadDetailTransaction&id=${transactionId}&nama=${this.search.value}`)
           .then((response) => response.json())
           .then((data) => {
+            var transaction = data.transaction;
             var produkHtml = "";
+
+            var iteration = 1;
+            data.transaction.forEach(function (transaction) {
+              produkHtml += `<tr><td>${iteration++}</td><td>${transaction.nama}</td><td>${formatAngkaKeRupiah(transaction.harga_sekarang)}</td><td>${
+                transaction.satuan
+              }</td><td>${formatAngkaTitik(transaction.jumlah)}</td><td>${formatAngkaKeRupiah(transaction.total)}</td></tr>`;
+            });
+
+            initDataTable("table-produk", false);
+            tableProduk.querySelector("tbody").innerHTML = produkHtml;
+            initDataTable("table-produk");
+          });
+      }
+      
+      function loadTransaksi() {
+        const queryString = window.location.search;
+        const urlParams = new URLSearchParams(queryString);
+        const transactionId = urlParams.get("id");
+
+        fetch(`crud.php?cmd=loadTransaction&id=${transactionId}`)
+          .then((response) => response.json())
+          .then((data) => {
+            var transaction = data.transaction[0];
 
             document.title = `Transaksi Detail ID ${transactionId}`;
             btnPrintStruk.setAttribute("href", `print.html?id=${transactionId}`)
             pageDetailTransaksiTitle.innerHTML = `Detail Transaksi ID ${transactionId}`;
-            pageDetailTransaksiTgl.innerHTML = data.transaction[0].tgl_waktu;
+            pageDetailTransaksiTgl.innerHTML = transaction.tgl_waktu;
 
-            if (data.transaction[0].tgl_lunas === data.transaction[0].tgl_waktu) {
+            if (transaction.tgl_lunas === transaction.tgl_waktu) {
               transaksiDetailMetodePembayaran.innerHTML = "Lunas";
             } else {
               transaksiDetailMetodePembayaran.innerHTML = "Utang";
             }
 
-            transaksiDetailTglLunas.innerHTML = (data.transaction[0].tgl_lunas !== null) ? data.transaction[0].tgl_lunas : "-";
-            transaksiDetailTglReturn.innerHTML = (data.transaction[0].tgl_return !== null) ? data.transaction[0].tgl_return : "-";
-            transaksiDetailTotalHarusDibayar.innerHTML = formatAngkaKeRupiah(data.transaction[0].total_harus_dibayar);
-            transaksiDetailTotalSudahDibayar.innerHTML = formatAngkaKeRupiah(data.transaction[0].total_sudah_dibayar);
-            var totalUangKembalian = parseFloat(data.transaction[0].total_sudah_dibayar) - parseFloat(data.transaction[0].total_harus_dibayar);
+            transaksiDetailTglLunas.innerHTML = (transaction.tgl_lunas !== null) ? transaction.tgl_lunas : "-";
+            transaksiDetailTglReturn.innerHTML = (transaction.tgl_return !== null) ? transaction.tgl_return : "-";
+            transaksiDetailTotalHarusDibayar.innerHTML = formatAngkaKeRupiah(transaction.total_harus_dibayar);
+            transaksiDetailTotalSudahDibayar.innerHTML = formatAngkaKeRupiah(transaction.total_sudah_dibayar);
+            var totalUangKembalian = parseFloat(transaction.total_sudah_dibayar) - parseFloat(transaction.total_harus_dibayar);
             transaksiDetailTotalUangKembalian.innerHTML = (totalUangKembalian > 0) ? formatAngkaKeRupiah(totalUangKembalian) : formatAngkaKeRupiah(0); 
 
-            if (data.transaction[0].tgl_lunas !== null) {
-              if (data.transaction[0].tgl_return === null) {
+            if (transaction.tgl_lunas !== null) {
+              if (transaction.tgl_return === null) {
                 // Kalau lunas, tapi gk direturn
                 btnTransaksiDetailStatusTerbaru.className = "btn btn-success";
                 btnTransaksiDetailStatusTerbaru.innerHTML = "Lunas tanpa return";
@@ -230,7 +268,7 @@
                 btnTransaksiDetailStatusTerbaru.innerHTML = "Lunas tapi direturn";
               }
             } else {
-              if (data.transaction[0].tgl_return === null) {
+              if (transaction.tgl_return === null) {
                 // Kalau utang, tapi gk direturn
                 btnTransaksiDetailStatusTerbaru.className = "btn btn-danger";
                 btnTransaksiDetailStatusTerbaru.innerHTML = "Utang tanpa return";
@@ -243,17 +281,6 @@
                 btnTransaksiDetailStatusTerbaru.innerHTML = "Utang tapi direturn";
               }
             }
-
-            var iteration = 1;
-            data.transaction.forEach(function (transaction) {
-              produkHtml += `<tr><td>${iteration++}</td><td>${transaction.nama}</td><td>${formatAngkaKeRupiah(transaction.harga_sekarang)}</td><td>${
-                transaction.satuan
-              }</td><td>${formatAngkaTitik(transaction.jumlah)}</td><td>${formatAngkaKeRupiah(transaction.total)}</td></tr>`;
-            });
-
-            initDataTable("table-produk", false);
-            tableProduk.querySelector("tbody").innerHTML = produkHtml;
-            initDataTable("table-produk");
           });
       }
 

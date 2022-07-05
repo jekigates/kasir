@@ -128,9 +128,13 @@
     <script src="./assets/js/jquery-ui.min.js"></script>
     <script src="./assets/js/main.js"></script>
     <script>
+      var tglTransaksi = "";
+      var totalHarusDibayar = "";
+
       window.onload = function () {
         checkAuth();
-        detailTransaksi();
+        loadTransaksi();
+        loadDetailTransaksi();
         loadProfil();
       };
 
@@ -149,17 +153,16 @@
           });
       }
 
-      function detailTransaksi() {
+      function loadDetailTransaksi() {
         const queryString = window.location.search;
         const urlParams = new URLSearchParams(queryString);
         const transactionId = urlParams.get("id");
 
-        fetch(`crud.php?cmd=detailTransaction&id=${transactionId}`)
+        fetch(`crud.php?cmd=loadDetailTransaction&id=${transactionId}`)
           .then((response) => response.json())
           .then((data) => {
             var produkHtml = "";
 
-            document.title = `Print Transaksi ID ${transactionId}`;
             var i = 0;
             var limit = "";
             var iteration = 1;
@@ -175,7 +178,7 @@
                 produkHtml += `<section class="sheet padding-10mm">`;
                 if (i === 0) {
                   // Tampilkan header untuk halaman pertama
-                  produkHtml += `<div class="div-table-header"><table class="table-header"><tbody><tr><th>Kepada Yth</th><th>:</th><td><input class="input-print" style="text-align: left; margin: 0;" id="input-kepada-yth" placeholder="Kepada Yth"></td></tr><tr><th>Alamat</th><th>:</th><td><input class="input-print" style="text-align: left; margin: 0;" id="input-alamat" placeholder="Alamat"></td></tr><tr><th>Tanggal Transaksi</th><th>:</th><td>${transaction.tgl_waktu}</td></tr></tbody></table>`;
+                  produkHtml += `<div class="div-table-header"><table class="table-header"><tbody><tr><th>Kepada Yth</th><th>:</th><td><input class="input-print" style="text-align: left; margin: 0;" id="input-kepada-yth" placeholder="Kepada Yth"></td></tr><tr><th>Alamat</th><th>:</th><td><input class="input-print" style="text-align: left; margin: 0;" id="input-alamat" placeholder="Alamat"></td></tr><tr><th>Tanggal Transaksi</th><th>:</th><td>${tglTransaksi}</td></tr></tbody></table>`;
                 }
                 produkHtml += `</div><div class="div-table-body"><table border="1" style="width: 100%" class="table-body"><thead><tr><th>No.</th><th>Nama Barang</th><th>Qty</th><th>Satuan</th><th>Harga</th><th>Total</th></tr></thead><tbody>`;
                 if (data.transaction.length - i > jumlahItem) {
@@ -196,7 +199,7 @@
               if (limit === i) {
                 if (i === data.transaction.length) {
                   produkHtml += `<tr><td colspan="4">* Barang yang sudah dibeli tidak dapat ditukar atau dikembalikan</td><th>Total</th><td style="text-align: right;">${formatAngkaTitik(
-                    transaction.total_harus_dibayar
+                    totalHarusDibayar
                   )}</td></tr>`;
                 }
                 produkHtml += `</tbody></table></div>`;
@@ -220,6 +223,23 @@
             produkHtml += `<button class="btn-print" style="background-color: blue; color: white;" onclick="window.print()">Print Transaksi</button>`;
 
             document.body.innerHTML = produkHtml;
+          });
+      }
+
+      function loadTransaksi() {
+        const queryString = window.location.search;
+        const urlParams = new URLSearchParams(queryString);
+        const transactionId = urlParams.get("id");
+
+        fetch(`crud.php?cmd=loadTransaction&id=${transactionId}`)
+          .then((response) => response.json())
+          .then((data) => {
+            var transaction = data.transaction[0];
+            var produkHtml = "";
+
+            document.title = `Print Transaksi ID ${transactionId}`;
+            tglTransaksi = transaction.tgl_waktu;
+            totalHarusDibayar = transaction.total_harus_dibayar;
           });
       }
     </script>

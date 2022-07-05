@@ -304,38 +304,6 @@ function bayarKeranjang() {
   ]);
 }
 
-function loadTransaksi() {
-  global $conn;
-
-  $tgl_transaksi = $_GET["tgl_transaksi"];
-  $metode_pembayaran = $_GET["metode_pembayaran"];
-
-  $sql = "SELECT * FROM transaksi INNER JOIN transaksi_detail ON transaksi.id = transaksi_detail.id ";
-  if ($metode_pembayaran === "") {
-    $sql .= "WHERE transaksi.tgl_waktu LIKE '%$tgl_transaksi%'";
-  } else if ($metode_pembayaran === "lunas_tanpa_return") {
-    $sql .= "WHERE transaksi.tgl_lunas IS NOT NULL AND transaksi.tgl_return IS NULL";
-  } else if ($metode_pembayaran === "lunas_tapi_return") {
-    $sql .= "WHERE transaksi.tgl_lunas IS NOT NULL AND transaksi.tgl_return IS NOT NULL";
-  } else if ($metode_pembayaran === "utang_tanpa_return") {
-    $sql .= "WHERE transaksi.tgl_lunas IS NULL AND transaksi.tgl_return IS NULL";
-  } else if ($metode_pembayaran === "utang_tapi_return") {
-    $sql .= "WHERE transaksi.tgl_lunas IS NULL AND transaksi.tgl_return IS NOT NULL";
-  }
-  
-  $sql .= " GROUP BY transaksi.id";
-  $query = mysqli_query($conn, $sql) or die("error: $sql");
-
-  $rows = [];
-  while($result = mysqli_fetch_assoc($query)) {
-    $rows[] = $result;
-  }
-
-  echo json_encode([
-    "transaksi" => $rows,
-  ]);
-}
-
 function loadProdukDiTransaksi() {
   global $conn;
 
@@ -359,12 +327,51 @@ function loadProdukDiTransaksi() {
   ]);
 }
 
-function detailTransaction() {
+function loadTransaction() {
   global $conn;
 
+  $id = (isset($_GET["id"])) ? $_GET["id"] : "";
+  $tgl_transaksi = (isset($_GET["tgl_transaksi"])) ? $_GET["tgl_transaksi"] : "";
+  $metode_pembayaran = (isset($_GET["metode_pembayaran"])) ? $_GET["metode_pembayaran"] : "";
+
+  $sql = "SELECT * FROM transaksi INNER JOIN transaksi_detail ON transaksi.id = transaksi_detail.id WHERE transaksi.tgl_waktu LIKE '%$tgl_transaksi%' ";
+  if ($metode_pembayaran !== "") {
+    if ($metode_pembayaran === "lunas_tanpa_return") {
+      $sql .= "AND transaksi.tgl_lunas IS NOT NULL AND transaksi.tgl_return IS NULL ";
+    } else if ($metode_pembayaran === "lunas_tapi_return") {
+      $sql .= "AND transaksi.tgl_lunas IS NOT NULL AND transaksi.tgl_return IS NOT NULL ";
+    } else if ($metode_pembayaran === "utang_tanpa_return") {
+      $sql .= "AND transaksi.tgl_lunas IS NULL AND transaksi.tgl_return IS NULL ";
+    } else if ($metode_pembayaran === "utang_tapi_return") {
+      $sql .= "AND transaksi.tgl_lunas IS NULL AND transaksi.tgl_return IS NOT NULL ";
+    }
+  }
+  $sql .= "AND transaksi.id LIKE '%$id%' ";
+  
+  $sql .= " GROUP BY transaksi.id";
+  $query = mysqli_query($conn, $sql) or die("error: $sql");
+
+  $rows = [];
+  while($result = mysqli_fetch_assoc($query)) {
+    $rows[] = $result;
+  }
+
+  echo json_encode([
+    "transaction" => $rows,
+  ]);
+}
+
+function loadDetailTransaction() {
+  global $conn;
+
+  $nama = "";
   $id = $_GET["id"];
 
-  $sql = "SELECT *, transaksi.id AS id FROM transaksi INNER JOIN transaksi_detail ON transaksi.id = transaksi_detail.id INNER JOIN produk ON transaksi_detail.produk_id = produk.id WHERE transaksi.id='$id'";
+  if (isset($_GET["nama"])) {
+    $nama = $_GET["nama"];
+  }
+
+  $sql = "SELECT * FROM transaksi_detail INNER JOIN produk ON transaksi_detail.produk_id = produk.id WHERE transaksi_detail.id='$id' AND produk.nama LIKE '%$nama%'";
   $query = mysqli_query($conn, $sql) or die("error: $sql");
 
   $rows = [];
@@ -473,12 +480,12 @@ if ($cmd === "loadProfil") {
   kosongkanKeranjang();
 } else if ($cmd == "bayarKeranjang") {
   bayarKeranjang();
-} else if ($cmd === "loadTransaksi") {
-  loadTransaksi();
 } else if ($cmd === "loadProdukDiTransaksi") {
   loadProdukDiTransaksi();
-} else if ($cmd === "detailTransaction") {
-  detailTransaction();
+} else if ($cmd === "loadTransaction") {
+  loadTransaction();
+} else if ($cmd === "loadDetailTransaction") {
+  loadDetailTransaction();
 } else if ($cmd === "updateProfil") {
   updateProfil();
 }
