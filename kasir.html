@@ -215,7 +215,10 @@
         <a href="crud.php?cmd=logout" type="button" class="btn btn-danger btn-block" style="margin-top: auto">Logout</a>
       </div>
       <div class="main">
-        <h1 style="margin-bottom: 4rem">Kasir <span id="cart-jumlah-jenis-produk"></span></h1>
+        <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 4rem">
+          <h1>Keranjang <span id="cart-jumlah-jenis-produk">(0)</span></h1>
+          <button type="button" class="btn btn-danger" onclick="kosongkanKeranjang()">Bersihkan Keranjang</button>
+        </div>
 
         <button type="button" style="margin-bottom: 1rem" class="btn btn-primary" onclick="displayMenu('menu-masukkan-produk-belanja')">
           Masukkan Produk Belanja
