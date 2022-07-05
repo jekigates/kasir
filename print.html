@@ -10,7 +10,7 @@
     <link rel="apple-touch-icon" sizes="180x180" href="./assets/img/favicons/apple-touch-icon.png" />
     <link rel="icon" type="image/png" sizes="32x32" href="./assets/img/favicons/favicon-32x32.png" />
     <link rel="icon" type="image/png" sizes="16x16" href="./assets/img/favicons/favicon-16x16.png" />
-    <link rel="manifest" href="./assets/img/favicons/site.webmanifest" />
+    <link rel="manifest" href="./assets/img/favicons/manifest.json" />
 
     <!-- Stylesheets -->
     <link rel="stylesheet" href="./assets/css/datatables.min.css" />
@@ -39,9 +39,12 @@
         height: 10%;
       }
       .div-table-body {
-        height: calc(70% - 2rem);
+        height: 90%;
         padding: 1rem 0;
         overflow: hidden;
+      }
+      .sheet:last-of-type .div-table-body {
+        height: calc(70% - 2rem);
       }
       .div-table-footer {
         height: 20%;
@@ -142,7 +145,7 @@
 
             var profil = data.profil;
 
-            inputHormatKami.value = profil.hormat_kami;
+            // inputHormatKami.value = profil.hormat_kami;
           });
       }
 
@@ -158,21 +161,30 @@
 
             document.title = `Print Transaksi ID ${transactionId}`;
             var i = 0;
-            var limit = 8;
+            var limit = "";
             var iteration = 1;
+            var jumlahItem = 14;
+            var indexKertas = 0;
+            var jumlahKertas = data.transaction.length / jumlahItem;
+            jumlahKertas = jumlahKertas % 1 === 0 ? jumlahKertas : parseInt(jumlahKertas) + 1;
+            var buatSection = true;
+            var transaction_length = data.transaction.length;
+            var buatFooter = true;
             data.transaction.forEach(function (transaction) {
-              if (i % 8 === 0) {
-                produkHtml += `<section class="sheet padding-15mm">`;
+              if (buatSection === true) {
+                produkHtml += `<section class="sheet padding-10mm">`;
                 if (i === 0) {
+                  // Tampilkan header untuk halaman pertama
                   produkHtml += `<div class="div-table-header"><table class="table-header"><tbody><tr><th>Kepada Yth</th><th>:</th><td><input class="input-print" style="text-align: left; margin: 0;" id="input-kepada-yth" placeholder="Kepada Yth"></td></tr><tr><th>Alamat</th><th>:</th><td><input class="input-print" style="text-align: left; margin: 0;" id="input-alamat" placeholder="Alamat"></td></tr><tr><th>Tanggal Transaksi</th><th>:</th><td>${transaction.tgl_waktu}</td></tr></tbody></table>`;
                 }
                 produkHtml += `</div><div class="div-table-body"><table border="1" style="width: 100%" class="table-body"><thead><tr><th>No.</th><th>Nama Barang</th><th>Qty</th><th>Satuan</th><th>Harga</th><th>Total</th></tr></thead><tbody>`;
-                if (data.transaction.length - i > 8) {
-                  // Kalau jumlah barang yang bisa ditampilkan lebih dari 8
-                  limit = i + 8;
+                if (data.transaction.length - i > jumlahItem) {
+                  // Kalau jumlah barang yang bisa ditampilkan lebih dari jumlahItem
+                  limit = i + jumlahItem;
                 } else {
                   limit = i + (data.transaction.length - i);
                 }
+                buatSection = false;
               }
               produkHtml += `<tr><td style="text-align: center;">${iteration++}</td><td>${transaction.nama}</td><td style="text-align: center;">${
                 transaction.jumlah
@@ -189,12 +201,21 @@
                 }
                 produkHtml += `</tbody></table></div>`;
                 if (i === data.transaction.length) {
-                  produkHtml += `<div class="div-table-footer"><div class="div-print-item"><h4>Tanda Terima</h4><h4><input class="input-print" id="input-tanda-terima" placeholder="Tanda Terima"></div><div class="div-print-item"></h4><h4>Gudang</h4><h4><input class="input-print" id="input-gudang" placeholder="Gudang"></h4></div><div class="div-print-item"><h4>Supir</h4><h4><input class="input-print" id="input-supir" placeholder="Supir"></h4></div><div class="div-print-item"><h4>Hormat Kami</h4><h4><input class="input-print" id="input-hormat-kami" placeholder="Hormat Kami"></h4></div></div>`;
+                  if ((jumlahKertas !== 1 && transaction_length <= 9) || (jumlahKertas === 1 && data.transaction.length <= 9)) {
+                    produkHtml += `<div class="div-table-footer"><div class="div-print-item"><h4>Tanda Terima</h4><h4><input class="input-print" id="input-tanda-terima" placeholder="Tanda Terima"></div><div class="div-print-item"></h4><h4>Gudang</h4><h4><input class="input-print" id="input-gudang" placeholder="Gudang"></h4></div><div class="div-print-item"><h4>Supir</h4><h4><input class="input-print" id="input-supir" placeholder="Supir"></h4></div><div class="div-print-item"><h4>Hormat Kami</h4><h4><input class="input-print" id="input-hormat-kami" placeholder="Hormat Kami"></h4></div></div>`;
+                    buatFooter = false;
+                  }
                 }
                 produkHtml += `</section>`;
-                limit--;
+                transaction_length -= data.transaction.length <= 9 ? data.transaction.length : jumlahItem;
+                indexKertas++;
+                buatSection = true;
               }
             });
+
+            if (buatFooter === true) {
+              produkHtml += `<section class="sheet padding-10mm"><div class="div-table-footer"><div class="div-print-item"><h4>Tanda Terima</h4><h4><input class="input-print" id="input-tanda-terima" placeholder="Tanda Terima"></div><div class="div-print-item"></h4><h4>Gudang</h4><h4><input class="input-print" id="input-gudang" placeholder="Gudang"></h4></div><div class="div-print-item"><h4>Supir</h4><h4><input class="input-print" id="input-supir" placeholder="Supir"></h4></div><div class="div-print-item"><h4>Hormat Kami</h4><h4><input class="input-print" id="input-hormat-kami" placeholder="Hormat Kami"></h4></div></div></section>`;
+            }
 
             produkHtml += `<button class="btn-print" onclick="window.print()">Print Transaksi</button>`;
 
