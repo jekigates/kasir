@@ -63,6 +63,7 @@
     <script src="./assets/js/jquery.min.js"></script>
     <script src="./assets/js/datatables.min.js"></script>
     <script src="./assets/js/jquery-ui.min.js"></script>
+    <script src="./assets/js/sweetalert2.js"></script>
     <script src="./assets/js/main.js"></script>
     <script>
       window.onload = function () {
@@ -80,7 +81,13 @@
             if (data.result === true) {
               location.href = "kasir.html";
             } else {
-              alert("Maaf, tolong periksa username dan password Anda.");
+              swal.fire({
+                icon: "error",
+                title: "Gagal Login",
+                text: "Maaf, tolong periksa username dan password Anda.",
+                confirmButtonColor: getColorFromRoot("--danger"),
+                iconColor: getColorFromRoot("--danger"),
+              });
             }
           });
       }

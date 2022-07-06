@@ -261,6 +261,7 @@
     <script src="./assets/js/jquery.min.js"></script>
     <script src="./assets/js/datatables.min.js"></script>
     <script src="./assets/js/jquery-ui.min.js"></script>
+    <script src="./assets/js/sweetalert2.js"></script>
     <script src="./assets/js/main.js"></script>
     <script>
       var tableKeranjang = document.getElementById("table-keranjang");
@@ -302,7 +303,13 @@
         var uangHitung = formatAngkaDariRupiah(menuJumlahUangDibayar.value) - formatAngkaDariRupiah(cartTotal.innerHTML);
 
         if (uangHitung < 0) {
-          alert(`Maaf, uang Anda kurang ${formatAngkaKeRupiah(uangHitung.toString().replace("-", ""))}`);
+          swal.fire({
+            icon: "error",
+            title: "Oops...",
+            text: `Maaf, uang Anda kurang ${formatAngkaKeRupiah(uangHitung.toString().replace("-", ""))}.`,
+            confirmButtonColor: getColorFromRoot("--danger"),
+            iconColor: getColorFromRoot("--danger"),
+          });
         } else {
           menuJumlahUangClose.click();
           menuUangKembalianJumlah.innerHTML = formatAngkaKeRupiah(uangHitung.toString().replace("-", ""));
@@ -316,22 +323,53 @@
           })
             .then((response) => response.json())
             .then((data) => {
-              alert("Keranjang sudah dibayar dengan lunas.");
-              btnPrintStruk.setAttribute("href", `print.html?id=${data.transaksi_id}`);
-              loadProdukDiKeranjang();
+              Swal.fire({
+                title: "Berhasil!",
+                text: "Keranjang sudah dibayar dengan metode lunas.",
+                icon: "success",
+                confirmButtonColor: getColorFromRoot("--blue"),
+                iconColor: getColorFromRoot("--success"),
+              }).then((result) => {
+                if (result.isConfirmed) {
+                  btnPrintStruk.setAttribute("href", `print.html?id=${data.transaksi_id}`);
+                  loadProdukDiKeranjang();
+                }
+              });
             });
         }
       }
 
       function kosongkanKeranjang() {
-        if (confirm("Apakah Anda yakin untuk membuang isi keranjang ini?") === true) {
-          fetch("crud.php?cmd=kosongkanKeranjang")
-            .then((response) => response.json())
-            .then((data) => {
-              alert("Isi keranjang berhasil dibuang.");
-              loadProdukDiKeranjang();
-            });
-        }
+        Swal.fire({
+          title: "Apakah Anda yakin?",
+          text: "Data keranjang yang dihapus tidak bisa dikembalikan!",
+          icon: "warning",
+          showCancelButton: true,
+          cancelButtonText: "Batal",
+          confirmButtonColor: getColorFromRoot("--danger"),
+          cancelButtonColor: getColorFromRoot("--secondary"),
+          confirmButtonText: "Hapus!",
+          reverseButtons: true,
+          iconColor: getColorFromRoot("--primary"),
+        }).then((result) => {
+          if (result.isConfirmed) {
+            fetch("crud.php?cmd=kosongkanKeranjang")
+              .then((response) => response.json())
+              .then((data) => {
+                Swal.fire({
+                  title: "Berhasil!",
+                  text: "Isi keranjang berhasil dibuang.",
+                  icon: "success",
+                  confirmButtonColor: getColorFromRoot("--blue"),
+                  iconColor: getColorFromRoot("--success"),
+                }).then((result) => {
+                  if (result.isConfirmed) {
+                    loadProdukDiKeranjang();
+                  }
+                });
+              });
+          }
+        });
       }
 
       function konfirmasiPembayaran() {
@@ -347,23 +385,44 @@
           fetch(url)
             .then((response) => response.json())
             .then((data) => {
-              alert("Keranjang sudah dibayar dengan metode utang.");
-              menuBayarKeranjangClose.click();
-              loadProdukDiKeranjang();
+              Swal.fire({
+                title: "Berhasil!",
+                text: "Keranjang sudah dibayar dengan metode utang.",
+                icon: "success",
+                confirmButtonColor: getColorFromRoot("--blue"),
+                iconColor: getColorFromRoot("--success"),
+              }).then((result) => {
+                if (result.isConfirmed) {
+                  menuBayarKeranjangClose.click();
+                  loadProdukDiKeranjang();
+                }
+              });
             });
         }
       }
 
       function bukaMenuBayarKeranjang() {
         if (searchProdukBelanja.value !== "") {
-          alert("Tolong bersihkan teks pada input cari produk belanja terlebih dahulu.");
+          swal.fire({
+            icon: "error",
+            title: "Oops...",
+            text: "Tolong bersihkan teks pada input cari produk belanja terlebih dahulu.",
+            confirmButtonColor: getColorFromRoot("--danger"),
+            iconColor: getColorFromRoot("--danger"),
+          });
           return;
         }
 
         var cartItems = document.querySelectorAll(".cart-item");
 
         if (cartItems.length === 0) {
-          alert("Maaf, produk keranjang Anda kosong.");
+          swal.fire({
+            icon: "error",
+            title: "Oops...",
+            text: "Maaf, produk keranjang Anda kosong.",
+            confirmButtonColor: getColorFromRoot("--danger"),
+            iconColor: getColorFromRoot("--danger"),
+          });
         } else {
           displayMenu("menu-bayar-keranjang");
         }
@@ -394,7 +453,13 @@
             if (data.error === "") {
               loadProdukDiKeranjang();
             } else {
-              alert(data.error);
+              swal.fire({
+                icon: "error",
+                title: "Oops...",
+                text: data.error,
+                confirmButtonColor: getColorFromRoot("--danger"),
+                iconColor: getColorFromRoot("--danger"),
+              });
             }
           });
       }

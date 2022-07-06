@@ -97,3 +97,15 @@ function cariValueDariKeyUrl(katakunci) {
 
   return nilaiKatakunci;
 }
+
+function getColorFromRoot(name) {
+  return getComputedStyle(document.body).getPropertyValue(name);
+}
+
+const swalKasirButtons = Swal.mixin({
+  customClass: {
+    confirmButton: "btn btn-success",
+    cancelButton: "btn btn-danger",
+  },
+  buttonsStyling: false,
+});

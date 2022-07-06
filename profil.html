@@ -111,6 +111,7 @@
     <script src="./assets/js/jquery.min.js"></script>
     <script src="./assets/js/datatables.min.js"></script>
     <script src="./assets/js/jquery-ui.min.js"></script>
+    <script src="./assets/js/sweetalert2.js"></script>
     <script src="./assets/js/main.js"></script>
     <script>
       var realPassword = "";
@@ -146,7 +147,13 @@
         if (passwordLama.value !== "" || passwordBaru.value !== "" || konfirmasiPassword.value !== "") {
           // Kalau password baru dan konfirmasi password tidak kosong
           if (passwordBaru.value === "" || konfirmasiPassword.value === "") {
-            alert("Maaf, password baru dan konfirmasi password tidak boleh kosong.");
+            swal.fire({
+              icon: "error",
+              title: "Oops...",
+              text: "Maaf, password baru dan konfirmasi password tidak boleh kosong.",
+              confirmButtonColor: getColorFromRoot("--danger"),
+              iconColor: getColorFromRoot("--danger"),
+            });
             return;
           }
 
@@ -158,11 +165,23 @@
             if (passwordLama.value === realPassword) {
               passwordUbah = passwordBaru.value;
             } else {
-              alert("Maaf, tidak bisa menyimpan password baru karena password lama Anda salah.");
+              swal.fire({
+                icon: "error",
+                title: "Oops...",
+                text: "Maaf, tidak bisa menyimpan password baru karena password lama Anda salah.",
+                confirmButtonColor: getColorFromRoot("--danger"),
+                iconColor: getColorFromRoot("--danger"),
+              });
               return;
             }
           } else {
-            alert("Maaf, password baru dan konfirmasi password Anda tidak sesuai.");
+            swal.fire({
+              icon: "error",
+              title: "Oops...",
+              text: "Maaf, password baru dan konfirmasi password Anda tidak sesuai.",
+              confirmButtonColor: getColorFromRoot("--danger"),
+              iconColor: getColorFromRoot("--danger"),
+            });
             return;
           }
         }
@@ -177,7 +196,13 @@
         })
           .then((response) => response.json())
           .then((data) => {
-            alert("Profil berhasil diupdate.");
+            Swal.fire({
+              title: "Berhasil!",
+              text: "Profil berhasil diupdate.",
+              icon: "success",
+              confirmButtonColor: getColorFromRoot("--blue"),
+              iconColor: getColorFromRoot("--success"),
+            });
           });
       }
     </script>

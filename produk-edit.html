@@ -117,6 +117,7 @@
     <script src="./assets/js/jquery.min.js"></script>
     <script src="./assets/js/datatables.min.js"></script>
     <script src="./assets/js/jquery-ui.min.js"></script>
+    <script src="./assets/js/sweetalert2.js"></script>
     <script src="./assets/js/main.js"></script>
     <script>
       window.onload = function () {
@@ -157,8 +158,17 @@
         })
           .then((response) => response.json())
           .then((data) => {
-            alert("Produk berhasil diupdate.");
-            location.href = "produk.html";
+            Swal.fire({
+              title: "Berhasil!",
+              text: "Produk berhasil diupdate.",
+              icon: "success",
+              confirmButtonColor: getColorFromRoot("--blue"),
+              iconColor: getColorFromRoot("--success"),
+            }).then((result) => {
+              if (result.isConfirmed) {
+                location.href = "produk.html";
+              }
+            });
           });
       }
     </script>
