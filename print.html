@@ -178,7 +178,7 @@
                   // Tampilkan header untuk halaman pertama
                   produkHtml += `<div class="div-table-header"><table class="table-header"><tbody><tr><th>Kepada Yth</th><th>:</th><td><input class="input-print" style="text-align: left; margin: 0;" id="input-kepada-yth" placeholder="Kepada Yth"></td></tr><tr><th>Alamat</th><th>:</th><td><input class="input-print" style="text-align: left; margin: 0;" id="input-alamat" placeholder="Alamat"></td></tr><tr><th>Tanggal Transaksi</th><th>:</th><td>${tglTransaksi}</td></tr></tbody></table>`;
                 }
-                produkHtml += `</div><div class="div-table-body"><table border="1" style="width: 100%" class="table-body"><thead><tr><th>No.</th><th>Nama Barang</th><th>Qty</th><th>Satuan</th><th>Harga</th><th>Total</th></tr></thead><tbody>`;
+                produkHtml += `</div><div class="div-table-body"><table border="1" style="width: 100%" class="table-body"><thead><tr><th>No.</th><th>Nama Barang</th><th>Jumlah</th><th>Satuan</th><th>Harga</th><th>Total</th></tr></thead><tbody>`;
                 if (data.transaction.length - i > jumlahItem) {
                   // Kalau jumlah barang yang bisa ditampilkan lebih dari jumlahItem
                   limit = i + jumlahItem;
