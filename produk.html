@@ -87,7 +87,7 @@
 
       window.onload = function () {
         checkAuth();
-        initDataTable("table-produk");
+        initDataTable("table-produk", true, true);
         loadKategori();
         loadProduk();
       };
@@ -137,7 +137,7 @@
 
             initDataTable("table-produk", false);
             tableProduk.querySelector("tbody").innerHTML = produkHtml;
-            initDataTable("table-produk");
+            initDataTable("table-produk", true, true);
           });
       }
     </script>

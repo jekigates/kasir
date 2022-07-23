@@ -19,14 +19,38 @@ function displayMenu(namaMenu) {
   document.getElementById(namaMenu).classList.toggle("d-none");
 }
 
-function initDataTable(namaTable, init = true) {
+function initDataTable(namaTable, init = true, cetak = false) {
   if (init) {
-    $(`#${namaTable}`).DataTable({
-      ordering: false,
-      searching: false,
-      lengthMenu: [5],
-      lengthChange: false,
-    });
+    if (cetak) {
+      $(`#${namaTable}`).DataTable({
+        ordering: false,
+        searching: false,
+        lengthMenu: [5],
+        lengthChange: false,
+        dom: "Bfrtip",
+        buttons: [
+          {
+            extend: "excelHtml5",
+            exportOptions: {
+              columns: [0, 1, 2, 3, 4, 5],
+            },
+          },
+          {
+            extend: "pdfHtml5",
+            exportOptions: {
+              columns: [0, 1, 2, 3, 4, 5],
+            },
+          },
+        ],
+      });
+    } else {
+      $(`#${namaTable}`).DataTable({
+        ordering: false,
+        searching: false,
+        lengthMenu: [5],
+        lengthChange: false,
+      });
+    }
   } else {
     $(`#${namaTable}`).DataTable().destroy();
   }
